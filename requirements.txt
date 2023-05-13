@@ -13,3 +13,8 @@ setuptools==60.2.0
 pandas==2.0.1
 tzdata==2023.3
 six ==1.16.0
+wheel==0.37.1
+pytz==2023.3
+SQLAlchemy==2.0.13
+typing-extensions==4.5.0
+
