@@ -1,0 +1,44 @@
+meu_projeto/
+    app.py
+    templates/
+        index.html
+    static/
+        css/
+            estilo.css
+
+            #retangulo {
+                position: absolute;
+                width: 100%;
+                height: 70px;
+                background-color: #495AED;
+                top: 0;
+                left: 0;
+            }
+            #laybol p2{
+            position: absolute;
+            width: 340px;
+            height: 44px;
+            left: 159px;
+            top: 174px;
+
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 600;
+            font-size: 36px;
+            line-height: 44px;
+            /* identical to box height */
+
+            text-align: center;
+
+            color: #000000;
+            }
+
+             #Ellipse {
+        position: absolute;
+        width: 35px;
+        height: 31px;
+        left: 500px;
+        top: 181px;
+
+        background: #1CF071;
+            }
