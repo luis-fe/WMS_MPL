@@ -10,3 +10,6 @@ colorama==0.4.6
 itsdangerous==2.1.2
 psycopg2==2.9.5
 setuptools==60.2.0
+pandas==2.0.1
+tzdata==2023.3
+six ==1.16.0
