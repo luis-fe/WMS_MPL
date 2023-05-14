@@ -21,6 +21,4 @@ APScheduler == 3.10.1
 greenlet == 2.0.2
 tzlocal == 4.3
 pyodbc==4.0.39
-pip==21.3.1
-pytz-deprecation-schim==0.1.0.post0
-python_dateutiul==2.8.2
+python-dateutiul==2.8.2
