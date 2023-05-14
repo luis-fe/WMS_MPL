@@ -1,6 +1,6 @@
 import pandas as pd
 import psycopg2
-import pyodbc
+import jaydebeapi
 import time
 from sqlalchemy import create_engine
 import datetime
@@ -31,12 +31,43 @@ start_time = time.perf_counter()
 
 
 def FilaTags():
-    conn = pyodbc.connect(dsn='SISTEMAS CSW', user='root', password='ccscache')
-    conn2 = psycopg2.connect(host="wmsbd.cyiuowfro4wv.sa-east-1.rds.amazonaws.com", database="wms_bd", user="wms",
-                             password="Master100")
-    df_tags = pd.read_sql(
+    # Configurações de conexão
+    hostcsw = '187.32.10.129'
+    portcsw = '1972'
+    namespacecsw = 'SISTEMAS'
+    usercsw = 'root'
+    passwordcsw = 'ccscache'
+
+    # Caminho do driver JDBC
+    driver = 'C:/InterSystems/Cache/dev/java/lib/JDK18/cachejdbc.jar'
+
+    # Classe do driver
+    jclassname = 'com.intersys.jdbc.CacheDriver'
+
+    # URL de conexão
+    url = 'jdbc:Cache://%s:%s/%s' % (hostcsw, portcsw, namespacecsw)
+
+    # Conecta ao banco de dados
+    conn = jaydebeapi.connect(jclassname=jclassname, url=url, driver_args=[usercsw, passwordcsw, driver])
+
+    # Cria um cursor para executar as consultas
+    cur = conn.cursor()
+
+  
+    cur.execute(
         "SELECT codBarrasTag as codbarrastag, codNaturezaAtual , codEngenharia , codReduzido,(SELECT i.nome  FROM cgi.Item i WHERE i.codigo = t.codReduzido) as descricao ,numeroOP"
-        " from tcr.TagBarrasProduto t WHERE codEmpresa = 1 and codNaturezaAtual = 5 and situacao = 3", conn)
+        " from tcr.TagBarrasProduto t WHERE codEmpresa = 1 and codNaturezaAtual = 5 and situacao = 3")
+
+    # Recuperando as colunas e os dados retornados
+    columns = [i[0] for i in cur.description]
+    data = cur.fetchall()
+
+    # Transformando os dados em um DataFrame do Pandas
+    df_tags = pd.DataFrame.from_records(data, columns=columns)
+
+    # Fechando a conexão e o cursor
+    cur.close()
+    conn.close()
 
     df_tags['codNaturezaAtual'] = df_tags['codNaturezaAtual'].astype(str)
 
@@ -64,17 +95,46 @@ def FilaTags():
     conn.close()
 
 def LerEPC():
-    conn = pyodbc.connect(dsn='SISTEMAS CSW', user='root', password='ccscache')
+    # Configurações de conexão
+    hostcsw = '187.32.10.129'
+    portcsw = '1972'
+    namespacecsw = 'SISTEMAS'
+    usercsw = 'root'
+    passwordcsw = 'ccscache'
 
+    # Caminho do driver JDBC
+    driver = 'C:/InterSystems/Cache/dev/java/lib/JDK18/cachejdbc.jar'
 
-    consulta = pd.read_sql('select epc.id as epc, t.codBarrasTag as codbarrastag from tcr.SeqLeituraFase  t '
+    # Classe do driver
+    jclassname = 'com.intersys.jdbc.CacheDriver'
+
+    # URL de conexão
+    url = 'jdbc:Cache://%s:%s/%s' % (hostcsw, portcsw, namespacecsw)
+
+    # Conecta ao banco de dados
+    conn = jaydebeapi.connect(jclassname=jclassname, url=url, driver_args=[usercsw, passwordcsw, driver])
+
+    # Cria um cursor para executar as consultas
+    cur = conn.cursor()
+
+    # Executa uma consulta
+    cur.execute('select epc.id as epc, t.codBarrasTag as codbarrastag from tcr.SeqLeituraFase  t '
                            'join Tcr_Rfid.NumeroSerieTagEPC epc on epc.codTag = t.codBarrasTag '
                            'WHERE t.codEmpresa = 1 and (t.codTransacao = 3500 or t.codTransacao = 501) '
                            'and (codLote like "23%" or  codLote like "24%" or codLote like "25%" '
-                           'or codLote like "22%" )',conn)
+                           'or codLote like "22%" )')
+
+    # Recuperando as colunas e os dados retornados
+    columns = [i[0] for i in cur.description]
+    data = cur.fetchall()
+
+    # Transformando os dados em um DataFrame do Pandas
+    df = pd.DataFrame.from_records(data, columns=columns)
+
+    # Fechando a conexão e o cursor
+    cur.close()
     conn.close()
-    print(consulta)
-    return consulta
+    return df
 
 
 '''''
