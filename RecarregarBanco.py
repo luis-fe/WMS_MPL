@@ -42,7 +42,7 @@ def FilaTags():
     # Obtém o caminho absoluto do diretório atual
     diretorio_atual = os.path.dirname(os.path.abspath(__file__))
     print(diretorio_atual)
-    driver = os.path.join(diretorio_atual+ "\CacheDB.jar")
+    driver = os.path.join(diretorio_atual, "CacheDB.jar")
     print(driver)
 
 
@@ -112,7 +112,7 @@ def LerEPC():
     # Obtém o caminho absoluto do diretório atual
     diretorio_atual = os.path.dirname(os.path.abspath(__file__))
     print(diretorio_atual)
-    driver = os.path.join(diretorio_atual+ "\CacheDB.jar")
+    driver = os.path.join(diretorio_atual, "CacheDB.jar")
 
 
     # Classe do driver
@@ -146,7 +146,7 @@ def LerEPC():
     conn.close()
     return df
 
-FilaTags()
+
 
 
 
