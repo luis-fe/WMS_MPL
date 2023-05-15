@@ -1,9 +1,10 @@
 import pandas as pd
-import psycopg2
 import jaydebeapi
 import time
 from sqlalchemy import create_engine
 import datetime
+import psycopg2
+import os
 
 
 def obterHoraAtual():
@@ -38,8 +39,12 @@ def FilaTags():
     usercsw = 'root'
     passwordcsw = 'ccscache'
 
-    # Caminho do driver JDBC
-    driver = 'C:/InterSystems/Cache/dev/java/lib/JDK18/cachejdbc.jar'
+    # Obtém o caminho absoluto do diretório atual
+    diretorio_atual = os.path.dirname(os.path.abspath(__file__))
+    print(diretorio_atual)
+    driver = os.path.join(diretorio_atual+ "\CacheDB.jar")
+    print(driver)
+
 
     # Classe do driver
     jclassname = 'com.intersys.jdbc.CacheDriver'
@@ -49,11 +54,13 @@ def FilaTags():
 
     # Conecta ao banco de dados
     conn = jaydebeapi.connect(jclassname=jclassname, url=url, driver_args=[usercsw, passwordcsw, driver])
+    conn2 = psycopg2.connect(host="wmsbd.cyiuowfro4wv.sa-east-1.rds.amazonaws.com", database="wms_bd", user="wms",
+                             password="Master100")
 
     # Cria um cursor para executar as consultas
     cur = conn.cursor()
 
-  
+
     cur.execute(
         "SELECT codBarrasTag as codbarrastag, codNaturezaAtual , codEngenharia , codReduzido,(SELECT i.nome  FROM cgi.Item i WHERE i.codigo = t.codReduzido) as descricao ,numeroOP"
         " from tcr.TagBarrasProduto t WHERE codEmpresa = 1 and codNaturezaAtual = 5 and situacao = 3")
@@ -102,8 +109,11 @@ def LerEPC():
     usercsw = 'root'
     passwordcsw = 'ccscache'
 
-    # Caminho do driver JDBC
-    driver = 'C:/InterSystems/Cache/dev/java/lib/JDK18/cachejdbc.jar'
+    # Obtém o caminho absoluto do diretório atual
+    diretorio_atual = os.path.dirname(os.path.abspath(__file__))
+    print(diretorio_atual)
+    driver = os.path.join(diretorio_atual+ "\CacheDB.jar")
+
 
     # Classe do driver
     jclassname = 'com.intersys.jdbc.CacheDriver'
@@ -136,16 +146,7 @@ def LerEPC():
     conn.close()
     return df
 
-
-'''''
-print(f"O trecho de código levou {elapsed_time:.6f} segundos para ser executado")
-while True:
-    # insira aqui as instruções que deseja executar a cada intervalo de tempo
-    print("Executando instruções...")
-
-    # pausa o programa por 5 segundos
-    time.sleep(5)
-'''''
+FilaTags()
 
 
 
