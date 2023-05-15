@@ -24,3 +24,4 @@ pyodbc==4.0.39
 python-dateutil==2.8.2
 jpype1==1.4.1
 JayDeBeApi==1.2.3
+python-dotenv==1.0.0
