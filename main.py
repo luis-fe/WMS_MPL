@@ -31,6 +31,11 @@ scheduler.start()
 conn = psycopg2.connect(database=db_name, user=db_user, password=db_password, host=db_host, port= portbanco)
 cursor = conn.cursor()
 
+@app.before_first_request
+def configure_java_home():
+    java_home_path = '/usr/lib/jvm/default-jvm'
+    os.environ['JAVA_HOME'] = java_home_path
+
 
 @app.route('/')
 def home():
