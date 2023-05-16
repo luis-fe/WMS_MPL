@@ -28,9 +28,21 @@ def get_filaeposicao():
 
 @app.route('/api/Usuarios', methods=['GET'])
 def get_usuarios():
-    cursor.execute('select * from "Reposicao"."cadusuarios" c  ')
+    cursor.execute('select * from "Reposicao"."cadusuarios" c')
     usuarios = cursor.fetchall()
-    return jsonify(usuarios)
+
+    # Obtém os nomes das colunas
+    column_names = [desc[0] for desc in cursor.description]
+
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    usuarios_data = []
+    for row in usuarios:
+        usuario_dict = {}
+        for i, value in enumerate(row):
+            usuario_dict[column_names[i]] = value
+        usuarios_data.append(usuario_dict)
+
+    return jsonify(usuarios_data)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
