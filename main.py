@@ -79,6 +79,36 @@ def update_usuario(codigo):
     # Retorna uma resposta de erro se a coluna "funcao" não estiver presente nos dados
     return jsonify({'message': 'Coluna "funcao" não encontrada nos dados'}), 400
 
+
+@app.route('/api/Usuarios', methods=['POST'])
+@token_required
+def criar_usuario():
+    # Obtenha os dados do corpo da requisição
+    novo_usuario = request.get_json()
+
+    # Extraia os valores dos campos do novo usuário
+    codigo = novo_usuario.get('codigo')
+    funcao = novo_usuario.get('funcao')
+    nome = novo_usuario.get('nome')
+    senha = novo_usuario.get('senha')
+    situacao = novo_usuario.get('situacao')
+
+    # Faça a lógica para inserir o novo usuário no banco de dados
+    # (substitua com sua lógica de banco de dados)
+
+    # Exemplo: Inserindo o novo usuário em uma tabela "Usuarios"
+    # usando SQL
+    cursor.execute(
+        'INSERT INTO "Reposicao"."cadusuarios" (codigo, funcao, nome, senha, situacao) '
+        'VALUES (%s, %s, %s, %s, %s)',
+        (codigo, funcao, nome, senha, situacao)
+    )
+    conn.commit()
+
+    # Retorne uma resposta indicando o sucesso da operação
+    return jsonify({'message': 'Novo usuário criado com sucesso'}), 201
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
     cursor.close()
