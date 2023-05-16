@@ -42,28 +42,24 @@ def get_filaeposicao():
 
 # Rota protegida que requer o token fixo
 @app.route('/api/Usuarios', methods=['GET'])
+@token_required
 def get_usuarios():
-    token = request.args.get('token')
-     if token == 'a40016aabcx9':  # Verifica se o token é igual ao token fixo
-    
-        cursor.execute('select * from "Reposicao"."cadusuarios" c')
-        usuarios = cursor.fetchall()
+    cursor.execute('select * from "Reposicao"."cadusuarios" c')
+    usuarios = cursor.fetchall()
 
-        # Obtém os nomes das colunas
-        column_names = [desc[0] for desc in cursor.description]
+    # Obtém os nomes das colunas
+    column_names = [desc[0] for desc in cursor.description]
 
-        # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
-        usuarios_data = []
-        for row in usuarios:
-            usuario_dict = {}
-            for i, value in enumerate(row):
-                usuario_dict[column_names[i]] = value
-            usuarios_data.append(usuario_dict)
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    usuarios_data = []
+    for row in usuarios:
+        usuario_dict = {}
+        for i, value in enumerate(row):
+            usuario_dict[column_names[i]] = value
+        usuarios_data.append(usuario_dict)
 
-        return jsonify(usuarios_data)
-     else:
-            return jsonify({'message': 'Acesso negado'}), 401
-    
+    return jsonify(usuarios_data)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
     cursor.close()
