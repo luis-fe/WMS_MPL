@@ -59,6 +59,25 @@ def get_usuarios():
         usuarios_data.append(usuario_dict)
 
     return jsonify(usuarios_data)
+# Rota para atualizar um usuário pelo código
+@app.route('/api/Usuarios/<int:codigo>', methods=['PUT'])
+@token_required
+def update_usuario(codigo):
+    # Obtém os dados do corpo da requisição (JSON)
+    data = request.get_json()
+
+    # Verifica se a coluna "funcao" está presente nos dados recebidos
+    if 'funcao' in data:
+        # Obtém o valor da coluna "funcao"
+        nova_funcao = data['funcao']
+        cursor.execute('UPDATE "Reposicao"."cadusuarios" SET funcao=%s WHERE codigo=%s', (nova_funcao, codigo))
+        conn.commit()
+
+        # Retorna uma resposta de sucesso
+        return jsonify({'message': 'Usuário atualizado com sucesso'})
+
+    # Retorna uma resposta de erro se a coluna "funcao" não estiver presente nos dados
+    return jsonify({'message': 'Coluna "funcao" não encontrada nos dados'}), 400
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
