@@ -47,8 +47,8 @@ def get_usuarios():
 @app.route('/api/Usuarios', methods=['GET'])
 def get_usuarios():
     cursor.execute('select * from "Reposicao"."cadusuarios" c  ')
-    Filaeposicao = cursor.fetchall()
-    return jsonify(Filaeposicao)
+    Usuarios = cursor.fetchall()
+    return jsonify(Usuarios)
 
 
 if __name__ == '__main__':
