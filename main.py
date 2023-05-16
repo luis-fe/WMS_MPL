@@ -3,9 +3,6 @@ import psycopg2
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
 
-import RecarregarBanco
-
-
 
 app = Flask(__name__)
 
@@ -18,15 +15,6 @@ db_host = "wmsbd.cyiuowfro4wv.sa-east-1.rds.amazonaws.com"
 portbanco = "5432"
 
 
-
-def my_task():
-    # coloque o código que você deseja executar continuamente aqui
-    RecarregarBanco.FilaTags()
-    print('Executando tarefa...')
-    
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=my_task, trigger='interval', seconds=270)
-scheduler.start()
     
 conn = psycopg2.connect(database=db_name, user=db_user, password=db_password, host=db_host, port= portbanco)
 cursor = conn.cursor()
