@@ -25,7 +25,8 @@ def token_required(f):
 @app.route('/')
 def home():
     return render_template('index.html')
-@app.route('/api/Filaeposicao', methods=['GET'])
+@app.route('/api/FilaReposicao', methods=['GET'])
+@token_required
 def get_filaeposicao():
     cursor.execute('select * from "Reposicao"."FilaReposicaoTags" frt ')
     filaeposicao = cursor.fetchall()
