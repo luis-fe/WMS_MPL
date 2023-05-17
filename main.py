@@ -110,7 +110,7 @@ def criar_usuario():
     return jsonify({'message': 'Novo usuário criado com sucesso'}), 201
 
 # Implementação da API para verificar usuário e senha
-@app.route('/api/UsuariosSenha', methods=['POST'])
+@app.route('/api/UsuarioSenha', methods=['POST'])
 @token_required
 def check_user_password():
     # Obtém os dados do corpo da requisição (JSON)
