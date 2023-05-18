@@ -139,7 +139,7 @@ def check_user_password():
         return jsonify({"status": False,
             "message":'Usuário ou senha não existe'}), 401
     
-@app.route('/api/TagsReposicao', methods=['GET'])
+@app.route('/api/TagsReposicao/Resumo', methods=['GET'])
 @token_required
 def get_TagsReposicao():
     cursor.execute('select tr."Usuario", '
