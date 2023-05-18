@@ -35,7 +35,7 @@ def home():
 @app.route('/api/FilaReposicao', methods=['GET'])
 @token_required
 def get_filaeposicao():
-    cursor.execute('select * from "Reposicao"."FilaReposicaoTags" frt ')
+    cursor.execute('select * from "Reposicao"."FilaReposicaoTags" frt limit 10000 ')
     filaeposicao = cursor.fetchall()
     # Obtém os nomes das colunas
     column_names = [desc[0] for desc in cursor.description]
