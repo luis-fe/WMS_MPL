@@ -86,6 +86,32 @@ def criar_usuario():
     conn.commit()
     # Retorne uma resposta indicando o sucesso da operação
     return jsonify({'message': 'Novo usuário criado com sucesso'}), 201
+
+
+@app.route('/api/UsuarioSenha', methods=['POST'])
+@token_required
+def check_user_password():
+    # Obtém os dados do corpo da requisição (JSON)
+    data = request.json
+
+    # Extrai o código do usuário e a senha dos dados recebidos
+    codigo = data.get('codigo')
+    senha = data.get('senha')
+
+    # Verifica se o código do usuário e a senha foram fornecidos
+    if codigo is None or senha is None:
+        return jsonify({'message': 'Código do usuário e senha devem ser fornecidos.'}), 400
+
+    # Consulta no banco de dados para verificar se o usuário e senha correspondem
+    query = 'SELECT COUNT(*) FROM "Reposicao"."cadusuarios" WHERE codigo = %s AND senha = %s'
+    cursor.execute(query, (codigo, senha))
+    result = cursor.fetchone()[0]
+
+    # Verifica se o usuário existe e retorna a mensagem correspondente
+    if result == 1:
+        return jsonify({'message': f'Usuário {codigo} e senha VALIDADOS!'})
+    else:
+        return jsonify({'message': 'Usuário não existe.'})
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
     cursor.close()
