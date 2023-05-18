@@ -88,16 +88,9 @@ def criar_usuario():
     return jsonify({'message': 'Novo usuário criado com sucesso'}), 201
 
 
-@app.route('/api/UsuarioSenha', methods=['POST'])
+@app.route('/api/<codigo>/<senha>', methods=['GET'])
 @token_required
-def check_user_password():
-    # Obtém os dados do corpo da requisição (JSON)
-    data = request.json
-
-    # Extrai o código do usuário e a senha dos dados recebidos
-    codigo = data.get('codigo')
-    senha = data.get('senha')
-
+def check_user_password(codigo, senha):
     # Verifica se o código do usuário e a senha foram fornecidos
     if codigo is None or senha is None:
         return jsonify({'message': 'Código do usuário e senha devem ser fornecidos.'}), 400
@@ -107,11 +100,30 @@ def check_user_password():
     cursor.execute(query, (codigo, senha))
     result = cursor.fetchone()[0]
 
-    # Verifica se o usuário existe e retorna a mensagem correspondente
+    # Verifica se o usuário existe
     if result == 1:
-        return jsonify({'message': f'Usuário {codigo} e senha VALIDADOS!'})
+        # Consulta no banco de dados para obter informações adicionais do usuário
+        cursor.execute('SELECT  nome, funcao, situacao FROM "Reposicao"."cadusuarios" WHERE codigo = %s', (codigo,))
+        user_data = cursor.fetchone()
+
+        # Verifica se foram encontradas informações adicionais do usuário
+        if user_data:
+            nome, funcao, situacao = user_data
+
+            # Retorna as informações adicionais do usuário
+            return jsonify({
+                "status": True,
+                "message": "Usuário e senha VALIDADOS!",
+                "nome": nome,
+                "funcao": funcao,
+                "situacao": situacao
+            })
+        else:
+            return jsonify({'message': 'Não foi possível obter informações adicionais do usuário.'}), 500
     else:
-        return jsonify({'message': 'Usuário não existe.'})
+        return jsonify({"status": False,
+            "message":'Usuário ou senha não existe'}), 401
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
     cursor.close()
