@@ -88,9 +88,13 @@ def criar_usuario():
     return jsonify({'message': 'Novo usuário criado com sucesso'}), 201
 
 
-@app.route('/api/<codigo>/<senha>', methods=['GET'])
+@app.route('/api/UsuarioSenha', methods=['GET'])
 @token_required
-def check_user_password(codigo, senha):
+def check_user_password():
+    # Obtém o código do usuário e a senha dos parâmetros da URL
+    codigo = request.args.get('codigo')
+    senha = request.args.get('senha')
+
     # Verifica se o código do usuário e a senha foram fornecidos
     if codigo is None or senha is None:
         return jsonify({'message': 'Código do usuário e senha devem ser fornecidos.'}), 400
