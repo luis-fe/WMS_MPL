@@ -124,6 +124,26 @@ def check_user_password(codigo, senha):
         return jsonify({"status": False,
             "message":'Usuário ou senha não existe'}), 401
     
+@app.route('/api/TagsReposicao', methods=['GET'])
+@token_required
+def get_TagsReposicao():
+    cursor.execute('select tr."Usuario", '
+                   'count(tr."Codigo_Barras"), '
+                   'substring(tr."DataReposicao",1,10) as DataReposicao '
+                   'from "Reposicao"."TagsReposicao" tr '
+                   'group by "Usuario" ,substring("DataReposicao",1,10)')
+    TagReposicao = cursor.fetchall()
+    # Obtém os nomes das colunas
+    column_names = [desc[0] for desc in cursor.description]
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    TagReposicao_data = []
+    for row in TagReposicao:
+        TagReposicao_dict = {}
+        for i, value in enumerate(row):
+            TagReposicao_dict[column_names[i]] = value
+        TagReposicao_data.append(TagReposicao_dict)
+    return jsonify(TagReposicao_data)
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
     cursor.close()
