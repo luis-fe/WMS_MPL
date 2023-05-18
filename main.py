@@ -31,6 +31,7 @@ def token_required(f):
 @app.route('/')
 def home():
     return render_template('index.html')
+
 @app.route('/api/FilaReposicao', methods=['GET'])
 @token_required
 def get_filaeposicao():
@@ -44,7 +45,7 @@ def get_filaeposicao():
         filaeposicao_dict = {}
         for i, value in enumerate(row):
             filaeposicao_dict[column_names[i]] = value
-       filaeposicao_data.append(filaeposicao_dict)
+        filaeposicao_data.append(filaeposicao_dict)
     return jsonify(filaeposicao_data)
 
 
