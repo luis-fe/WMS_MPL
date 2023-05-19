@@ -180,6 +180,23 @@ def get_FilaReposicaoOP():
             FilaReposicaoOP_dict[column_name] = row[column_name]
         FilaReposicaoOP_data.append(FilaReposicaoOP_dict)
     return jsonify(FilaReposicaoOP_data)
+
+@app.route('/api/AtribuirOPRepositor', methods=['POST'])
+@token_required
+def get_AtribuirOPRepositor():
+    # Obtenha os dados do corpo da requisição
+    data = request.get_json()
+    OP = data['numeroOP']
+    Usuario = data['codigo']
+    #Verifica Se existe atribuicao
+    existe = OPfilaRepor.ConsultaSeExisteAtribuicao(OP)
+    if existe == 0:
+        # Retorna uma resposta de existencia
+        return jsonify({'message': f'OP já foi Atribuida'})
+    else:
+        OPfilaRepor.AtribuiRepositorOP(Usuario,OP)
+        # Retorna uma resposta de sucesso
+        return jsonify({'message': True})
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
