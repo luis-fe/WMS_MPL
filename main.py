@@ -200,7 +200,7 @@ def get_AtribuirOPRepositor():
     
 @app.route('/api/DetalhaOP', methods=['GET'])
 @token_required
-def DetalhaOP():
+def get_DetalhaOP():
     # Obtém o código do usuário e a senha dos parâmetros da URL
     NumeroOP = request.args.get('numeroOP')
     op = OPfilaRepor.detalhaOP(NumeroOP)
