@@ -5,6 +5,7 @@ import os
 from apscheduler.schedulers.background import BackgroundScheduler
 from functools import wraps
 import ConecaoAWSRS
+import OPfilaRepor
 
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 5000))
@@ -164,6 +165,21 @@ def get_TagsReposicao():
             TagReposicao_dict[column_names[i]] = value
         TagReposicao_data.append(TagReposicao_dict)
     return jsonify(TagReposicao_data)
+
+@app.route('/api/FilaReposicaoOP', methods=['GET'])
+@token_required
+def get_FilaReposicaoOP():
+    FilaReposicaoOP = OPfilaRepor.FilaPorOP()
+    # Obtém os nomes das colunas
+    column_names = FilaReposicaoOP.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    FilaReposicaoOP_data = []
+    for index, row in FilaReposicaoOP.iterrows():
+        FilaReposicaoOP_dict = {}
+        for column_name in column_names:
+            FilaReposicaoOP_dict[column_name] = row[column_name]
+        FilaReposicaoOP_data.append(FilaReposicaoOP_dict)
+    return jsonify(FilaReposicaoOP_data)
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
