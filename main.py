@@ -4,17 +4,13 @@ import psycopg2
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
 from functools import wraps
+import ConecaoAWSRS
 
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 5000))
 
-# Definindo o string de conexao com o banco de dados nativo
-db_name = "wms_bd"  
-db_user = "wms"
-db_password = "Master100"
-db_host = "wmsbd.cyiuowfro4wv.sa-east-1.rds.amazonaws.com"
-portbanco = "5432"
-conn = psycopg2.connect(database=db_name, user=db_user, password=db_password, host=db_host, port=portbanco)
+# Definindo  conexao com o banco de dados nativo
+conn = ConecaoAWSRS.conexao()
 cursor = conn.cursor()
 
 # Decorator para verificar o token fixo
