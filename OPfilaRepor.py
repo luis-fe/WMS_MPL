@@ -21,3 +21,27 @@ def FilaPorOP():
 
     return df_OP1
 
+def AtribuiRepositorOP(codigo, numeroOP):
+    conn = ConecaoAWSRS.conexao()
+    cursor = conn.cursor()
+    cursor.execute('update "Reposicao"."FilaReposicaoporTag" '
+                   'set "Usuario"  = %s where "numeroOp" = %s'
+                   , (codigo, numeroOP))
+    # Obter o número de linhas afetadas
+    numero_linhas_afetadas = cursor.rowcount
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return  numero_linhas_afetadas
+
+def ConsultaSeExisteAtribuicao(numeroOP):
+    conn = ConecaoAWSRS.conexao()
+    cursor = conn.cursor()
+    cursor.execute('select "numeroOp", "Usuario"  from "Reposicao"."FilaReposicaoporTag" frt  '
+                   'WHERE "numeroOp" = %s AND "Usuario" IS NULL', (numeroOP,))
+    # Obter o número de linhas afetadas
+    NumeroLInhas = cursor.rowcount
+
+    cursor.close()
+    conn.close()
+    return NumeroLInhas
