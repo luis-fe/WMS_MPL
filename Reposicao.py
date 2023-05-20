@@ -91,3 +91,42 @@ def Pesquisa_Estoque(reduzido, endereco):
         return False
     else:
         return estoque['Saldo'][0]
+def SituacaoEndereco(endereco):
+    conn = ConecaoAWSRS.conexao()
+    select = 'select * from "Reposicao"."cadEndereco" ce ' \
+             'where codendereco = %s'
+    cursor = conn.cursor()
+    cursor.execute(select, (endereco, ))
+    resultado = cursor.fetchall()
+    cursor.close()
+    if not resultado:
+        conn.close()
+        return pd.DataFrame({'Status Endereco': [False], 'Mensagem': [f'endereco {endereco} nao existe!']})
+    else:
+        saldo = Estoque_endereco(endereco)
+        if saldo == 0:
+            conn.close()
+            return pd.DataFrame({'Status Endereco': [True], 'Mensagem': [f'endereco {endereco} existe!'],
+                                 'Status do Saldo': ['Vazio']})
+        else:
+            skus = pd.read_sql('select  "CodReduzido", "Saldo"  from "Reposicao"."Estoque" e '
+                                    'where "Endereco"='+" '"+endereco+"'",conn)
+            conn.close()
+            skus['enderco'] = endereco
+            skus['Status Endereco'] = True
+            skus['Mensagem'] = f'Endereço {endereco} existe!'
+            skus['Status do Saldo']='Cheio'
+            return skus
+
+def Estoque_endereco(endereco):
+    conn = ConecaoAWSRS.conexao()
+    consultaSql = 'select "Saldo" from "Reposicao"."Estoque" e ' \
+                  'where "Endereco" = %s'
+    cursor = conn.cursor()
+    cursor.execute(consultaSql, (endereco,))
+    resultado = cursor.fetchall()
+    cursor.close()
+    if not resultado:
+        return 0
+    else:
+        return resultado[0][0]
