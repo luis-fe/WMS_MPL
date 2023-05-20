@@ -57,6 +57,10 @@ def detalhaOP(numeroOP):
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     df_op['nomeusuario_atribuido'] = df_op['nomeusuario_atribuido'].replace('', numpy.nan).fillna('-')
     conn.close()
-    return  df_op
+        if df_op.empty:
+        return pd.DataFrame({'Status': [False],'Mensagem':['OP nao Encontrada']})
+    else:
+        return  df_op
+   
 
   
