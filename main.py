@@ -6,6 +6,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from functools import wraps
 import ConecaoAWSRS
 import OPfilaRepor
+import Reposicao
 
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 5000))
@@ -213,7 +214,22 @@ def get_DetalhaOP():
         for column_name in column_names:
             op_dict[column_name] = row[column_name]
         OP_data.append(op_dict)
-    return jsonify(OP_data)    
+    return jsonify(OP_data)
+
+@app.route('/api/Enderecos', methods=['GET'])
+@token_required
+def get_enderecos():
+    enderecos= Reposicao.ObeterEnderecos()
+    # Obtém os nomes das colunas
+    column_names = enderecos.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    enderecos_data = []
+    for index, row in enderecos.iterrows():
+        enderecos_dict = {}
+        for column_name in column_names:
+            enderecos_dict[column_name] = row[column_name]
+        enderecos_data.append(enderecos_dict)
+    return jsonify(enderecos_data)
     
 
     
