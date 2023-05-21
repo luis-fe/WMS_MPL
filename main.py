@@ -249,6 +249,24 @@ def get_DetalhaEndereco():
     return jsonify(end_data)
     
 
+@app.route('/api/ApontamentoReposicao', methods=['POST'])
+@token_required
+def get_ApontaReposicao():
+    # Obtenha os dados do corpo da requisição
+    data = request.get_json()
+    codUsuario = data['codUsuario']
+    codbarra = data['codbarra']
+    endereco = data['endereco']
+    dataHora = data['dataHora']
+
+
+    #Verifica Se existe atribuicao
+    Apontamento = Reposicao.ApontarReposicao(codUsuario,codbarra, endereco, dataHora)
+    if Apontamento == False:
+        return jsonify({'message': False, 'Status': f'codigoBarras {codbarra} nao existe no Estoque'})
+    else:
+        return jsonify({'message': True, 'status':f'Salvo com Sucesso'})
+
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
