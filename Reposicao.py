@@ -1,4 +1,4 @@
-import pandas as pd
+import  pandas as pd
 import ConecaoAWSRS
 import numpy
 import time
@@ -24,6 +24,8 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
     conn = ConecaoAWSRS.conexao()
     #devolvendo o reduzido do codbarras
     reduzido, codEngenharia = Devolver_Inf_Tag(codbarras)
+    if reduzido == False:
+         return False
     #insere os dados da reposicao
     Insert = ' INSERT INTO "Reposicao"."TagsReposicao" ("Usuario","Codigo_Barras","Endereco","DataReposicao","CodReduzido","Engenharia")' \
              ' VALUES (%s,%s,%s,%s,%s,%s);'
@@ -37,13 +39,13 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
     cursor.close()
     cursor = conn.cursor()
 
-    # AQUI FAZ O UPDATE DA TAG NA FILA DAS TAGS "MANO":
+    # AQUI FAZ O UPDATE DA TAG NA FILA DAS TAGS:
     Situacao = 'Reposto'
     uptade = 'UPDATE "Reposicao"."FilaReposicaoporTag" ' \
-             'SET "Situacao"= %s ,"Usuario"= %s ' \
+             'SET "Situacao"= %s ' \
              'WHERE "codBarrasTag"= %s;'
     cursor.execute(uptade
-                   , (Situacao, codUsuario, codbarras))
+                   , (Situacao, codbarras))
     conn.commit()
     cursor.close()
 
@@ -53,18 +55,19 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
     saldo = Pesquisa_Estoque(reduzido, endereco)
     if saldo == False:
         ID = reduzido + '||' + endereco
-        estoqueInsert = 'INSERT INTO "Reposicao"."Estoque" ("CodReduzido", "Endereco", "Saldo", "ID")' \
+        estoqueInsert = 'INSERT INTO "Reposicao"."Estoque" ("codreduzido", "endereco", "Saldo", "id")' \
                         'VALUES (%s, %s, %s, %s);'
         cursor = conn.cursor()
         cursor.execute(estoqueInsert, (reduzido, endereco, 1, ID))
         conn.commit()
         cursor.close()
+        return True
     else:
         ID = reduzido + '||' + endereco
         saldo1 = saldo + 1
         estoqueUPDATE = 'UPDATE "Reposicao"."Estoque" ' \
                         'SET "Saldo" = %s ' \
-                        'WHERE "ID" = %s;'
+                        'WHERE "id" = %s;'
         cursor = conn.cursor()
         cursor.execute(estoqueUPDATE, (int(saldo1), ID))
         conn.commit()
@@ -79,13 +82,16 @@ def Devolver_Inf_Tag(codbarras):
         'where "codBarrasTag" = '+"'"+codbarras+"'", conn)
 
     conn.close()
-    return codReduzido['codReduzido'][0], codReduzido['CodEngenharia'][0]
+    if codReduzido.empty:
+        return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']})
+    else:
+        return codReduzido['codReduzido'][0], codReduzido['CodEngenharia'][0]
 
 def Pesquisa_Estoque(reduzido, endereco):
     conn = ConecaoAWSRS.conexao()
     estoque = pd.read_sql(
         'select "Saldo"  from "Reposicao"."Estoque" e '
-        'where "CodReduzido" = '+"'"+reduzido+"'"+' and "Endereco"= ' +"'"+endereco+"'", conn)
+        'where "codreduzido" = '+"'"+reduzido+"'"+' and "endereco"= ' +"'"+endereco+"'", conn)
     conn.close()
     if estoque.empty:
         return False
@@ -121,7 +127,7 @@ def SituacaoEndereco(endereco):
 def Estoque_endereco(endereco):
     conn = ConecaoAWSRS.conexao()
     consultaSql = 'select "Saldo" from "Reposicao"."Estoque" e ' \
-                  'where "Endereco" = %s'
+                  'where "endereco" = %s'
     cursor = conn.cursor()
     cursor.execute(consultaSql, (endereco,))
     resultado = cursor.fetchall()
