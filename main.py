@@ -264,6 +264,8 @@ def get_ApontaReposicao():
     Apontamento = Reposicao.ApontarReposicao(codUsuario,codbarra, endereco, dataHora)
     if Apontamento == False:
         return jsonify({'message': False, 'Status': f'codigoBarras {codbarra} nao existe no Estoque'})
+    if Apontamento == 'Reposto':
+        return jsonify({'message': False, 'Status': f'codigoBarras {codbarra} ja reposto'})
     else:
         return jsonify({'message': True, 'status':f'Salvo com Sucesso'})
 
