@@ -150,7 +150,7 @@ def check_user_password():
 @token_required
 def get_TagsReposicao():
     cursor.execute('select tr."Usuario", '
-                   'count(tr."Codigo_Barras"), '
+                   'count(tr."codbarrastag"), '
                    'substring(tr."DataReposicao",1,10) as DataReposicao '
                    'from "Reposicao"."TagsReposicao" tr '
                    'group by "Usuario" ,substring("DataReposicao",1,10)')
