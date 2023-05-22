@@ -47,7 +47,7 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         Situacao = 'Reposto'
         uptade = 'UPDATE "Reposicao"."FilaReposicaoporTag" ' \
                  'SET "Situacao"= %s ' \
-                 'WHERE "codBarrasTag"= %s;'
+                 'WHERE "codbarrasTag"= %s;'
         cursor.execute(uptade
                        , (Situacao, codbarras))
         conn.commit()
@@ -83,7 +83,7 @@ def Devolver_Inf_Tag(codbarras):
     conn = ConecaoAWSRS.conexao()
     codReduzido = pd.read_sql(
         'select "codReduzido", "CodEngenharia", "Situacao"  from "Reposicao"."FilaReposicaoporTag" ce '
-        'where "codBarrasTag" = '+"'"+codbarras+"'", conn)
+        'where "codbarrasTag" = '+"'"+codbarras+"'", conn)
     TagApontadas = pd.read_sql('select count("Codigo_Barras") as situacao from "Reposicao"."TagsReposicao" tr '
                                'where"Codigo_Barras" = '+"'"+codbarras+"'"+
                                ' group by "Codigo_Barras" ',conn)
