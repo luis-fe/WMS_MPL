@@ -2,6 +2,7 @@ import pandas as pd
 import ConecaoAWSRS
 import numpy
 
+
 def FilaPorOP():
     conn = ConecaoAWSRS.conexao()
     df_OP1 = pd.read_sql(' select "numeroop", count("numeroop")as QtdPeçs_total, "Usuario" as codusuario_atribuido  from "Reposicao"."FilaReposicaoporTag" frt ' 
