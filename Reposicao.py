@@ -31,7 +31,7 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         return 'Reposto'
     else:
         #insere os dados da reposicao
-        Insert = ' INSERT INTO "Reposicao"."TagsReposicao" ("Usuario","Codigo_Barras","Endereco","DataReposicao","CodReduzido","Engenharia")' \
+        Insert = ' INSERT INTO "Reposicao"."TagsReposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia")' \
                  ' VALUES (%s,%s,%s,%s,%s,%s);'
         cursor = conn.cursor()
         cursor.execute(Insert
@@ -84,9 +84,9 @@ def Devolver_Inf_Tag(codbarras):
     codReduzido = pd.read_sql(
         'select "codReduzido", "CodEngenharia", "Situacao"  from "Reposicao"."FilaReposicaoporTag" ce '
         'where "codbarrastag" = '+"'"+codbarras+"'", conn)
-    TagApontadas = pd.read_sql('select count("Codigo_Barras") as situacao from "Reposicao"."TagsReposicao" tr '
-                               'where"Codigo_Barras" = '+"'"+codbarras+"'"+
-                               ' group by "Codigo_Barras" ',conn)
+    TagApontadas = pd.read_sql('select count("codbarrastag") as situacao from "Reposicao"."TagsReposicao" tr '
+                               'where"codbarrastag" = '+"'"+codbarras+"'"+
+                               ' group by "codbarrastag" ',conn)
 
     conn.close()
     if codReduzido.empty:
