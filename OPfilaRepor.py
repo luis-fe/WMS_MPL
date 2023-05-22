@@ -54,7 +54,7 @@ def ConsultaSeExisteAtribuicao(numeroop):
 
 def detalhaOP(numeroop):
     conn = ConecaoAWSRS.conexao()
-    df_op = pd.read_sql('select "numeroOp" , "codbarrasTag" , epc, "Usuario" as codusuario_atribuido, "Situacao" '
+    df_op = pd.read_sql('select "numeroOp" , "codbarrastag" , epc, "Usuario" as codusuario_atribuido, "Situacao" '
                    'from "Reposicao"."FilaReposicaoporTag" frt where "numeroOp" = ' +"'"+  numeroop +"'", conn)
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     usuarios = pd.read_sql('select codigo as codusuario_atribuido , nome as nomeusuario_atribuido  from "Reposicao".cadusuarios c ',conn)
