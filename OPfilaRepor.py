@@ -4,11 +4,11 @@ import numpy
 
 def FilaPorOP():
     conn = ConecaoAWSRS.conexao()
-    df_OP1 = pd.read_sql(' select "numeroOp", count("numeroOp")as QtdPeçs_total, "Usuario" as codusuario_atribuido  from "Reposicao"."FilaReposicaoporTag" frt ' 
-                        '  group by "numeroOp", "Usuario"  ',conn)
-    df_OP_Iniciada =pd.read_sql(' select "numeroOp", count("numeroOp") as QtdPeçs_Reposto  from "Reposicao"."FilaReposicaoporTag" frt ' 
-                        '  where "Situacao" = '+ "'nao iniciada'"+ ' group by "numeroOp" ',conn)
-    df_OP1 = pd.merge(df_OP1,df_OP_Iniciada,on='numeroOp',how='left')
+    df_OP1 = pd.read_sql(' select "numeroop", count("numeroop")as QtdPeçs_total, "Usuario" as codusuario_atribuido  from "Reposicao"."FilaReposicaoporTag" frt ' 
+                        '  group by "numeroop", "Usuario"  ',conn)
+    df_OP_Iniciada =pd.read_sql(' select "numeroop", count("numeroop") as QtdPeçs_Reposto  from "Reposicao"."FilaReposicaoporTag" frt ' 
+                        '  where "Situacao" = '+ "'nao iniciada'"+ ' group by "numeroop" ',conn)
+    df_OP1 = pd.merge(df_OP1,df_OP_Iniciada,on='numeroop',how='left')
     usuarios = pd.read_sql(
         'select codigo as codusuario_atribuido , nome as nomeusuario_atribuido  from "Reposicao".cadusuarios c ', conn)
     usuarios['codusuario_atribuido'] = usuarios['codusuario_atribuido'].astype(str)
@@ -27,12 +27,12 @@ def FilaPorOP():
     df_OP1 = df_OP1.head(50)  # Retorna as 3 primeiras linhas
     return df_OP1
 
-def AtribuiRepositorOP(codigo, numeroOP):
+def AtribuiRepositorOP(codigo, numeroop):
     conn = ConecaoAWSRS.conexao()
     cursor = conn.cursor()
     cursor.execute('update "Reposicao"."FilaReposicaoporTag" '
-                   'set "Usuario"  = %s where "numeroOp" = %s'
-                   , (codigo, numeroOP))
+                   'set "Usuario"  = %s where "numeroop" = %s'
+                   , (codigo, numeroop))
     # Obter o número de linhas afetadas
     numero_linhas_afetadas = cursor.rowcount
     conn.commit()
@@ -40,11 +40,11 @@ def AtribuiRepositorOP(codigo, numeroOP):
     conn.close()
     return  numero_linhas_afetadas
 
-def ConsultaSeExisteAtribuicao(numeroOP):
+def ConsultaSeExisteAtribuicao(numeroop):
     conn = ConecaoAWSRS.conexao()
     cursor = conn.cursor()
     cursor.execute('select "numeroOp", "Usuario"  from "Reposicao"."FilaReposicaoporTag" frt  '
-                   'WHERE "numeroOp" = %s AND "Usuario" IS NULL', (numeroOP,))
+                   'WHERE "numeroOp" = %s AND "Usuario" IS NULL', (numeroop,))
     # Obter o número de linhas afetadas
     NumeroLInhas = cursor.rowcount
 
@@ -52,10 +52,10 @@ def ConsultaSeExisteAtribuicao(numeroOP):
     conn.close()
     return NumeroLInhas
 
-def detalhaOP(numeroOP):
+def detalhaOP(numeroop):
     conn = ConecaoAWSRS.conexao()
     df_op = pd.read_sql('select "numeroOp" , "codBarrasTag" , epc, "Usuario" as codusuario_atribuido, "Situacao" '
-                   'from "Reposicao"."FilaReposicaoporTag" frt where "numeroOp" = ' +"'"+  numeroOP +"'", conn)
+                   'from "Reposicao"."FilaReposicaoporTag" frt where "numeroOp" = ' +"'"+  numeroop +"'", conn)
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     usuarios = pd.read_sql('select codigo as codusuario_atribuido , nome as nomeusuario_atribuido  from "Reposicao".cadusuarios c ',conn)
     usuarios['codusuario_atribuido'] = usuarios['codusuario_atribuido'].astype(str)
