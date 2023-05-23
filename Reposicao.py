@@ -126,7 +126,7 @@ def SituacaoEndereco(endereco):
                                  'Status do Saldo': ['Vazio']})
         else:
             skus = pd.read_sql('select  "codreduzido", "Saldo"  from "Reposicao"."Estoque" e '
-                                    'where "Endereco"='+" '"+endereco+"'",conn)
+                                    'where "endereco"='+" '"+endereco+"'",conn)
             conn.close()
             skus['enderco'] = endereco
             skus['Status Endereco'] = True
