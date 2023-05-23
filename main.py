@@ -6,6 +6,7 @@ from functools import wraps
 import ConecaoAWSRS
 import OPfilaRepor
 import Reposicao
+import Silk_PesquisaTelas
 
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 5000))
