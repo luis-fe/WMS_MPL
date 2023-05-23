@@ -271,9 +271,9 @@ def get_ApontaReposicao():
     
     
    # Api para acesso do Quadro de Estamparia - Projeto wms Silk:
-@app.route('/api/Silk/ApontamentoReposicao', methods=['GET'])
+@app.route('/api/Silk/PesquisaEndereco', methods=['GET'])
 @token_required
-def get_pesquisa():
+def get_PesquisaEndereco():
         Coluna = request.args.get('Coluna')
         Operador = request.args.get('Operador')
         Nome = request.args.get('Nome')
