@@ -267,6 +267,29 @@ def get_ApontaReposicao():
         return jsonify({'message': False, 'Status': f'codigoBarras {codbarra} ja reposto'})
     else:
         return jsonify({'message': True, 'status':f'Salvo com Sucesso'})
+    
+    
+   # Api para acesso do Quadro de Estamparia - Projeto wms Silk:
+@app.route('/api/Silk/ApontamentoReposicao', methods=['GET'])
+@token_required
+def get_pesquisa():
+        Coluna = request.args.get('Coluna')
+        Operador = request.args.get('Operador')
+        Nome = request.args.get('Nome')
+
+        resultados = Silk_PesquisaTelas.PesquisaEnderecos(Coluna, Operador, Nome)
+
+        # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+        filaeposicao_data = []
+        for row in resultados:
+            filaeposicao_dict = {}
+            for i, value in enumerate(row):
+                filaeposicao_dict[
+                    f'col{i + 1}'] = value  # Substitua 'col{i+1}' pelo nome da coluna correspondente, se disponível
+            filaeposicao_data.append(filaeposicao_dict)
+
+        return jsonify(filaeposicao_data)
+
 
     
 if __name__ == '__main__':
