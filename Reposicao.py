@@ -2,6 +2,7 @@ import pandas as pd
 import ConecaoAWSRS
 import numpy
 import time
+
 # CLASSE COM AS FUNÇOES PARA INTERAGIR COM AS APIS DE ACESSO DA "REPOSICAO"
 
 def ObeterEnderecos():
