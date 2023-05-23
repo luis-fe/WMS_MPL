@@ -44,8 +44,8 @@ def AtribuiRepositorOP(codigo, numeroop):
 def ConsultaSeExisteAtribuicao(numeroop):
     conn = ConecaoAWSRS.conexao()
     cursor = conn.cursor()
-    cursor.execute('select "numeroOp", "Usuario"  from "Reposicao"."FilaReposicaoporTag" frt  '
-                   'WHERE "numeroOp" = %s AND "Usuario" IS NULL', (numeroop,))
+    cursor.execute('select "numeroop", "Usuario"  from "Reposicao"."FilaReposicaoporTag" frt  '
+                   'WHERE "numeroop" = %s AND "Usuario" IS NULL', (numeroop,))
     # Obter o número de linhas afetadas
     NumeroLInhas = cursor.rowcount
 
