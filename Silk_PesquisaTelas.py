@@ -15,7 +15,7 @@ def PesquisaEnderecos (Coluna,Operador,Nome):
 
     cursor.close()
     conn.close()
-
+    print('Consulta Retornada com Suecesso')
     return resultados
 
 
