@@ -290,6 +290,20 @@ def get_PesquisaEndereco():
             filaeposicao_data.append(filaeposicao_dict)
 
         return jsonify(filaeposicao_data)
+    
+@app.route('/api/Silk/deleteTelas', methods=['DELETE'])
+@token_required
+def delete_endpoint():
+    endereco = request.args.get('endereco')
+    produto = request.args.get('produto')
+
+    # Chama a função Funcao_Deletar para realizar a exclusão
+    resultado = Silk_PesquisaTelas.Funcao_Deletar(endereco, produto)
+
+    if resultado:
+        return 'Deleção realizada com sucesso', 200
+    else:
+        return 'Falha ao deletar', 500
 
 
     
