@@ -72,7 +72,7 @@ def detalhaOP(numeroop):
 def detalhaOPxSKU(numeroop):
     conn = ConecaoAWSRS.conexao()
     df_op = pd.read_sql('select "numeroop", "codReduzido", "CodEngenharia", "Cor", "tamanho", "descricao" '
-                   'from "Reposicao"."FilaReposicaoporTag" frt where "numeroop" = ' +"'"+  numeroop +"'"+ '
+                   'from "Reposicao"."FilaReposicaoporTag" frt where "numeroop" = ' +"'"+  numeroop +"'"+
                    'group by "numeroop", "codReduzido","descricao" , "Cor","tamanho","CodEngenharia"', conn)
     conn.close()
     if df_op.empty:
