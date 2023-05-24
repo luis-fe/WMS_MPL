@@ -354,6 +354,19 @@ def insert_endpoint():
         return f'produto{produto} endereço{endereco}, Inserção realizada com sucesso', 200
     else:
         return 'Falha ao inserir', 500
+@app.route('/api/Silk2/IserirTelas', methods=['PUT'])
+@token_required
+def insert_endpoint():
+    produto = request.args.get('produto')
+    endereco = request.args.get('endereco')
+
+    # Chama a função Funcao_Inserir para realizar a inserção
+    resultado = Silk_PesquisaNew.Funcao_Inserir(produto, endereco)
+
+    if resultado == True:
+        return f'produto{produto} endereço{endereco}, Inserção realizada com sucesso', 200
+    else:
+        return 'Falha ao inserir', 500
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
