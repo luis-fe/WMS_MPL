@@ -43,7 +43,7 @@ def Funcao_Inserir (Referencia, Endereco):
 
     cursor =conn.cursor()
 
-    sql= 'INSERT INTO "SchemaProdutividadeMPL"."Enderecamento" ("Referencia", "Endereco") VALUES (%s, %s)'
+    sql= 'INSERT INTO "silkMPL"."enderecamento" ("Referencia", "Endereco") VALUES (%s, %s)'
     VALORES = (Referencia, Endereco,)
     cursor.execute(sql, VALORES)
     conn.commit()
