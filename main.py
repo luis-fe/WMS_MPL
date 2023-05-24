@@ -314,7 +314,7 @@ def get_PesquisaEndereco():
         Operador = request.args.get('Operador')
         Nome = request.args.get('Nome')
 
-        resultados = Silk_PesquisaTelas.PesquisaEnderecos(Coluna, Operador, Nome)
+        resultados = Silk_PesquisaNew.PesquisaEnderecos(Coluna, Operador, Nome)
 
         # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
         filaeposicao_data = []
@@ -334,7 +334,7 @@ def delete_endpoint():
     produto = request.args.get('produto')
 
     # Chama a função Funcao_Deletar para realizar a exclusão
-    resultado = Silk_PesquisaTelas.Funcao_Deletar(endereco, produto)
+    resultado = Silk_PesquisaNew.Funcao_Deletar(endereco, produto)
 
     if resultado == True:
         return f'endereco: {endereco}, produto {produto}  EXCLUIDOS NO CADASTRO DE SILK', 200
@@ -348,20 +348,6 @@ def insert_endpoint():
     endereco = request.args.get('endereco')
 
     # Chama a função Funcao_Inserir para realizar a inserção
-    resultado = Silk_PesquisaTelas.Funcao_Inserir(produto, endereco)
-
-    if resultado == True:
-        return f'produto{produto} endereço{endereco}, Inserção realizada com sucesso', 200
-    else:
-        return 'Falha ao inserir', 500
-    
-@app.route('/api/Silk2/IserirTelas', methods=['PUT'])
-@token_required
-def insert_endpoint2():
-    produto = request.args.get('produto')
-    endereco = request.args.get('endereco')
-
-    # Chama a função Funcao_Inserir para realizar a inserção
     resultado = Silk_PesquisaNew.Funcao_Inserir(produto, endereco)
 
     if resultado == True:
@@ -369,6 +355,7 @@ def insert_endpoint2():
     else:
         return 'Falha ao inserir', 500
     
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
     cursor.close()
