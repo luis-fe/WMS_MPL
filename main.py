@@ -300,7 +300,7 @@ def delete_endpoint():
     # Chama a função Funcao_Deletar para realizar a exclusão
     resultado = Silk_PesquisaTelas.Funcao_Deletar(endereco, produto)
 
-    if resultado:
+    if resultado == True:
         return 'Deleção realizada com sucesso', 200
     else:
         return 'Falha ao deletar', 500
