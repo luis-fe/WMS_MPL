@@ -7,6 +7,7 @@ import ConecaoAWSRS
 import OPfilaRepor
 import Reposicao
 import Silk_PesquisaTelas
+import Silk_PesquisaNew
 
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 5000))
