@@ -15,32 +15,31 @@ def PesquisaEnderecos (Coluna,Operador,Nome):
 
     cursor.close()
     conn.close()
-    print('Consulta Retornada com Suecesso')
+    print('REALIZADO CONSULTA DE ENDEREÇO DAS TELAS DE SILK')
     return resultados
 
 
-resultados = PesquisaEnderecos("Referencia", "=", '45005')
-print(resultados)
+
 
 
 def Funcao_Deletar (Endereco,Produto):
 
-    conn = psycopg2.connect(host="localhost", database="postgres", user="postgres", password="master100")
-
+    conn = ConecaoAWSRS.conexao()
     cursor =conn.cursor()
 
-    sql= 'DELETE FROM "SchemaProdutividadeMPL"."Enderecamento" where "Endereco" = %s and "Referencia" = %s  '
+    sql= 'DELETE FROM "silkMPL"."enderecamento" where "Endereco" = %s and "Referencia" = %s  '
     VALORES = (Endereco, Produto,)
     cursor.execute(sql, VALORES)
     conn.commit()
     cursor.close()
 
     conn.close()
-#Funcao_Deletar_Tamanhos("12")
+    print('REALIZADO DELETE DE ENDEREÇO DO SILK NO CADASTRO')
+    return True
 
 def Funcao_Inserir (Referencia, Endereco):
 
-    conn =psycopg2.connect(host="localhost",database="postgres",user="postgres",password="master100")
+    conn = ConecaoAWSRS.conexao()
 
     cursor =conn.cursor()
 
@@ -51,8 +50,5 @@ def Funcao_Inserir (Referencia, Endereco):
     cursor.close()
 
     conn.close()
-    # return Funcao_Inserir
-
-
-
-#Funcao_InserirTamanhos(2, "Calça Legging", "Calça", "Ativo", "15/05/2023", "joao.ferreira")
+    print('REALIZADO NOVA INSERÇÃO DE ENDEREÇO DO SILK NO CADASTRO')
+    return True
