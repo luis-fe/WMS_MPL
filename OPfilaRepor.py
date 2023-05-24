@@ -23,7 +23,7 @@ def FilaPorOP():
     df_OP1['% Reposto'] = df_OP1['% Reposto'] * 100
     df_OP1['% Reposto'] = df_OP1['% Reposto'].round(2)
     # Clasificando o Dataframe para analise
-    df_OP1 = df_OP1.sort_values(by='qtdpeçs_total', ascending=False, ignore_index=True)  # escolher como deseja classificar
+    df_OP1 = df_OP1.sort_values(by='qtdpeçs_arepor', ascending=False, ignore_index=True)  # escolher como deseja classificar
     df_OP1["Situacao"] = df_OP1.apply(lambda row: 'Iniciada'  if row['qtdpeçs_reposto'] >0 else 'Nao Iniciada', axis=1)
     df_OP1['codusuario_atribuido'] = df_OP1['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     df_OP1['nomeusuario_atribuido'] = df_OP1['nomeusuario_atribuido'].replace('', numpy.nan).fillna('-')
