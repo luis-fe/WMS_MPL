@@ -301,7 +301,7 @@ def delete_endpoint():
     resultado = Silk_PesquisaTelas.Funcao_Deletar(endereco, produto)
 
     if resultado == True:
-        return 'Deleção realizada com sucesso', 200
+        return f'endereco: {endereco}, produto {produto}  DELETETADOS NO CADASTRO DE SILK', 200
     else:
         return 'Falha ao deletar', 500
 
