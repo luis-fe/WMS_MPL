@@ -7,8 +7,8 @@ def FilaPorOP():
     conn = ConecaoAWSRS.conexao()
     df_OP1 = pd.read_sql(' select "numeroop", "totalop" as qtdpeçs_total, "Usuario" as codusuario_atribuido  from "Reposicao"."FilaReposicaoporTag" frt ' 
                         '  group by "numeroop", "Usuario", "totalop"  ',conn)
-    df_OP_Iniciada =pd.read_sql(' select "numeroop", count("numeroop") as QtdPeçs_Reposto  from "Reposicao"."FilaReposicaoporTag" frt ' 
-                        '  where "Situacao" = '+ "'nao iniciada'"+ ' group by "numeroop" ',conn)
+    df_OP_Iniciada =pd.read_sql(' select "numeroop", count("numeroop") as qtdpeçs_reposto  from "Reposicao"."TagsReposicao" frt ' 
+                        ' group by "numeroop" ',conn)
     df_OP1 = pd.merge(df_OP1,df_OP_Iniciada,on='numeroop',how='left')
     usuarios = pd.read_sql(
         'select codigo as codusuario_atribuido , nome as nomeusuario_atribuido  from "Reposicao".cadusuarios c ', conn)
