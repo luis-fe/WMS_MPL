@@ -348,7 +348,7 @@ def insert_endpoint():
     endereco = request.args.get('endereco')
 
     # Chama a função Funcao_Inserir para realizar a inserção
-    resultado = Silk_PesquisaNew.Funcao_Inserir(produto, endereco)
+    resultado = Silk_PesquisaTelas.Funcao_Inserir(produto, endereco)
 
     if resultado == True:
         return f'produto{produto} endereço{endereco}, Inserção realizada com sucesso', 200
