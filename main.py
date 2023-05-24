@@ -308,14 +308,14 @@ def delete_endpoint():
 @app.route('/api/Silk/IserirTelas', methods=['PUT'])
 @token_required
 def insert_endpoint():
-    referencia = request.args.get('referencia')
+    produto = request.args.get('produto')
     endereco = request.args.get('endereco')
 
     # Chama a função Funcao_Inserir para realizar a inserção
-    resultado = Silk_PesquisaTelas.Funcao_Inserir(referencia, endereco)
+    resultado = Silk_PesquisaTelas.Funcao_Inserir(produto, endereco)
 
     if resultado == True:
-        return f'produto{referencia} endereço{endereco}, Inserção realizada com sucesso', 200
+        return f'produto{produto} endereço{endereco}, Inserção realizada com sucesso', 200
     else:
         return 'Falha ao inserir', 500
     
