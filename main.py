@@ -354,6 +354,7 @@ def insert_endpoint():
         return f'produto{produto} endereço{endereco}, Inserção realizada com sucesso', 200
     else:
         return 'Falha ao inserir', 500
+    
 @app.route('/api/Silk2/IserirTelas', methods=['PUT'])
 @token_required
 def insert_endpoint():
