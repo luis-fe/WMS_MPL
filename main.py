@@ -357,7 +357,7 @@ def insert_endpoint():
     
 @app.route('/api/Silk2/IserirTelas', methods=['PUT'])
 @token_required
-def insert_endpoint():
+def insert_endpoint2():
     produto = request.args.get('produto')
     endereco = request.args.get('endereco')
 
