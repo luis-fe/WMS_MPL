@@ -5,7 +5,7 @@ import numpy
 
 def FilaPorOP():
     conn = ConecaoAWSRS.conexao()
-    df_OP1 = pd.read_sql(' select "numeroop", "totalop" as qtdpeçs_total, "Usuario" as codusuario_atribuido, count("numeroop") as qtdpeçs_aRepor  from "Reposicao"."FilaReposicaoporTag" frt ' 
+    df_OP1 = pd.read_sql(' select "numeroop", "totalop" as qtdpeçs_total, "Usuario" as codusuario_atribuido, count("numeroop") as qtdpeçs_arepor  from "Reposicao"."FilaReposicaoporTag" frt ' 
                         '  group by "numeroop", "Usuario", "totalop"  ',conn)
     df_OP_Iniciada =pd.read_sql(' select "numeroop", count("numeroop") as qtdpeçs_reposto  from "Reposicao"."TagsReposicao" frt ' 
                         ' group by "numeroop" ',conn)
@@ -16,10 +16,10 @@ def FilaPorOP():
     df_OP1 = pd.merge(df_OP1, usuarios, on='codusuario_atribuido', how='left')
     df_OP1['qtdpeçs_reposto'] = df_OP1['qtdpeçs_reposto'].replace('', numpy.nan).fillna('0')
     df_OP1['qtdpeçs_total'] = df_OP1['qtdpeçs_total'].replace('', numpy.nan).fillna('0')
-    df_OP1['qtdpeçs_aRepor'] = df_OP1['qtdpeçs_aRepor'].replace('', numpy.nan).fillna('0')
+    df_OP1['qtdpeçs_aRepor'] = df_OP1['qtdpeçs_arepor'].replace('', numpy.nan).fillna('0')
     df_OP1['qtdpeçs_total'] = df_OP1['qtdpeçs_total'].astype(int)
     df_OP1['qtdpeçs_reposto'] = df_OP1['qtdpeçs_reposto'].astype(int)
-    df_OP1['% Reposto'] = 1 - numpy.divide(df_OP1['qtdpeçs_aRepor'],df_OP1['qtdpeçs_total'])
+    df_OP1['% Reposto'] = 1 - numpy.divide(df_OP1['qtdpeçs_arepor'],df_OP1['qtdpeçs_total'])
     df_OP1['% Reposto'] = df_OP1['% Reposto'].round(2)*100
     # Clasificando o Dataframe para analise
     df_OP1 = df_OP1.sort_values(by='qtdpeçs_total', ascending=False, ignore_index=True)  # escolher como deseja classificar
