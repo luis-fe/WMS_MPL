@@ -84,11 +84,17 @@ def update_usuario(codigo):
     if 'funcao' in data:
         # Obtém o valor da coluna "funcao"
         nova_funcao = data['funcao']
-        novo_nome = data['nome']
         cursor.execute('UPDATE "Reposicao"."cadusuarios" SET funcao=%s WHERE codigo=%s', (nova_funcao, codigo))
         conn.commit()
         # Retorna uma resposta de sucesso
         return jsonify({'message': f'Funcao do Usuário {codigo} atualizado com sucesso'})
+     if 'nome' in data:
+        # Obtém o valor da coluna "funcao"
+        novo_nome = data['nome']
+        cursor.execute('UPDATE "Reposicao"."cadusuarios" SET nome=%s WHERE codigo=%s', (novo_nome, codigo))
+        conn.commit()
+        # Retorna uma resposta de sucesso
+        return jsonify({'message': f'Nome do Usuário {codigo} atualizado com sucesso'})
     # Retorna uma resposta de erro se a coluna "funcao" não estiver presente nos dados
     return jsonify({'message': 'Coluna "funcao" ou "nome" não encontrada nos dados'}), 400
 
