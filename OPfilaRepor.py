@@ -5,8 +5,8 @@ import numpy
 
 def FilaPorOP():
     conn = ConecaoAWSRS.conexao()
-    df_OP1 = pd.read_sql(' select "numeroop", count("numeroop")as QtdPeçs_total, "Usuario" as codusuario_atribuido  from "Reposicao"."FilaReposicaoporTag" frt ' 
-                        '  group by "numeroop", "Usuario"  ',conn)
+    df_OP1 = pd.read_sql(' select "numeroop", "totalop" as qtdpeçs_total, "Usuario" as codusuario_atribuido  from "Reposicao"."FilaReposicaoporTag" frt ' 
+                        '  group by "numeroop", "Usuario", "totalop"  ',conn)
     df_OP_Iniciada =pd.read_sql(' select "numeroop", count("numeroop") as QtdPeçs_Reposto  from "Reposicao"."FilaReposicaoporTag" frt ' 
                         '  where "Situacao" = '+ "'nao iniciada'"+ ' group by "numeroop" ',conn)
     df_OP1 = pd.merge(df_OP1,df_OP_Iniciada,on='numeroop',how='left')
@@ -15,11 +15,12 @@ def FilaPorOP():
     usuarios['codusuario_atribuido'] = usuarios['codusuario_atribuido'].astype(str)
     df_OP1 = pd.merge(df_OP1, usuarios, on='codusuario_atribuido', how='left')
     df_OP1['qtdpeçs_reposto'] = df_OP1['qtdpeçs_reposto'].replace('', numpy.nan).fillna('0')
+    df_OP1['qtdpeçs_total'] = df_OP1['qtdpeçs_total'].replace('', numpy.nan).fillna('0')
     df_OP1['qtdpeçs_total'] = df_OP1['qtdpeçs_total'].astype(int)
     df_OP1['qtdpeçs_reposto'] = df_OP1['qtdpeçs_reposto'].astype(int)
     df_OP1['% Reposto'] = numpy.divide(df_OP1['qtdpeçs_reposto'],df_OP1['qtdpeçs_total'])
     # Clasificando o Dataframe para analise
-    df_OP1 = df_OP1.sort_values(by='qtdpeçs_total', ascending=False, ignore_index=True)  # escolher como deseja classificar
+    df_OP1 = df_OP1.sort_values(by='% Reposto', ascending=False, ignore_index=True)  # escolher como deseja classificar
     df_OP1["Situacao"] = df_OP1.apply(lambda row: 'Iniciada'  if row['qtdpeçs_reposto'] >0 else 'Nao Iniciada', axis=1)
     df_OP1['codusuario_atribuido'] = df_OP1['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     df_OP1['nomeusuario_atribuido'] = df_OP1['nomeusuario_atribuido'].replace('', numpy.nan).fillna('-')
