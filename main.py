@@ -66,21 +66,31 @@ def get_usuarios():
 
 
 # Rota para atualizar um usuário pelo código
-@app.route('/api/Usuarios/<int:codigo>', methods=['PUT'])
+@app.route('/api/Usuarios/<int:codigo>', methods=['POST'])
 @token_required
 def update_usuario(codigo):
     # Obtém os dados do corpo da requisição (JSON)
     data = request.get_json()
     # Verifica se a coluna "funcao" está presente nos dados recebidos
+    if 'funcao' in data and 'nome' in data:
+        # Obtém o valor da coluna "funcao"
+        nova_funcao = data['funcao']
+        novo_nome = data['nome']
+        cursor.execute('UPDATE "Reposicao"."cadusuarios" SET funcao=%s, nome=%s WHERE codigo=%s', (nova_funcao, novo_nome, codigo))
+        conn.commit()
+        # Retorna uma resposta de sucesso
+        return jsonify({'message': f'Funcao e nome do Usuário {codigo} atualizado com sucesso'})
+    
     if 'funcao' in data:
         # Obtém o valor da coluna "funcao"
         nova_funcao = data['funcao']
+        novo_nome = data['nome']
         cursor.execute('UPDATE "Reposicao"."cadusuarios" SET funcao=%s WHERE codigo=%s', (nova_funcao, codigo))
         conn.commit()
         # Retorna uma resposta de sucesso
-        return jsonify({'message': 'Usuário atualizado com sucesso'})
+        return jsonify({'message': f'Funcao do Usuário {codigo} atualizado com sucesso'})
     # Retorna uma resposta de erro se a coluna "funcao" não estiver presente nos dados
-    return jsonify({'message': 'Coluna "funcao" não encontrada nos dados'}), 400
+    return jsonify({'message': 'Coluna "funcao" ou "nome" não encontrada nos dados'}), 400
 
 @app.route('/api/Usuarios', methods=['POST'])
 @token_required
