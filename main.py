@@ -301,11 +301,23 @@ def delete_endpoint():
     resultado = Silk_PesquisaTelas.Funcao_Deletar(endereco, produto)
 
     if resultado == True:
-        return f'endereco: {endereco}, produto {produto}  DELETETADOS NO CADASTRO DE SILK', 200
+        return f'endereco: {endereco}, produto {produto}  EXCLUIDOS NO CADASTRO DE SILK', 200
     else:
         return 'Falha ao deletar', 500
 
+@app.route('/api/Silk/IserirTelas', methods=['PUT'])
+@token_required
+def insert_endpoint():
+    referencia = request.args.get('referencia')
+    endereco = request.args.get('endereco')
 
+    # Chama a função Funcao_Inserir para realizar a inserção
+    resultado = Silk_PesquisaTelas.Funcao_Inserir(referencia, endereco)
+
+    if resultado == True:
+        return f'produto{referencia} endereço{endereco}, Inserção realizada com sucesso', 200
+    else:
+        return 'Falha ao inserir', 500
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
