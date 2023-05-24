@@ -3,7 +3,7 @@ import ConecaoAWSRS
 import ConexaoPostgreRailway
 
 def PesquisaEnderecos (Coluna,Operador,Nome):
-    conn = ConecaoPostgreRailway.conexao()
+    conn = ConexaoPostgreRailway.conexao()
 
     consulta = f'select "Referencia", "Endereco" from "enderecamento"  WHERE "{Coluna}" {Operador} %s'
     valor = (Nome,)
@@ -24,7 +24,7 @@ def PesquisaEnderecos (Coluna,Operador,Nome):
 
 def Funcao_Deletar (Endereco,Produto):
 
-    conn = ConecaoPostgreRailway.conexao()
+    conn = ConexaoPostgreRailway.conexao()
     cursor =conn.cursor()
 
     sql= 'DELETE FROM "enderecamento" where "Endereco" = %s and "Referencia" = %s  '
@@ -39,7 +39,7 @@ def Funcao_Deletar (Endereco,Produto):
 
 def Funcao_Inserir (Referencia, Endereco):
 
-    conn = ConecaoPostgreRailway.conexao()
+    conn = ConexaoPostgreRailway.conexao()
 
     cursor =conn.cursor()
 
