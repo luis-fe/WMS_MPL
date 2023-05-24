@@ -1,6 +1,6 @@
 import psycopg2
 import ConecaoAWSRS
-import ConecaoPostgreRailway
+import ConexaoPostgreRailway
 
 def PesquisaEnderecos (Coluna,Operador,Nome):
     conn = ConecaoPostgreRailway.conexao()
