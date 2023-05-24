@@ -16,6 +16,7 @@ def FilaPorOP():
     df_OP1 = pd.merge(df_OP1, usuarios, on='codusuario_atribuido', how='left')
     df_OP1['qtdpeçs_reposto'] = df_OP1['qtdpeçs_reposto'].replace('', numpy.nan).fillna('0')
     df_OP1['qtdpeçs_total'] = df_OP1['qtdpeçs_total'].replace('', numpy.nan).fillna('0')
+    df_OP1['qtdpeçs_aRepor'] = df_OP1['qtdpeçs_aRepor'].replace('', numpy.nan).fillna('0')
     df_OP1['qtdpeçs_total'] = df_OP1['qtdpeçs_total'].astype(int)
     df_OP1['qtdpeçs_reposto'] = df_OP1['qtdpeçs_reposto'].astype(int)
     df_OP1['% Reposto'] = 1 - numpy.divide(df_OP1['qtdpeçs_aRepor'],df_OP1['qtdpeçs_total'])
