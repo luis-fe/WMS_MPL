@@ -88,7 +88,7 @@ def update_usuario(codigo):
         conn.commit()
         # Retorna uma resposta de sucesso
         return jsonify({'message': f'Funcao do Usuário {codigo} atualizado com sucesso'})
-     if 'nome' in data:
+    if 'nome' in data:
         # Obtém o valor da coluna "funcao"
         novo_nome = data['nome']
         cursor.execute('UPDATE "Reposicao"."cadusuarios" SET nome=%s WHERE codigo=%s', (novo_nome, codigo))
