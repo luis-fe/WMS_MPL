@@ -48,7 +48,6 @@ def get_usuarios():
         usuarios_data.append(usuario_dict)
 
     return jsonify({
-        'column_names': column_names,
         'usuarios_data': usuarios_data
     })
 
