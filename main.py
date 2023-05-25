@@ -9,6 +9,7 @@ import Reposicao
 import Silk_PesquisaTelas
 import Silk_PesquisaNew
 import UsuariosAWSRS
+import UsuariosRailway
 
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 5000))
@@ -48,7 +49,26 @@ def get_usuarios():
         usuarios_data.append(usuario_dict)
 
     return jsonify({
-        'usuarios_data': usuarios_data
+        usuarios_data
+    })
+
+# Rota Rayway
+@app.route('/api/Usuarios', methods=['GET'])
+@token_required
+def get_usuarios():
+    usuarios = UsuariosRailway.PesquisarUsuarios()
+
+    # Obtém os nomes das colunas
+    column_names = ['codigo', 'nome', 'funcao', 'situacao']
+
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    usuarios_data = []
+    for row in usuarios:
+        usuario_dict = dict(zip(column_names, row))
+        usuarios_data.append(usuario_dict)
+
+    return jsonify({
+        usuarios_data
     })
 
 
