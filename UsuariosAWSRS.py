@@ -42,3 +42,13 @@ def InserirUsuario(novo_nome, nova_funcao, nova_situacao, senha, codigo):
     cursor.close()
     conn.close()
     return True
+
+def ConsultaUsuarioSenha(codigo, senha):
+    conn = ConecaoAWSRS.conexao()
+    cursor = conn.cursor()
+    # Consulta no banco de dados para verificar se o usuário e senha correspondem
+    query = 'SELECT COUNT(*) FROM "Reposicao"."cadusuarios" WHERE codigo = %s AND senha = %s'
+    cursor.execute(query, (codigo, senha))
+    result = cursor.fetchone()[0]
+
+    return result
