@@ -55,7 +55,7 @@ def get_usuarios():
 # Rota Rayway
 @app.route('/apiRailwaiy/Usuarios', methods=['GET'])
 @token_required
-def get_usuarios():
+def get_usuariosRailway():
     usuarios = UsuariosRailway.PesquisarUsuarios()
 
     # Obtém os nomes das colunas
