@@ -53,7 +53,7 @@ def get_usuarios():
     })
 
 # Rota Rayway
-@app.route('/api/Usuarios', methods=['GET'])
+@app.route('/apiRailwaiy/Usuarios', methods=['GET'])
 @token_required
 def get_usuarios():
     usuarios = UsuariosRailway.PesquisarUsuarios()
