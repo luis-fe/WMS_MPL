@@ -92,9 +92,9 @@ def criar_usuario():
     if codigo != 0:
         return jsonify({'message': f'Novo usuário:{codigo}- {nome} ja existe'}), 201
     else:
-    UsuariosRailway.InserirUsuario(codigo, funcao, nome, senha, situacao)
-    # Retorne uma resposta indicando o sucesso da operação
-    return jsonify({'message': f'Novo usuário:{codigo}- {nome} criado com sucesso'}), 201
+        UsuariosRailway.InserirUsuario(codigo, funcao, nome, senha, situacao)
+        # Retorne uma resposta indicando o sucesso da operação
+        return jsonify({'message': f'Novo usuário:{codigo}- {nome} criado com sucesso'}), 201
 
 #Rota com parametros para check do Usuario e Senha
 @app.route('/api/UsuarioSenha', methods=['GET'])
