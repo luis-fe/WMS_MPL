@@ -39,7 +39,7 @@ def get_usuarios():
     usuarios = UsuariosAWSRS.PesquisarUsuarios()
 
     # Obtém os nomes das colunas
-    column_names = usuarios.keys()  # Obter os nomes das colunas
+    column_names = ['codigo', 'nome', 'funcao', 'situacao']
 
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
     usuarios_data = []
