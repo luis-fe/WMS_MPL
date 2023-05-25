@@ -76,7 +76,7 @@ def update_usuario(codigo):
     return jsonify({'message': f'Dados do Usuário {codigo} - {nome_novo} atualizado com sucesso'})
 
 
-@app.route('/api/Usuarios', methods=['POST'])
+@app.route('/api/Usuarios', methods=['PUT'])
 @token_required
 def criar_usuario():
     # Obtenha os dados do corpo da requisição
@@ -87,18 +87,10 @@ def criar_usuario():
     nome = novo_usuario.get('nome')
     senha = novo_usuario.get('senha')
     situacao = novo_usuario.get('situacao')
-    # Faça a lógica para inserir o novo usuário no banco de dados
-    # (substitua com sua lógica de banco de dados)
-    # Exemplo: Inserindo o novo usuário em uma tabela "Usuarios"
-    # usando SQL
-    cursor.execute(
-        'INSERT INTO "Reposicao"."cadusuarios" (codigo, funcao, nome, senha, situacao) '
-        'VALUES (%s, %s, %s, %s, %s)',
-        (codigo, funcao, nome, senha, situacao)
-    )
-    conn.commit()
+    # inserir o novo usuário no banco de dados
+    UsuariosRailway.InserirUsuario(codigo, funcao, nome, senha, situacao)
     # Retorne uma resposta indicando o sucesso da operação
-    return jsonify({'message': 'Novo usuário criado com sucesso'}), 201
+    return jsonify({'message': f'Novo usuário:{codigo}- {nome} criado com sucesso'}), 201
 
 #Rota com parametros para check do Usuario e Senha
 @app.route('/api/UsuarioSenha', methods=['GET'])
