@@ -88,7 +88,7 @@ def criar_usuario():
     senha = novo_usuario.get('senha')
     situacao = novo_usuario.get('situacao')
     # inserir o novo usuário no banco de dados
-    codigo, nome = UsuariosRailway.PesquisarUsuariosCodigo(codigo)
+    codigo, nome, funcao = UsuariosRailway.PesquisarUsuariosCodigo(codigo)
     if codigo != 0:
         return jsonify({'message': f'Novo usuário:{codigo}- {nome} ja existe'}), 201
     else:
