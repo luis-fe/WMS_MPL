@@ -109,9 +109,7 @@ def check_user_password():
         return jsonify({'message': 'Código do usuário e senha devem ser fornecidos.'}), 400
 
     # Consulta no banco de dados para verificar se o usuário e senha correspondem
-    query = 'SELECT COUNT(*) FROM "Reposicao"."cadusuarios" WHERE codigo = %s AND senha = %s'
-    cursor.execute(query, (codigo, senha))
-    result = cursor.fetchone()[0]
+    result = UsuariosRailway.ConsultaUsuarioSenha(codigo, senha)
     
     # Verifica se o usuário existe
     if result == 1:
