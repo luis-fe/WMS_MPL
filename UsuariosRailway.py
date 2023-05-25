@@ -21,7 +21,7 @@ def PesquisarUsuariosCodigo(codigo):
     cursor.close()
     conn.close()
     if not usuarios:
-        return 0, False, False
+        return 0, 0, 0
     else:
         return usuarios[0][1],usuarios[0][2],usuarios[0][3]
 
