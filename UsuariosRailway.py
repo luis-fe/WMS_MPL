@@ -20,7 +20,10 @@ def PesquisarUsuariosCodigo(codigo):
     usuarios = cursor.fetchall()
     cursor.close()
     conn.close()
-    return usuarios[0][1],usuarios[0][2],usuarios[0][3]
+    if not usuarios:
+        return 0, False, False
+    else:
+        return usuarios[0][1],usuarios[0][2],usuarios[0][3]
 
 
 
