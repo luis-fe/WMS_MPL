@@ -8,6 +8,7 @@ import OPfilaRepor
 import Reposicao
 import Silk_PesquisaTelas
 import Silk_PesquisaNew
+import UsuariosAWSRS
 
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 5000))
@@ -35,10 +36,9 @@ def home():
 @app.route('/api/Usuarios', methods=['GET'])
 @token_required
 def get_usuarios():
-    cursor.execute('select codigo, nome, funcao, situacao from "Reposicao"."cadusuarios" c')
-    usuarios = cursor.fetchall()
+    usuarios = UsuariosAWSRS.PesquisarUsuarios()
     # Obtém os nomes das colunas
-    column_names = [desc[0] for desc in cursor.description]
+    column_names = [desc[0] for desc in usuarios.description]
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
     usuarios_data = []
     for row in usuarios:
