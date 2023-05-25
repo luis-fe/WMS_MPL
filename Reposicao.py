@@ -54,29 +54,7 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         conn.commit()
         cursor.close()
 
-        #AQUI IREMOS ATUALIZART O ESTOQUE DO ENDEREÇO E CODIGO DE BARRAS
-            #1.1 procuro se ja existe o ID codReduzido||endereco
-
-        saldo = Pesquisa_Estoque(reduzido, endereco)
-        if saldo == False:
-            ID = reduzido + '||' + endereco
-            estoqueInsert = 'INSERT INTO "Reposicao"."Estoque" ("codreduzido", "endereco", "Saldo", "id")' \
-                            'VALUES (%s, %s, %s, %s);'
-            cursor = conn.cursor()
-            cursor.execute(estoqueInsert, (reduzido, endereco, 1, ID))
-            conn.commit()
-            cursor.close()
-            return True
-        else:
-            ID = reduzido + '||' + endereco
-            saldo1 = saldo + 1
-            estoqueUPDATE = 'UPDATE "Reposicao"."Estoque" ' \
-                            'SET "Saldo" = %s ' \
-                            'WHERE "id" = %s;'
-            cursor = conn.cursor()
-            cursor.execute(estoqueUPDATE, (int(saldo1), ID))
-            conn.commit()
-            cursor.close()
+       
         conn.close()
         return  numero_linhas_afetadas
 
