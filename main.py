@@ -37,8 +37,10 @@ def home():
 @token_required
 def get_usuarios():
     usuarios = UsuariosAWSRS.PesquisarUsuarios()
+
     # Obtém os nomes das colunas
-    column_names = [desc[0] for desc in usuarios.description]
+    column_names = usuarios.keys()  # Obter os nomes das colunas
+
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
     usuarios_data = []
     for row in usuarios:
@@ -46,7 +48,12 @@ def get_usuarios():
         for i, value in enumerate(row):
             usuario_dict[column_names[i]] = value
         usuarios_data.append(usuario_dict)
-    return jsonify(usuarios_data)
+
+    # Retorna o resultado como JSON, incluindo os nomes das colunas
+    return jsonify({
+        'column_names': column_names,
+        'usuarios_data': usuarios_data
+    })
 
 
 # Rota para atualizar um usuário pelo código
