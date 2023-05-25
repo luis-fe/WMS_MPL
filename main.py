@@ -48,9 +48,7 @@ def get_usuarios():
         usuario_dict = dict(zip(column_names, row))
         usuarios_data.append(usuario_dict)
 
-    return jsonify({
-        usuarios_data
-    })
+    return jsonify(usuarios_data)
 
 # Rota Rayway
 @app.route('/apiRailwaiy/Usuarios', methods=['GET'])
@@ -67,9 +65,7 @@ def get_usuariosRailway():
         usuario_dict = dict(zip(column_names, row))
         usuarios_data.append(usuario_dict)
 
-    return jsonify({
-        usuarios_data
-    })
+    return jsonify(usuarios_data)
 
 
 # Rota para atualizar um usuário pelo código
