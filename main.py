@@ -44,12 +44,9 @@ def get_usuarios():
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
     usuarios_data = []
     for row in usuarios:
-        usuario_dict = {}
-        for i, value in enumerate(row):
-            usuario_dict[column_names[i]] = value
+        usuario_dict = dict(zip(column_names, row))
         usuarios_data.append(usuario_dict)
 
-    # Retorna o resultado como JSON, incluindo os nomes das colunas
     return jsonify({
         'column_names': column_names,
         'usuarios_data': usuarios_data
