@@ -37,23 +37,6 @@ def home():
 @app.route('/api/Usuarios', methods=['GET'])
 @token_required
 def get_usuarios():
-    usuarios = UsuariosAWSRS.PesquisarUsuarios()
-
-    # Obtém os nomes das colunas
-    column_names = ['codigo', 'nome', 'funcao', 'situacao']
-
-    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
-    usuarios_data = []
-    for row in usuarios:
-        usuario_dict = dict(zip(column_names, row))
-        usuarios_data.append(usuario_dict)
-
-    return jsonify(usuarios_data)
-
-# Rota Rayway
-@app.route('/apiRailwaiy/Usuarios', methods=['GET'])
-@token_required
-def get_usuariosRailway():
     usuarios = UsuariosRailway.PesquisarUsuarios()
 
     # Obtém os nomes das colunas
