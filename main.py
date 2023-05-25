@@ -58,31 +58,23 @@ def update_usuario(codigo):
     # Obtém os dados do corpo da requisição (JSON)
     data = request.get_json()
     # Verifica se a coluna "funcao" está presente nos dados recebidos
-    if 'funcao' in data and 'nome' in data:
-        # Obtém o valor da coluna "funcao"
-        nova_funcao = data['funcao']
-        novo_nome = data['nome']
-        cursor.execute('UPDATE "Reposicao"."cadusuarios" SET funcao=%s, nome=%s WHERE codigo=%s', (nova_funcao, novo_nome, codigo))
-        conn.commit()
-        # Retorna uma resposta de sucesso
-        return jsonify({'message': f'Funcao e nome do Usuário {codigo} atualizado com sucesso'})
-    
+    nome_ant, funcao_ant, situacao_ant = UsuariosRailway.PesquisarUsuariosCodigo(codigo)
     if 'funcao' in data:
-        # Obtém o valor da coluna "funcao"
         nova_funcao = data['funcao']
-        cursor.execute('UPDATE "Reposicao"."cadusuarios" SET funcao=%s WHERE codigo=%s', (nova_funcao, codigo))
-        conn.commit()
-        # Retorna uma resposta de sucesso
-        return jsonify({'message': f'Funcao do Usuário {codigo} atualizado com sucesso'})
+    else:
+        nova_funcao = funcao_ant
     if 'nome' in data:
-        # Obtém o valor da coluna "funcao"
-        novo_nome = data['nome']
-        cursor.execute('UPDATE "Reposicao"."cadusuarios" SET nome=%s WHERE codigo=%s', (novo_nome, codigo))
-        conn.commit()
-        # Retorna uma resposta de sucesso
-        return jsonify({'message': f'Nome do Usuário {codigo} atualizado com sucesso'})
-    # Retorna uma resposta de erro se a coluna "funcao" não estiver presente nos dados
-    return jsonify({'message': 'Coluna "funcao" ou "nome" não encontrada nos dados'}), 400
+        nome_novo = data['nome']
+    else:
+        nome_novo = nome_ant
+    if 'situacao' in data:
+        situacao_novo = data['situacao']
+    else:
+        situacao_novo = situacao_ant
+    UsuariosRailway.AtualizarInformacoes(nome_novo, nova_funcao, situacao_novo, codigo)    
+
+    return jsonify({'message': f'Dados do Usuário {codigo} - {nome_novo} atualizado com sucesso'})
+
 
 @app.route('/api/Usuarios', methods=['POST'])
 @token_required
