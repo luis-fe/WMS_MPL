@@ -31,23 +31,6 @@ def token_required(f):
 def home():
     return render_template('index.html')
 
-@app.route('/api/FilaReposicao', methods=['GET'])
-@token_required
-def get_filaeposicao():
-    cursor.execute('select * from "Reposicao"."FilaReposicaoporTag" frt limit 10000 ')
-    filaeposicao = cursor.fetchall()
-    # Obtém os nomes das colunas
-    column_names = [desc[0] for desc in cursor.description]
-    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
-    filaeposicao_data = []
-    for row in filaeposicao:
-        filaeposicao_dict = {}
-        for i, value in enumerate(row):
-            filaeposicao_dict[column_names[i]] = value
-        filaeposicao_data.append(filaeposicao_dict)
-    return jsonify(filaeposicao_data)
-
-
 # Rota protegida que requer o token fixo para trazer os Usuarios Cadastrados
 @app.route('/api/Usuarios', methods=['GET'])
 @token_required
