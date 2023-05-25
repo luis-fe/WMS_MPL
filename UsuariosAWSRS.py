@@ -33,3 +33,12 @@ def AtualizarInformacoes(novo_nome, nova_funcao, nova_situacao,  codigo):
     conn.close()
     return novo_nome
 
+def InserirUsuario(novo_nome, nova_funcao, nova_situacao, senha, codigo):
+    conn = ConecaoAWSRS.conexao()
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO "Reposicao"."cadusuarios" (codigo, funcao, nome, senha, situacao) '
+                   'VALUES (%s, %s, %s, %s, %s)',(novo_nome,nova_funcao,nova_situacao, senha, codigo))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return True
