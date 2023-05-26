@@ -262,7 +262,7 @@ def get_ApontaReposicao():
 
 
     #Verifica Se existe atribuicao
-    Apontamento = Reposicao.ApontarReposicao(codUsuario,codbarra, endereco, dataHora)
+    Apontamento = ReposicaoRailway.ApontarReposicao(codUsuario,codbarra, endereco, dataHora)
     if Apontamento == False:
         return jsonify({'message': False, 'Status': f'codigoBarras {codbarra} nao existe no Estoque'})
     if Apontamento == 'Reposto':
