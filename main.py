@@ -10,7 +10,7 @@ import Silk_PesquisaNew
 import UsuariosAWSRS
 import UsuariosRailway
 import OPfilaReporRailway
-import ReposicaoRailway
+import Reposicao
 
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 5000))
@@ -219,7 +219,7 @@ def get_DetalhaOPxSKU():
 @app.route('/api/Enderecos', methods=['GET'])
 @token_required
 def get_enderecos():
-    enderecos= ReposicaoRailway.ObeterEnderecos()
+    enderecos= Reposicao.ObeterEnderecos()
     # Obtém os nomes das colunas
     column_names = enderecos.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
@@ -236,7 +236,7 @@ def get_enderecos():
 def get_DetalhaEndereco():
     # Obtém o código do endereco e a senha dos parâmetros da URL
     Endereco = request.args.get('Endereco')
-    Endereco_det = ReposicaoRailway.SituacaoEndereco(Endereco)
+    Endereco_det = Reposicao.SituacaoEndereco(Endereco)
     # Obtém os nomes das colunas
     column_names = Endereco_det.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
@@ -261,7 +261,7 @@ def get_ApontaReposicao():
 
 
     #Verifica Se existe atribuicao
-    Apontamento = ReposicaoRailway.ApontarReposicao(codUsuario,codbarra, endereco, dataHora)
+    Apontamento = Reposicao.ApontarReposicao(codUsuario,codbarra, endereco, dataHora)
     if Apontamento == False:
         return jsonify({'message': False, 'Status': f'codigoBarras {codbarra} nao existe no Estoque'})
     if Apontamento == 'Reposto':
