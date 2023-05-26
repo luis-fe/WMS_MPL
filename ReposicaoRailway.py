@@ -89,3 +89,40 @@ def Pesquisa_Estoque(reduzido, endereco):
         return False
     else:
         return estoque['Saldo'][0]
+    
+    
+def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
+    conn = ConexaoPostgreRailway.conexao()
+    #devolvendo o reduzido do codbarras
+    reduzido, codEngenharia = Devolver_Inf_Tag(codbarras)
+    if reduzido == False:
+         return False
+    if reduzido == 'Reposto':
+        return 'Reposto'
+    else:
+        #insere os dados da reposicao
+        Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia")' \
+                 ' VALUES (%s,%s,%s,%s,%s,%s);'
+        cursor = conn.cursor()
+        cursor.execute(Insert
+                       , (codUsuario, codbarras, endereco,dataHora,reduzido,codEngenharia))
+
+        # Obter o número de linhas afetadas
+        numero_linhas_afetadas = cursor.rowcount
+        conn.commit()
+        cursor.close()
+        cursor = conn.cursor()
+
+        # AQUI FAZ O UPDATE DA TAG NA FILA DAS TAGS:
+        Situacao = 'Reposto'
+        uptade = 'UPDATE "Reposicao"."filareposicaoporTag" ' \
+                 'SET "Situacao"= %s ' \
+                 'WHERE "codbarrastag"= %s;'
+        cursor.execute(uptade
+                       , (Situacao, codbarras))
+        conn.commit()
+        cursor.close()
+
+       
+        conn.close()
+        return  numero_linhas_afetadas
