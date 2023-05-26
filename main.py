@@ -5,7 +5,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from functools import wraps
 import ConecaoAWSRS
 import OPfilaRepor
-import Reposicao
 import Silk_PesquisaTelas
 import Silk_PesquisaNew
 import UsuariosAWSRS
