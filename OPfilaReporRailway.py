@@ -43,3 +43,19 @@ def FilaPorOP():
     # Limitar o número de linhas usando head()
     df_OP1 = df_OP1.head(50)  # Retorna as 3 primeiras linhas
     return df_OP1
+
+def detalhaOP(numeroop):
+    conn = ConexaoPostgreRailway.conexao()
+    df_op = pd.read_sql('select "numeroop" , "codbarrastag" , epc, "Usuario" as codusuario_atribuido, "Situacao", "codReduzido" '
+                   'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' +"'"+  numeroop +"'", conn)
+    df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
+    usuarios = pd.read_sql('select codigo as codusuario_atribuido , nome as nomeusuario_atribuido  from "Reposicao".cadusuarios c ',conn)
+    usuarios['codusuario_atribuido'] = usuarios['codusuario_atribuido'].astype(str)
+    df_op = pd.merge(df_op,usuarios,on='codusuario_atribuido',how='left')
+    df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
+    df_op['nomeusuario_atribuido'] = df_op['nomeusuario_atribuido'].replace('', numpy.nan).fillna('-')
+    conn.close()
+    if df_op.empty:
+        return pd.DataFrame({'Status': [False],'Mensagem':['OP nao Encontrada']})
+    else:
+        return  df_op
