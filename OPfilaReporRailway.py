@@ -71,3 +71,16 @@ def ConsultaSeExisteAtribuicao(numeroop):
     cursor.close()
     conn.close()
     return NumeroLInhas
+
+def AtribuiRepositorOP(codigo, numeroop):
+    conn = ConexaoPostgreRailway.conexao()
+    cursor = conn.cursor()
+    cursor.execute('update "Reposicao"."filareposicaoportag" '
+                   'set "Usuario"  = %s where "numeroop" = %s'
+                   , (codigo, numeroop))
+    # Obter o número de linhas afetadas
+    numero_linhas_afetadas = cursor.rowcount
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return  numero_linhas_afetadas
