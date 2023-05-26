@@ -59,3 +59,15 @@ def detalhaOP(numeroop):
         return pd.DataFrame({'Status': [False],'Mensagem':['OP nao Encontrada']})
     else:
         return  df_op
+    
+def ConsultaSeExisteAtribuicao(numeroop):
+    conn = ConexaoPostgreRailway.conexao()
+    cursor = conn.cursor()
+    cursor.execute('select "numeroop", "Usuario"  from "Reposicao"."filareposicaoportag" frt  '
+                   'WHERE "numeroop" = %s AND "Usuario" IS NULL', (numeroop,))
+    # Obter o número de linhas afetadas
+    NumeroLInhas = cursor.rowcount
+
+    cursor.close()
+    conn.close()
+    return NumeroLInhas
