@@ -1,4 +1,6 @@
 import ConexaoPostgreRailway
+import pandas as pd
+import numpy
 
 def ProdutividadeRepositores():
     conn = ConexaoPostgreRailway.conexao()
