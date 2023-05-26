@@ -1,3 +1,5 @@
+import ConexaoPostgreRailway
+
 def ProdutividadeRepositores():
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
