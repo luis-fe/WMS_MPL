@@ -153,7 +153,7 @@ def get_TagsReposicao():
 @app.route('/api/FilaReposicaoOP', methods=['GET'])
 @token_required
 def get_FilaReposicaoOP():
-    FilaReposicaoOP = OPfilaRepor.FilaPorOP()
+    FilaReposicaoOP = OPfilaReporRailway.FilaPorOP()
     # Obtém os nomes das colunas
     column_names = FilaReposicaoOP.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
