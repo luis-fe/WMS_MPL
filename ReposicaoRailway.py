@@ -112,18 +112,5 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         numero_linhas_afetadas = cursor.rowcount
         conn.commit()
         cursor.close()
-        cursor = conn.cursor()
-
-        # AQUI FAZ O UPDATE DA TAG NA FILA DAS TAGS:
-        Situacao = 'Reposto'
-        uptade = 'UPDATE "Reposicao"."filareposicaoportag" ' \
-                 'SET "Situacao"= %s ' \
-                 'WHERE "codbarrastag"= %s;'
-        cursor.execute(uptade
-                       , (Situacao, codbarras))
-        conn.commit()
-        cursor.close()
-
-       
-        conn.close()
+     
         return  numero_linhas_afetadas
