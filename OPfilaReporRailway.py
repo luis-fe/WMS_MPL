@@ -83,4 +83,13 @@ def AtribuiRepositorOP(codigo, numeroop):
     conn.commit()
     cursor.close()
     
-
+def detalhaOPxSKU(numeroop):
+    conn = ConexaoPostgreRailway.conexao()
+    df_op = pd.read_sql('select "numeroop", "codReduzido", "CodEngenharia", "Cor", "tamanho", "descricao" '
+                   'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' +"'"+  numeroop +"'"+
+                   'group by "numeroop", "codReduzido","descricao" , "Cor","tamanho","CodEngenharia"', conn)
+    conn.close()
+    if df_op.empty:
+        return pd.DataFrame({'Status': [False],'Mensagem':['OP nao Encontrada']})
+    else:
+        return  df_op
