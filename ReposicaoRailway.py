@@ -67,7 +67,7 @@ def Devolver_Inf_Tag(codbarras):
     codReduzido = pd.read_sql(
         'select "codReduzido", "CodEngenharia", "Situacao"  from "Reposicao"."filareposicaoportag" ce '
         'where "codbarrastag" = '+"'"+codbarras+"'", conn)
-    TagApontadas = pd.read_sql('select count("codbarrastag") as situacao from "Reposicao"."TagsReposicao" tr '
+    TagApontadas = pd.read_sql('select count("codbarrastag") as situacao from "Reposicao"."tagsreposicao" tr '
                                'where"codbarrastag" = '+"'"+codbarras+"'"+
                                ' group by "codbarrastag" ',conn)
 
