@@ -61,3 +61,31 @@ def Estoque_endereco(endereco):
         return 0
     else:
         return resultado[0][0]
+    
+def Devolver_Inf_Tag(codbarras):
+    conn = ConexaoPostgreRailway.conexao()
+    codReduzido = pd.read_sql(
+        'select "codReduzido", "CodEngenharia", "Situacao"  from "Reposicao"."filareposicaoporTag" ce '
+        'where "codbarrastag" = '+"'"+codbarras+"'", conn)
+    TagApontadas = pd.read_sql('select count("codbarrastag") as situacao from "Reposicao"."TagsReposicao" tr '
+                               'where"codbarrastag" = '+"'"+codbarras+"'"+
+                               ' group by "codbarrastag" ',conn)
+
+    conn.close()
+    if codReduzido.empty:
+        return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']})
+    if codReduzido["Situacao"][0]=='Reposto':
+        return 'Reposto', pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']})
+    else:
+        return codReduzido['codReduzido'][0], codReduzido['CodEngenharia'][0]
+
+def Pesquisa_Estoque(reduzido, endereco):
+    conn = ConexaoPostgreRailway.conexao()
+    estoque = pd.read_sql(
+        'select "Saldo"  from "Reposicao"."estoque" e '
+        'where "codreduzido" = '+"'"+reduzido+"'"+' and "endereco"= ' +"'"+endereco+"'", conn)
+    conn.close()
+    if estoque.empty:
+        return False
+    else:
+        return estoque['Saldo'][0]
