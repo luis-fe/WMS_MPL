@@ -114,11 +114,11 @@ def check_user_password():
     # Verifica se o usuário existe
     if result == 1:
         # Consulta no banco de dados para obter informações adicionais do usuário
-        cursor.execute('SELECT  nome, funcao, situacao FROM "Reposicao"."cadusuarios" WHERE codigo = %s', (codigo,))
-        user_data = cursor.fetchone()
+        
+        nome, funcao, situacao = UsuariosRailway.PesquisarUsuariosCodigo(codigo)
 
         # Verifica se foram encontradas informações adicionais do usuário
-        if user_data:
+        if nome != 0:
             nome, funcao, situacao = user_data
 
             # Retorna as informações adicionais do usuário
