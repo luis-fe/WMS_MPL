@@ -112,5 +112,5 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         numero_linhas_afetadas = cursor.rowcount
         conn.commit()
         cursor.close()
-     
+        print('teste')
         return  numero_linhas_afetadas
