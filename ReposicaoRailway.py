@@ -65,7 +65,7 @@ def Estoque_endereco(endereco):
 def Devolver_Inf_Tag(codbarras):
     conn = ConexaoPostgreRailway.conexao()
     codReduzido = pd.read_sql(
-        'select "codReduzido", "CodEngenharia", "Situacao"  from "Reposicao"."filareposicaoporTag" ce '
+        'select "codReduzido", "CodEngenharia", "Situacao"  from "Reposicao"."filareposicaoportag" ce '
         'where "codbarrastag" = '+"'"+codbarras+"'", conn)
     TagApontadas = pd.read_sql('select count("codbarrastag") as situacao from "Reposicao"."TagsReposicao" tr '
                                'where"codbarrastag" = '+"'"+codbarras+"'"+
