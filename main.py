@@ -140,7 +140,7 @@ def get_TagsReposicao():
     cursor.execute('select tr."Usuario", '
                    'count(tr."codbarrastag"), '
                    'substring(tr."DataReposicao",1,10) as DataReposicao '
-                   'from "Reposicao"."TagsReposicao" tr '
+                   'from "Reposicao"."tagsreposicao" tr '
                    'group by "Usuario" ,substring("DataReposicao",1,10)')
     TagReposicao = cursor.fetchall()
     # Obtém os nomes das colunas
