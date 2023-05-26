@@ -173,7 +173,7 @@ def get_AtribuirOPRepositor():
     OP = data['numeroOP']
     Usuario = data['codigo']
     #Verifica Se existe atribuicao
-    existe = OPfilaRepor.ConsultaSeExisteAtribuicao(OP)
+    existe = OPfilaReporRailway.ConsultaSeExisteAtribuicao(OP)
     if existe == 0:
         # Retorna uma resposta de existencia
         return jsonify({'message': f'OP já foi Atribuida'})
