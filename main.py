@@ -119,8 +119,7 @@ def check_user_password():
 
         # Verifica se foram encontradas informações adicionais do usuário
         if nome != 0:
-            nome, funcao, situacao = user_data
-
+         
             # Retorna as informações adicionais do usuário
             return jsonify({
                 "status": True,
