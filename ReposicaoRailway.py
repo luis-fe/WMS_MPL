@@ -8,13 +8,13 @@ import time
 def ObeterEnderecos():
     conn = ConexaoPostgreRaiway.conexao()
     endercos = pd.read_sql(
-        ' select * from "Reposicao"."cadEndereco" ce   ', conn)
+        ' select * from "Reposicao"."cadendereco" ce   ', conn)
     return endercos
 
 def PesquisaEndereco(endereco):
     conn = ConexaoPostgreRaiway.conexao()
     endercos = pd.read_sql(
-        ' select * from "Reposicao"."cadEndereco" ce  where "codendereco"= '+"'"+endereco+"'", conn)
+        ' select * from "Reposicao"."cadendereco" ce  where "codendereco"= '+"'"+endereco+"'", conn)
     if endercos.empty:
         return pd.DataFrame({'Status': [False], 'Mensagem': [f'endereco {endereco} não cadastrado']})
 
@@ -85,9 +85,10 @@ def Pesquisa_Estoque(reduzido, endereco):
         return False
     else:
         return estoque['Saldo'][0]
+    
 def SituacaoEndereco(endereco):
     conn = ConexaoPostgreRaiway.conexao()
-    select = 'select * from "Reposicao"."cadEndereco" ce ' \
+    select = 'select * from "Reposicao"."cadendereco" ce ' \
              'where codendereco = %s'
     cursor = conn.cursor()
     cursor.execute(select, (endereco, ))
