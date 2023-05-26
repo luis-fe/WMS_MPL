@@ -137,21 +137,16 @@ def check_user_password():
 @app.route('/api/TagsReposicao/Resumo', methods=['GET'])
 @token_required
 def get_TagsReposicao():
-    cursor.execute('select tr."Usuario", '
-                   'count(tr."codbarrastag"), '
-                   'substring(tr."DataReposicao",1,10) as DataReposicao '
-                   'from "Reposicao"."tagsreposicao" tr '
-                   'group by "Usuario" ,substring("DataReposicao",1,10)')
-    TagReposicao = cursor.fetchall()
-    # Obtém os nomes das colunas
-    column_names = [desc[0] for desc in cursor.description]
+    TagReposicao = OPfilaReporRailway.ProdutividadeRepositores()
+   
+     # Obtém os nomes das colunas
+    column_names = ['Usuario', 'Qtde', 'DataReposicao']
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
     TagReposicao_data = []
     for row in TagReposicao:
-        TagReposicao_dict = {}
-        for i, value in enumerate(row):
-            TagReposicao_dict[column_names[i]] = value
+        TagReposicao_dict = dict(zip(column_names, row))
         TagReposicao_data.append(TagReposicao_dict)
+
     return jsonify(TagReposicao_data)
 
 @app.route('/api/FilaReposicaoOP', methods=['GET'])
