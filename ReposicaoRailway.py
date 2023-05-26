@@ -116,7 +116,7 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
 
         # AQUI FAZ O UPDATE DA TAG NA FILA DAS TAGS:
         Situacao = 'Reposto'
-        uptade = 'UPDATE "Reposicao"."filareposicaoporTag" ' \
+        uptade = 'UPDATE "Reposicao"."filareposicaoportag" ' \
                  'SET "Situacao"= %s ' \
                  'WHERE "codbarrastag"= %s;'
         cursor.execute(uptade
