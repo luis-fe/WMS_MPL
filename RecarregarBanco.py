@@ -93,3 +93,4 @@ def LerEPC():
     print(consulta)
     return consulta
 
+FilaTags()
