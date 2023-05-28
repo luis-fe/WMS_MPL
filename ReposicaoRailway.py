@@ -66,7 +66,7 @@ def Estoque_endereco(endereco):
 def Devolver_Inf_Tag(codbarras):
     conn = ConexaoPostgreRailway.conexao()
     codReduzido = pd.read_sql(
-        'select "codReduzido", "CodEngenharia","Situacao", "Usuario"  from "Reposicao"."filareposicaoportag" ce '
+        'select "codReduzido", "CodEngenharia","Situacao", "Usuario","numeroop"  from "Reposicao"."filareposicaoportag" ce '
         'where "codbarrastag" = '+"'"+codbarras+"'", conn)
     TagApontadas = pd.read_sql('select count("codbarrastag") as situacao from "Reposicao"."tagsreposicao" tr '
                                'where"codbarrastag" = '+"'"+codbarras+"'"+
@@ -74,11 +74,11 @@ def Devolver_Inf_Tag(codbarras):
 
     conn.close()
     if codReduzido.empty:
-        return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}),False
+        return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}),False,False
     if codReduzido["Situacao"][0]=='Reposto':
-        return 'Reposto', pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}),'Reposto'
+        return 'Reposto', pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}),'Reposto','Reposto'
     else:
-        return codReduzido['codReduzido'][0], codReduzido['CodEngenharia'][0],codReduzido['Usuario'][0]
+        return codReduzido['codReduzido'][0], codReduzido['CodEngenharia'][0],codReduzido['Usuario'][0],codReduzido['numeroop'][0]
 
 def Pesquisa_Estoque(reduzido, endereco):
     conn = ConexaoPostgreRailway.conexao()
@@ -95,18 +95,18 @@ def Pesquisa_Estoque(reduzido, endereco):
 def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
     conn = ConexaoPostgreRailway.conexao()
     #devolvendo o reduzido do codbarras
-    reduzido, codEngenharia, usuario = Devolver_Inf_Tag(codbarras)
+    reduzido, codEngenharia, usuario, numeroop = Devolver_Inf_Tag(codbarras)
     if reduzido == False:
          return False
     if reduzido == 'Reposto':
         return 'Reposto'
     else:
         #insere os dados da reposicao
-        Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia")' \
-                 ' VALUES (%s,%s,%s,%s,%s,%s);'
+        Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia","numeroop")' \
+                 ' VALUES (%s,%s,%s,%s,%s,%s,,%s);'
         cursor = conn.cursor()
         cursor.execute(Insert
-                       , (usuario, codbarras, endereco,dataHora,reduzido,codEngenharia))
+                       , (usuario, codbarras, endereco,dataHora,reduzido,codEngenharia,numeroop))
 
         # Obter o número de linhas afetadas
         numero_linhas_afetadas = cursor.rowcount

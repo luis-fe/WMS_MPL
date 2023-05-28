@@ -46,20 +46,33 @@ def FilaPorOP():
 
 def detalhaOP(numeroop):
     conn = ConexaoPostgreRailway.conexao()
-    df_op = pd.read_sql('select "numeroop" , "codbarrastag" , epc, "Usuario" as codusuario_atribuido, "Situacao", "codReduzido" '
+    df_op = pd.read_sql('select "numeroop" , "codbarrastag" as codbarrastag1  , epc, "Usuario" as codusuario_atribuido, "Situacao", "codReduzido" '
                    'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' +"'"+  numeroop +"'", conn)
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
+    df_op2 = pd.read_sql(
+        'select "numeroop" , "codbarrastag" AS codbarrastag2   '
+        'from "Reposicao"."tagsreposicao" frt where "numeroop" = ' + "'" + numeroop + "'", conn)
+
+    df_op = pd.merge(df_op, df_op2, on='numeroop', how='left')
+    df_op['codbarrastag2'] = df_op['codbarrastag2'].replace('', numpy.nan).fillna('-')
+    df_op['codbarrastag'] = df_op.apply(lambda row: row['codbarrastag2']  if row['codbarrastag2'] != '-' else row['codbarrastag1'], axis=1)
+    df_op['SituacaoTag'] = df_op.apply(
+        lambda row: 'bipada' if row['codbarrastag2'] != '-' else 'Não Iniciada', axis=1)
+    # Remover coluna 'B'
+    df_op = df_op.drop('codbarrastag2', axis=1)
+    df_op = df_op.drop('codbarrastag1', axis=1)
     usuarios = pd.read_sql('select codigo as codusuario_atribuido , nome as nomeusuario_atribuido  from "Reposicao".cadusuarios c ',conn)
     usuarios['codusuario_atribuido'] = usuarios['codusuario_atribuido'].astype(str)
     df_op = pd.merge(df_op,usuarios,on='codusuario_atribuido',how='left')
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     df_op['nomeusuario_atribuido'] = df_op['nomeusuario_atribuido'].replace('', numpy.nan).fillna('-')
     conn.close()
+    df_op.to_csv('verficiar.csv')
     if df_op.empty:
         return pd.DataFrame({'Status': [False],'Mensagem':['OP nao Encontrada']})
     else:
         return  df_op
-    
+detalhaOP('119194-001')
 def ConsultaSeExisteAtribuicao(numeroop):
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
@@ -88,8 +101,10 @@ def detalhaOPxSKU(numeroop):
     df_op = pd.read_sql('select "numeroop", "codReduzido", "CodEngenharia", "Cor", "tamanho", "descricao" '
                    'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' +"'"+  numeroop +"'"+
                    'group by "numeroop", "codReduzido","descricao" , "Cor","tamanho","CodEngenharia"', conn)
+
     conn.close()
     if df_op.empty:
         return pd.DataFrame({'Status': [False],'Mensagem':['OP nao Encontrada']})
     else:
         return  df_op
+

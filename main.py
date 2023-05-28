@@ -21,6 +21,7 @@ port = int(os.environ.get('PORT', 5000))
 conn = ConecaoAWSRS.conexao()
 cursor = conn.cursor()
 
+
 # Decorator para verificar o token fixo
 def token_required(f):
     @wraps(f)

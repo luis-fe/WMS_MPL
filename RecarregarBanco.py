@@ -63,6 +63,7 @@ def FilaTags():
                             , 'numeroop':'numeroop'}, inplace=True)
     conn2.close()
     df_tags = df_tags.loc[df_tags['sti_aterior'].isnull()]
+    df_tags.drop_duplicates(subset='codbarrastag', inplace=True)
     # Excluir a coluna 'B' inplace
     df_tags.drop('sti_aterior', axis=1, inplace=True)
     df_tags['epc'] = df_tags['epc'].str.extract('\|\|(.*)').squeeze()
