@@ -90,8 +90,7 @@ def Pesquisa_Estoque(reduzido, endereco):
         return False
     else:
         return estoque['Saldo'][0]
-    
-    
+
 def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
     conn = ConexaoPostgreRailway.conexao()
     #devolvendo o reduzido do codbarras

@@ -262,7 +262,6 @@ def get_ApontaReposicao():
     endereco = data['endereco']
     dataHora = data['dataHora']
 
-
     #Verifica Se existe atribuicao
     Apontamento = ReposicaoRailway.ApontarReposicao(codUsuario,codbarra, endereco, dataHora)
     if Apontamento == False:

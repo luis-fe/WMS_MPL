@@ -72,7 +72,7 @@ def detalhaOP(numeroop):
         return pd.DataFrame({'Status': [False],'Mensagem':['OP nao Encontrada']})
     else:
         return  df_op
-detalhaOP('119194-001')
+
 def ConsultaSeExisteAtribuicao(numeroop):
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
