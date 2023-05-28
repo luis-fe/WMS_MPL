@@ -17,6 +17,7 @@ def FilaPorOP():
     conn = ConexaoPostgreRailway.conexao()
     df_OP1 = pd.read_sql(' select "numeroop", "totalop" as qtdpeçs_total, "Usuario" as codusuario_atribuido, count("numeroop") as qtdpeçs_arepor  from "Reposicao"."filareposicaoportag" frt ' 
                         '  group by "numeroop", "Usuario", "totalop"  ',conn)
+
     df_OP_Iniciada =pd.read_sql(' select "numeroop", count("numeroop") as qtdpeçs_reposto  from "Reposicao"."tagsreposicao" frt ' 
                         ' group by "numeroop" ',conn)
     df_OP1 = pd.merge(df_OP1,df_OP_Iniciada,on='numeroop',how='left')
@@ -46,8 +47,10 @@ def FilaPorOP():
 
 def detalhaOP(numeroop):
     conn = ConexaoPostgreRailway.conexao()
-    df_op = pd.read_sql('select "numeroop" , "codbarrastag" as codbarrastag_1  , epc, "Usuario" as codusuario_atribuido, "Situacao", "codReduzido" '
+    df_op = pd.read_sql('select "numeroop" , "codbarrastag", "epc", "Usuario" as codusuario_atribuido, "Situacao", "codReduzido" '
                    'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' +"'"+  numeroop +"'", conn)
+
+    df_op.rename(columns={'codbarrastag': 'codbarrastag_1'}, inplace=True)
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     df_op2 = pd.read_sql(
         'select "numeroop" , "codbarrastag" AS codbarrastag2   '
