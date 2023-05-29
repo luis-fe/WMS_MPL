@@ -261,15 +261,21 @@ def get_ApontaReposicao():
     codbarra = data['codbarra']
     endereco = data['endereco']
     dataHora = data['dataHora']
+    estornar = data['estornar']
+
 
     #Verifica Se existe atribuicao
     Apontamento = ReposicaoRailway.ApontarReposicao(codUsuario,codbarra, endereco, dataHora)
     if Apontamento == False:
         return jsonify({'message': False, 'Status': f'codigoBarras {codbarra} nao existe no Estoque'})
     if Apontamento == 'Reposto':
-        return jsonify({'message': False, 'Status': f'codigoBarras {codbarra} ja reposto'})
+        if estornar is True:
+            tag = ReposicaoRailway.EstornoApontamento(codbarra)
+            return jsonify({'message': 'Tag estornada!'})
+        else:
+            return jsonify({'message': f'codigoBarras {codbarra} ja reposto'})
     else:
-        return jsonify({'message': True, 'status':f'Salvo com Sucesso'})
+        return jsonify({'message': True, 'status': f'Salvo com Sucesso'})
     
     
     

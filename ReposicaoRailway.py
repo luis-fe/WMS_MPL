@@ -116,3 +116,26 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         cursor.close()
         print('teste')
         return  numero_linhas_afetadas
+def EstornoApontamento(codbarrastag):
+    conn = ConexaoPostgreRailway.conexao()
+    reduzido, codEngenharia, usuario, numeroop = Devolver_Inf_Tag(codbarrastag)
+    Insert = 'Insert into "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag", "Usuario","numeroop") ' \
+             'VALUES (%s,%s,%s,%s,%s);'
+    cursor = conn.cursor()
+    cursor.execute(Insert
+                   , (reduzido, codEngenharia, codbarrastag, usuario, numeroop))
+    # Obter o número de linhas afetadas
+    numero_linhas_afetadas = cursor.rowcount
+    conn.commit()
+    cursor.close()
+    # Apagando a Tag estorna:
+    cursor = conn.cursor()
+    delete = 'Delete from "Reposicao"."tagsreposicao"  ' \
+             'where "codbarrastag" = %s;'
+    cursor.execute(delete
+                   , (codbarrastag))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return True
