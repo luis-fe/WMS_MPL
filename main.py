@@ -274,7 +274,7 @@ def get_ApontaReposicao():
     else:
         return jsonify({'message': True, 'status': f'Salvo com Sucesso'})
 
-    
+
  #ETAPA 2:  Api para acesso do Quadro de Estamparia - Projeto WMS das Telas de  Silk:
 
 @app.route('/api/Silk/PesquisaEndereco', methods=['GET'])
