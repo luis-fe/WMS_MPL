@@ -269,7 +269,9 @@ def get_ApontaReposicao():
     Apontamento = ReposicaoRailway.ApontarReposicao(codUsuario,codbarra, endereco, dataHora)
     if Apontamento == 'Reposto':
         if estornar is True:
+            ReposicaoRailway.EstornoApontamento(codbarra)
             return jsonify({'message': f'codigoBarras {codbarra} estornado !'})
+
         else:
             return jsonify({'message': f'codigoBarras {codbarra} ja reposto'})
     if Apontamento == False:

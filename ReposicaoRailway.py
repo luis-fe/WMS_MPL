@@ -117,7 +117,7 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
 def EstornoApontamento(codbarrastag):
     conn = ConexaoPostgreRailway.conexao()
     situacao, reduzido, codEngenharia, numeroop = Devolver_Inf_Tag(codbarrastag)
-    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag,"numeroop") ' \
+    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop") ' \
              'VALUES (%s,%s,%s,%s);'
     cursor = conn.cursor()
     cursor.execute(Insert
@@ -131,7 +131,7 @@ def EstornoApontamento(codbarrastag):
     delete = 'Delete from "Reposicao"."tagsreposicao"  ' \
              'where "codbarrastag" = %s;'
     cursor.execute(delete
-                   , (codbarrastag))
+                   , (codbarrastag,))
     conn.commit()
     cursor.close()
     conn.close()
