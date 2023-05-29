@@ -73,14 +73,15 @@ def Devolver_Inf_Tag(codbarras):
                                ' group by "codbarrastag" ',conn)
 
     conn.close()
-    if TagApontadas["situacao"][0]>=0 and not TagApontadas.empty:
-        return 'Reposto', pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}),'Reposto','Reposto'
+    if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0:
+        return 'Reposto', pd.DataFrame(
+            {'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), 'Reposto', 'Reposto'
 
     if codReduzido.empty:
-        return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}),False,False
-
+        return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), False, False
     else:
-        return codReduzido['codReduzido'][0], codReduzido['CodEngenharia'][0],codReduzido['Usuario'][0],codReduzido['numeroop'][0]
+        return codReduzido['codReduzido'][0], codReduzido['CodEngenharia'][0], codReduzido['Usuario'][0], \
+        codReduzido['numeroop'][0]
 
 def Pesquisa_Estoque(reduzido, endereco):
     conn = ConexaoPostgreRailway.conexao()
