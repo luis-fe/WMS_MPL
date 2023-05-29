@@ -74,7 +74,7 @@ def Devolver_Inf_Tag(codbarras):
 
     conn.close()
     if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0:
-        return 'Reposto', TagApontadas['codReduzido'][0], TagApontadas['numeroop'][0], 'Reposto'
+        return 'Reposto', TagApontadas['CodReduzido'][0], TagApontadas['numeroop'][0], 'Reposto'
 
     if codReduzido.empty:
         return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), False, False
