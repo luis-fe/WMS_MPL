@@ -68,13 +68,14 @@ def Devolver_Inf_Tag(codbarras):
     codReduzido = pd.read_sql(
         'select "codReduzido", "CodEngenharia","Situacao", "Usuario","numeroop"  from "Reposicao"."filareposicaoportag" ce '
         'where "codbarrastag" = '+"'"+codbarras+"'", conn)
-    TagApontadas = pd.read_sql('select count("codbarrastag") as situacao, "CodReduzido" from "Reposicao"."tagsreposicao" tr '
+    TagApontadas = pd.read_sql('select count("codbarrastag") as situacao from "Reposicao"."tagsreposicao" tr '
                                'where"codbarrastag" = '+"'"+codbarras+"'"+
                                ' group by "codbarrastag" ',conn)
 
     conn.close()
     if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0:
-        return 'Reposto',TagApontadas['CodReduzido'][0] , 'Reposto', 'Reposto'
+        return 'Reposto', pd.DataFrame(
+            {'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), 'Reposto', 'Reposto'
 
     if codReduzido.empty:
         return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), False, False
@@ -117,12 +118,12 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         return  numero_linhas_afetadas
 def EstornoApontamento(codbarrastag):
     conn = ConexaoPostgreRailway.conexao()
-    situacao, reduzido, codEngenharia, numeroop = Devolver_Inf_Tag(codbarrastag)
-    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido","codbarrastag") ' \
+    reduzido, codEngenharia, usuario, numeroop = Devolver_Inf_Tag(codbarrastag)
+    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag", "Usuario","numeroop") ' \
              'VALUES (%s,%s,%s,%s,%s);'
     cursor = conn.cursor()
     cursor.execute(Insert
-                   , (reduzido, codbarrastag))
+                   , (reduzido, codEngenharia, codbarrastag, usuario, numeroop))
     # Obter o número de linhas afetadas
     numero_linhas_afetadas = cursor.rowcount
     conn.commit()
