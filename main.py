@@ -261,7 +261,7 @@ def get_ApontaReposicao():
     codbarra = data['codbarra']
     endereco = data['endereco']
     dataHora = data['dataHora']
-    estornar = data['estornar']
+    estornar = data.get('estornar', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
     
 
 
