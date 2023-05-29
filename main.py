@@ -276,8 +276,7 @@ def get_ApontaReposicao():
             return jsonify({'message': f'codigoBarras {codbarra} ja reposto'})
     else:
         return jsonify({'message': True, 'status': f'Salvo com Sucesso'})
-    
-    
+
     
  #ETAPA 2:  Api para acesso do Quadro de Estamparia - Projeto WMS das Telas de  Silk:
 
