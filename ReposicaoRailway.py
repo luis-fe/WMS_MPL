@@ -70,7 +70,7 @@ def Devolver_Inf_Tag(codbarras):
         'where "codbarrastag" = '+"'"+codbarras+"'", conn)
     TagApontadas = pd.read_sql('select count("codbarrastag") as situacao, "CodReduzido", "Engenharia", "numeroop" from "Reposicao"."tagsreposicao" tr '
                                'where"codbarrastag" = '+"'"+codbarras+"'"+
-                               ' group by "codbarrastag" ',conn)
+                               ' group by "codbarrastag","CodReduzido", "Engenharia", "numeroop"   ',conn)
 
     conn.close()
     if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0:
