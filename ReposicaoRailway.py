@@ -82,7 +82,6 @@ def Devolver_Inf_Tag(codbarras):
     else:
         return codReduzido['codReduzido'][0], codReduzido['CodEngenharia'][0], codReduzido['Usuario'][0], \
         codReduzido['numeroop'][0]
-
 def Pesquisa_Estoque(reduzido, endereco):
     conn = ConexaoPostgreRailway.conexao()
     estoque = pd.read_sql(
