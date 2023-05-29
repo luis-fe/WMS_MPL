@@ -271,7 +271,7 @@ def get_ApontaReposicao():
     if Apontamento == 'Reposto':
         if estornar is True:
             tag = ReposicaoRailway.EstornoApontamento(codbarra)
-            return jsonify({'message': 'Tag estornada!'})
+            return jsonify({'message': f'Tag estornada!{tag}'})
         else:
             return jsonify({'message': f'codigoBarras {codbarra} ja reposto'})
     else:
