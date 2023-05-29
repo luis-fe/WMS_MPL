@@ -68,14 +68,13 @@ def Devolver_Inf_Tag(codbarras):
     codReduzido = pd.read_sql(
         'select "codReduzido", "CodEngenharia","Situacao", "Usuario","numeroop"  from "Reposicao"."filareposicaoportag" ce '
         'where "codbarrastag" = '+"'"+codbarras+"'", conn)
-    TagApontadas = pd.read_sql('select count("codbarrastag") as situacao from "Reposicao"."tagsreposicao" tr '
+    TagApontadas = pd.read_sql('select count("codbarrastag") as situacao, "CodReduzido" from "Reposicao"."tagsreposicao" tr '
                                'where"codbarrastag" = '+"'"+codbarras+"'"+
                                ' group by "codbarrastag" ',conn)
 
     conn.close()
     if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0:
-        return 'Reposto', pd.DataFrame(
-            {'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), 'Reposto', 'Reposto'
+        return 'Reposto',TagApontadas['CodReduzido'][0] , 'Reposto', 'Reposto'
 
     if codReduzido.empty:
         return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), False, False
