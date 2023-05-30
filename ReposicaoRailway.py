@@ -66,21 +66,21 @@ def Estoque_endereco(endereco):
 def Devolver_Inf_Tag(codbarras):
     conn = ConexaoPostgreRailway.conexao()
     codReduzido = pd.read_sql(
-        'select "codReduzido", "CodEngenharia","Situacao", "Usuario","numeroop"  from "Reposicao"."filareposicaoportag" ce '
+        'select "codReduzido", "CodEngenharia","Situacao", "Usuario","numeroop", "descricao"  from "Reposicao"."filareposicaoportag" ce '
         'where "codbarrastag" = '+"'"+codbarras+"'", conn)
-    TagApontadas = pd.read_sql('select count("codbarrastag") as situacao, "CodReduzido", "Engenharia", "numeroop" from "Reposicao"."tagsreposicao" tr '
+    TagApontadas = pd.read_sql('select count("codbarrastag") as situacao, "CodReduzido", "Engenharia", "numeroop", "Descricao" from "Reposicao"."tagsreposicao" tr '
                                'where"codbarrastag" = '+"'"+codbarras+"'"+
                                ' group by "codbarrastag","CodReduzido", "Engenharia", "numeroop"   ',conn)
 
     conn.close()
     if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0:
-        return 'Reposto',TagApontadas['CodReduzido'][0] , TagApontadas['Engenharia'][0],TagApontadas['numeroop'][0]
+        return 'Reposto',TagApontadas['CodReduzido'][0] , TagApontadas['Engenharia'][0],TagApontadas['numeroop'][0],TagApontadas['descricao'][0]
 
     if codReduzido.empty:
-        return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), False, False
+        return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), False, False,False
     else:
         return codReduzido['codReduzido'][0], codReduzido['CodEngenharia'][0], codReduzido['Usuario'][0], \
-        codReduzido['numeroop'][0]
+        codReduzido['numeroop'][0], codReduzido['descricao'][0]
 def Pesquisa_Estoque(reduzido, endereco):
     conn = ConexaoPostgreRailway.conexao()
     estoque = pd.read_sql(

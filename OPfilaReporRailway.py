@@ -7,9 +7,11 @@ def ProdutividadeRepositores():
     cursor = conn.cursor()
     cursor.execute('select tr."Usuario", '
                    'count(tr."codbarrastag"), '
-                   'substring(tr."DataReposicao",1,10) as DataReposicao '
+                   'substring("DataReposicao",1,10) as DataReposicao, '
+                   'min("DataReposicao") as min, '
+                   'max("DataReposicao") as max '
                    'from "Reposicao"."tagsreposicao" tr '
-                   'group by "Usuario" ,substring("DataReposicao",1,10)')
+                   'group by "Usuario" , substring("DataReposicao",1,10) ')
     TagReposicao = cursor.fetchall()
     return TagReposicao
 
