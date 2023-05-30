@@ -175,11 +175,17 @@ def get_AtribuirOPRepositor():
     data = request.get_json()
     OP = data['numeroOP']
     Usuario = data['codigo']
+    Reatribuir = data.get('reatribuir', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
+
     #Verifica Se existe atribuicao
     existe = OPfilaReporRailway.ConsultaSeExisteAtribuicao(OP)
     if existe == 0:
-        # Retorna uma resposta de existencia
-        return jsonify({'message': f'OP já foi Atribuida'})
+        if Reatribuir is True:
+            OPfilaReporRailway.AtribuiRepositorOP(Usuario, OP)
+            return jsonify({'message': f'OP {OP} reatribuida para o Usuario {Usuario}'})
+        else:
+            # Retorna uma resposta de existencia
+            return jsonify({'message': f'OP já foi Atribuida'})
     else:
         OPfilaReporRailway.AtribuiRepositorOP(Usuario,OP)
         # Retorna uma resposta de sucesso
