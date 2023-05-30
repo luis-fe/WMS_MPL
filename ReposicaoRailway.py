@@ -95,18 +95,18 @@ def Pesquisa_Estoque(reduzido, endereco):
 def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
     conn = ConexaoPostgreRailway.conexao()
     #devolvendo o reduzido do codbarras
-    reduzido, codEngenharia, usuario, numeroop = Devolver_Inf_Tag(codbarras)
+    reduzido, codEngenharia, usuario, numeroop, descricao = Devolver_Inf_Tag(codbarras)
     if reduzido == False:
          return False
     if reduzido == 'Reposto':
         return 'Reposto'
     else:
         #insere os dados da reposicao
-        Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia","numeroop")' \
-                 ' VALUES (%s,%s,%s,%s,%s,%s,%s);'
+        Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia","numeroop","Descricao")' \
+                 ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s);'
         cursor = conn.cursor()
         cursor.execute(Insert
-                       , (usuario, codbarras, endereco,dataHora,reduzido,codEngenharia,numeroop))
+                       , (usuario, codbarras, endereco,dataHora,reduzido,codEngenharia,numeroop,descricao))
 
         # Obter o número de linhas afetadas
         numero_linhas_afetadas = cursor.rowcount
@@ -116,12 +116,12 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         return  numero_linhas_afetadas
 def EstornoApontamento(codbarrastag):
     conn = ConexaoPostgreRailway.conexao()
-    situacao, reduzido, codEngenharia, numeroop = Devolver_Inf_Tag(codbarrastag)
-    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop") ' \
-             'VALUES (%s,%s,%s,%s);'
+    situacao, reduzido, codEngenharia, numeroop, descricao = Devolver_Inf_Tag(codbarrastag)
+    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao") ' \
+             'VALUES (%s,%s,%s,%s,%s);'
     cursor = conn.cursor()
     cursor.execute(Insert
-                   , (reduzido, codEngenharia, codbarrastag, numeroop))
+                   , (reduzido, codEngenharia, codbarrastag, numeroop, descricao))
     # Obter o número de linhas afetadas
     numero_linhas_afetadas = cursor.rowcount
     conn.commit()
