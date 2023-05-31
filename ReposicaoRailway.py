@@ -117,12 +117,12 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         return  numero_linhas_afetadas
 def EstornoApontamento(codbarrastag):
     conn = ConexaoPostgreRailway.conexao()
-    situacao, reduzido, codEngenharia, numeroop, descricao = Devolver_Inf_Tag(codbarrastag)
-    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao") ' \
+    situacao, reduzido, codEngenharia, numeroop, descricao, cor = Devolver_Inf_Tag(codbarrastag)
+    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao", "Cor") ' \
              'VALUES (%s,%s,%s,%s,%s);'
     cursor = conn.cursor()
     cursor.execute(Insert
-                   , (reduzido, codEngenharia, codbarrastag, numeroop, descricao))
+                   , (reduzido, codEngenharia, codbarrastag, numeroop, descricao, cor))
     # Obter o número de linhas afetadas
     numero_linhas_afetadas = cursor.rowcount
     conn.commit()
