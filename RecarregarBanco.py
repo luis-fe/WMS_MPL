@@ -1,5 +1,5 @@
 import pandas as pd
-import pyodbc
+import jaydebeapi
 import time
 from sqlalchemy import create_engine
 import datetime
@@ -11,7 +11,7 @@ def obterHoraAtual():
     hora_str = agora.strftime('%d/%m/%Y %H:%M')
     return hora_str
 
-def Funcao_Inserir (df_tags, tamanho):
+def Funcao_Inserir (df_tags, tamanho,tabela):
     # Configurações de conexão ao banco de dados
     database = "railway"
     user = "postgres"
@@ -25,13 +25,18 @@ def Funcao_Inserir (df_tags, tamanho):
     # Inserir dados em lotes
     chunksize = tamanho
     for i in range(0, len(df_tags), chunksize):
-        df_tags.iloc[i:i + chunksize].to_sql('filareposicaoportag', engine, if_exists='append', index=False , schema='Reposicao')
+        df_tags.iloc[i:i + chunksize].to_sql(tabela, engine, if_exists='append', index=False , schema='Reposicao')
 
 start_time = time.perf_counter()
 
 
 def FilaTags():
-    conn = pyodbc.connect(dsn='SISTEMAS CSW', user='root', password='ccscache')
+    conn = jaydebeapi.connect(
+    'com.intersys.jdbc.CacheDriver',
+    'jdbc:Cache://187.32.10.129:1972/SISTEMAS',
+    {'user': 'root', 'password': 'ccscache'},
+    'CacheDB.jar'
+)
     conn2 = ConexaoPostgreRailway.conexao()
     df_tags = pd.read_sql(
         "SELECT  codBarrasTag as codbarrastag, codNaturezaAtual , codEngenharia , codReduzido,(SELECT i.nome  FROM cgi.Item i WHERE i.codigo = t.codReduzido) as descricao , numeroop as numeroop,"
@@ -66,6 +71,7 @@ def FilaTags():
     df_tags.drop_duplicates(subset='codbarrastag', inplace=True)
     # Excluir a coluna 'B' inplace
     df_tags.drop('sti_aterior', axis=1, inplace=True)
+    df_tags.drop_duplicates(subset='codbarrastag', inplace=True)
     df_tags['epc'] = df_tags['epc'].str.extract('\|\|(.*)').squeeze()
     print(df_tags.dtypes)
     print(df_tags['codbarrastag'].size)
@@ -73,15 +79,26 @@ def FilaTags():
     dataHora = obterHoraAtual()
     df_tags['DataHora'] = dataHora
     df_tags.to_csv('planilha.csv')
-    Funcao_Inserir(df_tags, tamanho)
-
+    try:
+        Funcao_Inserir(df_tags, tamanho,'filareposicaoportag')
+        hora = obterHoraAtual()
+        return tamanho, hora
+    except:
+        print('falha na funçao Inserir')
+        hora = obterHoraAtual()
+        return tamanho, hora
 
     conn.close()
     conn2.close()
     return dataHora
 
 def LerEPC():
-    conn = pyodbc.connect(dsn='SISTEMAS CSW', user='root', password='ccscache')
+    conn = jaydebeapi.connect(
+        'com.intersys.jdbc.CacheDriver',
+        'jdbc:Cache://187.32.10.129:1972/SISTEMAS',
+        {'user': 'root', 'password': 'ccscache'},
+        'CacheDB.jar'
+    )
 
 
     consulta = pd.read_sql('select epc.id as epc, t.codBarrasTag as codbarrastag from tcr.SeqLeituraFase  t '
@@ -94,4 +111,17 @@ def LerEPC():
     print(consulta)
     return consulta
 
-FilaTags()
+def SeparacoPedidos():
+    conn = jaydebeapi.connect(
+        'com.intersys.jdbc.CacheDriver',
+        'jdbc:Cache://187.32.10.129:1972/SISTEMAS',
+        {'user': 'root', 'password': 'ccscache'},
+        'CacheDB.jar'
+    )
+    SugestoesAbertos = pd.read_sql('SELECT codPedido, dataGeracao,  priorizar, vlrSugestao, situacaoSugestao, dataFaturamentoPrevisto  from ped.SugestaoPed  '
+                                   'WHERE codEmpresa =1 and situacaoSugestao =2',conn)
+    SugestoesAbertos.rename(columns={'codPedido': 'codigopedido', 'vlrSugestao': 'vlrsugestao'
+        , 'dataGeracao': 'datageracao','situacaoSugestao':'situacaosugestao','dataFaturamentoPrevisto':'datafaturamentoprevisto' }, inplace=True)
+    tamanho = SugestoesAbertos['codigopedido'].size
+    Funcao_Inserir(SugestoesAbertos,tamanho,'filaseparacaopedidos')
+    conn.close()
