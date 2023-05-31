@@ -1,6 +1,11 @@
 import ConexaoPostgreRailway
 import pandas as pd
+import datetime
 
+def obterHoraAtual():
+    agora = datetime.datetime.now()
+    hora_str = agora.strftime('%d/%m/%Y %H:%M')
+    return hora_str
 
 
 def PesquisarUsuarios():
@@ -51,8 +56,24 @@ def ConsultaUsuarioSenha(codigo, senha):
     cursor = conn.cursor()
     # Consulta no banco de dados para verificar se o usuário e senha correspondem
     query = 'SELECT COUNT(*) FROM "Reposicao"."cadusuarios" WHERE codigo = %s AND senha = %s'
+
     cursor.execute(query, (codigo, senha))
     result = cursor.fetchone()[0]
+    cursor.close()
+
 
     return result
 
+def RegistroLog(codigo):
+    conn = ConexaoPostgreRailway.conexao()
+    # registrando data e hora do log
+    hora = obterHoraAtual()
+    cursor = conn.cursor()
+    log = 'insert into "Reposicao"."horariodolog" ( "codigo", "datalog" ) ' \
+          'values(%s, %s)'
+
+    cursor.execute(log, (codigo, hora))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return True
