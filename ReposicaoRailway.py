@@ -104,7 +104,7 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
     else:
         #insere os dados da reposicao
         Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia","numeroop","Descricao", ' \
-                 "cor", "Epc"')' \
+                 "cor", "Epc" ')' \
                  ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);'
         cursor = conn.cursor()
         cursor.execute(Insert
