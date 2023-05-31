@@ -100,6 +100,12 @@ def detalhaOPxSKU(numeroop):
     df_op = pd.read_sql('select "numeroop", "codReduzido", "CodEngenharia", "Cor", "tamanho", "descricao" '
                    'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' +"'"+  numeroop +"'"+
                    'group by "numeroop", "codReduzido","descricao" , "Cor","tamanho","CodEngenharia"', conn)
+    df_op2 = pd.read_sql('select "numeroop", "CodReduzido", "Engenharia", "cor", "tamanho", "Descricao" '
+                   'from "Reposicao"."tagsreposicao" frt where "numeroop" = ' +"'"+  numeroop +"'"+
+                   'group by "numeroop", "CodReduzido","Descricao" , "cor","tamanho","Engenharia"', conn)
+    df_op2.rename(columns={'CodReduzido': 'codReduzido', "Engenharia": 'CodEngenharia', "cor": "Cor", "Descricao": "descricao"}, inplace=True)
+
+    df_op = pd.concat([df_op, df_op2])
 
     conn.close()
     if df_op.empty:
