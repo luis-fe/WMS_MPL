@@ -74,14 +74,13 @@ def Devolver_Inf_Tag(codbarras):
 
     conn.close()
     if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0:
-        return 'Reposto',TagApontadas['CodReduzido'][0] , TagApontadas['Engenharia'][0],TagApontadas['numeroop'][0],TagApontadas['Descricao'][0],TagApontadas['cor'][0], \
-        TagApontadas['Epc'][0]
+        return 'Reposto',TagApontadas['CodReduzido'][0] , TagApontadas['Engenharia'][0],TagApontadas['numeroop'][0],TagApontadas['Descricao'][0],TagApontadas['cor'][0]
 
     if codReduzido.empty:
         return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), False, False,False,False,False
     else:
         return codReduzido['codReduzido'][0], codReduzido['CodEngenharia'][0], codReduzido['Usuario'][0], \
-        codReduzido['numeroop'][0], codReduzido['descricao'][0], codReduzido['Cor'][0],codReduzido['epc'][0]
+        codReduzido['numeroop'][0], codReduzido['descricao'][0], codReduzido['Cor'][0]
 def Pesquisa_Estoque(reduzido, endereco):
     conn = ConexaoPostgreRailway.conexao()
     estoque = pd.read_sql(
@@ -96,7 +95,7 @@ def Pesquisa_Estoque(reduzido, endereco):
 def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
     conn = ConexaoPostgreRailway.conexao()
     #devolvendo o reduzido do codbarras
-    reduzido, codEngenharia, usuario, numeroop, descricao, cor, epc = Devolver_Inf_Tag(codbarras)
+    reduzido, codEngenharia, usuario, numeroop, descricao, cor = Devolver_Inf_Tag(codbarras)
     if reduzido == False:
          return False
     if reduzido == 'Reposto':
@@ -104,8 +103,8 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
     else:
         #insere os dados da reposicao
         Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia","numeroop","Descricao", ' \
-                 "cor", "Epc" ')' \
-                 ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);'
+                 "cor" ')' \
+                 ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);'
         cursor = conn.cursor()
         cursor.execute(Insert
                        , (usuario, codbarras, endereco,dataHora,reduzido,codEngenharia,numeroop,descricao,cor, epc))
