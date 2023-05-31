@@ -11,6 +11,17 @@ def ObeterEnderecos():
     endercos = pd.read_sql(
         ' select * from "Reposicao"."cadendereco" ce   ', conn)
     return endercos
+def PesquisaEnderecosSKU(codreduzido):
+    conn = ConexaoPostgreRailway.conexao()
+    sku = pd.read_sql(
+        ' select distinct  "Endereco" from "Reposicao"."tagsreposicao" '
+        ' where "CodReduzido"= '+"'"+ codreduzido+"'", conn)
+
+    if sku.empty :
+        return False
+    else:
+
+        return sku
 
 def PesquisaEndereco(endereco):
     conn = ConexaoPostgreRailway.conexao()

@@ -55,7 +55,7 @@ def detalhaOP(numeroop):
 
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     df_op2 = pd.read_sql(
-        'select "numeroop" , "codbarrastag" AS codbarrastag, "Epc" as epc, "Usuario" as codusuario_atribuido,' +"'Bipado'"+ 'as situacao, "CodReduzido" '
+        'select "numeroop" , "codbarrastag" AS codbarrastag, "Epc" as epc, "Usuario" as codusuario_atribuido,' +"'reposto'"+ 'as situacao, "CodReduzido" '
       'from "Reposicao"."tagsreposicao" frt where "numeroop" = ' + "'" + numeroop + "'", conn)
     df_op2.rename(columns={'CodReduzido': 'codReduzido', "situacao":'Situacao'}, inplace=True)
 
