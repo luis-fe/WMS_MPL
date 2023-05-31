@@ -66,21 +66,22 @@ def Estoque_endereco(endereco):
 def Devolver_Inf_Tag(codbarras):
     conn = ConexaoPostgreRailway.conexao()
     codReduzido = pd.read_sql(
-        'select "codReduzido", "CodEngenharia","Situacao", "Usuario","numeroop", "descricao", "Cor"  from "Reposicao"."filareposicaoportag" ce '
+        'select "codReduzido", "CodEngenharia","Situacao", "Usuario","numeroop", "descricao", "Cor","epc"  from "Reposicao"."filareposicaoportag" ce '
         'where "codbarrastag" = '+"'"+codbarras+"'", conn)
-    TagApontadas = pd.read_sql('select count("codbarrastag") as situacao, "CodReduzido", "Engenharia", "numeroop", "Descricao", "cor" from "Reposicao"."tagsreposicao" tr '
+    TagApontadas = pd.read_sql('select count("codbarrastag") as situacao, "CodReduzido", "Engenharia", "numeroop", "Descricao", "cor", "Epc" from "Reposicao"."tagsreposicao" tr '
                                'where"codbarrastag" = '+"'"+codbarras+"'"+
-                               ' group by "codbarrastag","CodReduzido", "Engenharia", "numeroop", "Descricao", "cor"   ',conn)
+                               ' group by "codbarrastag","CodReduzido", "Engenharia", "numeroop", "Descricao", "cor", "Epc"   ',conn)
 
     conn.close()
     if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0:
-        return 'Reposto',TagApontadas['CodReduzido'][0] , TagApontadas['Engenharia'][0],TagApontadas['numeroop'][0],TagApontadas['Descricao'][0],TagApontadas['cor'][0]
+        return 'Reposto',TagApontadas['CodReduzido'][0] , TagApontadas['Engenharia'][0],TagApontadas['numeroop'][0],TagApontadas['Descricao'][0],TagApontadas['cor'][0], \
+        TagApontadas['Epc'][0]
 
     if codReduzido.empty:
-        return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), False, False,False,False
+        return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), False, False,False,False,False
     else:
         return codReduzido['codReduzido'][0], codReduzido['CodEngenharia'][0], codReduzido['Usuario'][0], \
-        codReduzido['numeroop'][0], codReduzido['descricao'][0], codReduzido['Cor'][0]
+        codReduzido['numeroop'][0], codReduzido['descricao'][0], codReduzido['Cor'][0],codReduzido['epc'][0]
 def Pesquisa_Estoque(reduzido, endereco):
     conn = ConexaoPostgreRailway.conexao()
     estoque = pd.read_sql(
@@ -95,7 +96,7 @@ def Pesquisa_Estoque(reduzido, endereco):
 def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
     conn = ConexaoPostgreRailway.conexao()
     #devolvendo o reduzido do codbarras
-    reduzido, codEngenharia, usuario, numeroop, descricao, cor = Devolver_Inf_Tag(codbarras)
+    reduzido, codEngenharia, usuario, numeroop, descricao, cor, epc = Devolver_Inf_Tag(codbarras)
     if reduzido == False:
          return False
     if reduzido == 'Reposto':
@@ -103,11 +104,11 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
     else:
         #insere os dados da reposicao
         Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia","numeroop","Descricao", ' \
-                 "cor"')' \
-                 ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);'
+                 "cor", "Epc"')' \
+                 ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);'
         cursor = conn.cursor()
         cursor.execute(Insert
-                       , (usuario, codbarras, endereco,dataHora,reduzido,codEngenharia,numeroop,descricao,cor))
+                       , (usuario, codbarras, endereco,dataHora,reduzido,codEngenharia,numeroop,descricao,cor, epc))
 
         # Obter o número de linhas afetadas
         numero_linhas_afetadas = cursor.rowcount
@@ -117,12 +118,12 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         return  numero_linhas_afetadas
 def EstornoApontamento(codbarrastag):
     conn = ConexaoPostgreRailway.conexao()
-    situacao, reduzido, codEngenharia, numeroop, descricao, cor = Devolver_Inf_Tag(codbarrastag)
-    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao", "Cor") ' \
-             'VALUES (%s,%s,%s,%s,%s,%s);'
+    situacao, reduzido, codEngenharia, numeroop, descricao, cor, epc = Devolver_Inf_Tag(codbarrastag)
+    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao", "Cor", "epc") ' \
+             'VALUES (%s,%s,%s,%s,%s,%s,%s);'
     cursor = conn.cursor()
     cursor.execute(Insert
-                   , (reduzido, codEngenharia, codbarrastag, numeroop, descricao, cor))
+                   , (reduzido, codEngenharia, codbarrastag, numeroop, descricao, cor, epc))
     # Obter o número de linhas afetadas
     numero_linhas_afetadas = cursor.rowcount
     conn.commit()
