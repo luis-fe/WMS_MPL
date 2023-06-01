@@ -90,11 +90,11 @@ def Devolver_Inf_Tag(codbarras, padrao = 0):
 
 
 
-    if padrao == 1 and not codReduzido['Usuario'].empty :
+    if padrao == 1 and not codReduzido.empty :
         return 'Reposto', TagApontadas['CodReduzido'][0], TagApontadas['Engenharia'][0], TagApontadas['numeroop'][0], \
         TagApontadas['Descricao'][0], TagApontadas['cor'][0], \
             TagApontadas['Epc'][0], TagApontadas['tamanho'][0], TagApontadas['totalop'][0], codReduzido['Usuario'][0]
-    if padrao == 1 and  codReduzido['Usuario'].empty:
+    if padrao == 1 and  codReduzido.empty:
         return 'Reposto', TagApontadas['CodReduzido'][0], TagApontadas['Engenharia'][0], TagApontadas['numeroop'][0], \
             TagApontadas['Descricao'][0], TagApontadas['cor'][0], \
             TagApontadas['Epc'][0], TagApontadas['tamanho'][0], TagApontadas['totalop'][0], '-'
