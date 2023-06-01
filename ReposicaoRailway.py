@@ -74,7 +74,7 @@ def Estoque_endereco(endereco):
     else:
         return resultado[0][0]
     
-def Devolver_Inf_Tag(codbarras):
+def Devolver_Inf_Tag(codbarras, padrao = 0):
     conn = ConexaoPostgreRailway.conexao()
     codReduzido = pd.read_sql(
         'select "codReduzido", "CodEngenharia","Situacao", "Usuario","numeroop", "descricao", "Cor","epc", "tamanho", "totalop"  from "Reposicao"."filareposicaoportag" ce '
@@ -84,12 +84,23 @@ def Devolver_Inf_Tag(codbarras):
                                ' group by "codbarrastag","CodReduzido", "Engenharia", "numeroop", "Descricao", "cor", "Epc", "tamanho", "totalop"   ',conn)
 
     conn.close()
-    if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0:
+    if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0 and padrao == 0:
         return 'Reposto',TagApontadas['CodReduzido'][0] , TagApontadas['Engenharia'][0],TagApontadas['numeroop'][0],TagApontadas['Descricao'][0],TagApontadas['cor'][0], \
                 TagApontadas['Epc'][0],TagApontadas['tamanho'][0],TagApontadas['totalop'][0]
 
+
+
+    if padrao == 1 and not codReduzido['Usuario'].empty :
+        return 'Reposto', TagApontadas['CodReduzido'][0], TagApontadas['Engenharia'][0], TagApontadas['numeroop'][0], \
+        TagApontadas['Descricao'][0], TagApontadas['cor'][0], \
+            TagApontadas['Epc'][0], TagApontadas['tamanho'][0], TagApontadas['totalop'][0], codReduzido['Usuario'][0]
+    if padrao == 1 and  codReduzido['Usuario'].empty:
+        return 'Reposto', TagApontadas['CodReduzido'][0], TagApontadas['Engenharia'][0], TagApontadas['numeroop'][0], \
+            TagApontadas['Descricao'][0], TagApontadas['cor'][0], \
+            TagApontadas['Epc'][0], TagApontadas['tamanho'][0], TagApontadas['totalop'][0], '-'
     if codReduzido.empty:
         return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), False, False,False,False,False,False, False
+
     else:
         return codReduzido['codReduzido'][0], codReduzido['CodEngenharia'][0], codReduzido['Usuario'][0], \
         codReduzido['numeroop'][0], codReduzido['descricao'][0], codReduzido['Cor'][0], codReduzido['epc'][0],codReduzido['tamanho'][0],codReduzido['totalop'][0]
@@ -132,12 +143,12 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         return  numero_linhas_afetadas
 def EstornoApontamento(codbarrastag):
     conn = ConexaoPostgreRailway.conexao()
-    situacao, reduzido, codEngenharia, numeroop, descricao, cor, epc, tam, totalop = Devolver_Inf_Tag(codbarrastag)
-    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao", "Cor", "epc", "tamanho", "totalop", "Situacao") ' \
-             'VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'+"'Reposição não Iniciada'"+');'
+    situacao, reduzido, codEngenharia, numeroop, descricao, cor, epc, tam, totalop, usuario = Devolver_Inf_Tag(codbarrastag, 1)
+    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao", "Cor", "epc", "tamanho", "totalop", "Situacao", "Usuario") ' \
+             'VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'+"'Reposição não Iniciada'"+',%s);'
     cursor = conn.cursor()
     cursor.execute(Insert
-                   , (reduzido, codEngenharia, codbarrastag, numeroop, descricao, cor, epc, tam, totalop))
+                   , (reduzido, codEngenharia, codbarrastag, numeroop, descricao, cor, epc, tam, totalop, usuario))
     # Obter o número de linhas afetadas
     numero_linhas_afetadas = cursor.rowcount
     conn.commit()
