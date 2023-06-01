@@ -87,17 +87,20 @@ def Devolver_Inf_Tag(codbarras, padrao = 0):
     if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0 and padrao == 0:
         return 'Reposto',TagApontadas['CodReduzido'][0] , TagApontadas['Engenharia'][0],TagApontadas['numeroop'][0],TagApontadas['Descricao'][0],TagApontadas['cor'][0], \
                 TagApontadas['Epc'][0],TagApontadas['tamanho'][0],TagApontadas['totalop'][0]
-
-
-
-    if padrao == 1 and not codReduzido.empty :
-        return 'Reposto', TagApontadas['CodReduzido'][0], TagApontadas['Engenharia'][0], TagApontadas['numeroop'][0], \
-        TagApontadas['Descricao'][0], TagApontadas['cor'][0], \
-            TagApontadas['Epc'][0], TagApontadas['tamanho'][0], TagApontadas['totalop'][0], codReduzido['Usuario'][0]
-    if padrao == 1 and  codReduzido.empty:
-        return 'Reposto', TagApontadas['CodReduzido'][0], TagApontadas['Engenharia'][0], TagApontadas['numeroop'][0], \
+    if padrao == 1:
+        conn = ConexaoPostgreRailway.conexao()
+        Usuario = pd.read_sql('select "Usuario" from "Reposicao"."filareposicaoportag" ce' \
+                  ' where "numeroop" = '+"'"+TagApontadas['numeroop'][0]+"'", conn)
+        conn.close()
+        if not Usuario.empty:
+            return 'Reposto', TagApontadas['CodReduzido'][0], TagApontadas['Engenharia'][0], TagApontadas['numeroop'][0], \
             TagApontadas['Descricao'][0], TagApontadas['cor'][0], \
-            TagApontadas['Epc'][0], TagApontadas['tamanho'][0], TagApontadas['totalop'][0], '-'
+                TagApontadas['Epc'][0], TagApontadas['tamanho'][0], TagApontadas['totalop'][0], Usuario['Usuario'][0]
+        else:
+            return 'Reposto', TagApontadas['CodReduzido'][0], TagApontadas['Engenharia'][0], TagApontadas['numeroop'][0], \
+            TagApontadas['Descricao'][0], TagApontadas['cor'][0], \
+                TagApontadas['Epc'][0], TagApontadas['tamanho'][0], TagApontadas['totalop'][0], "-"
+
     if codReduzido.empty:
         return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), False, False,False,False,False,False, False
 
