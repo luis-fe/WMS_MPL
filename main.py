@@ -4,6 +4,7 @@ import os
 from apscheduler.schedulers.background import BackgroundScheduler
 from functools import wraps
 import ConecaoAWSRS
+import InventarioPrateleira
 import OPfilaRepor
 import Silk_PesquisaTelas
 import Silk_PesquisaNew
@@ -336,6 +337,47 @@ def insert_endpoint():
     else:
         return 'Falha ao inserir', 500
     
+# Api para o processo de inventario
+@app.route('/api/RegistrarInventario', methods=['POST'])
+@token_required
+def get_ProtocolarInventario():
+    # Obtém os dados do corpo da requisição (JSON)
+    datas = request.get_json()
+    codUsuario = datas['codUsuario']
+    data = datas['data']
+    endereco = datas['endereço']
+
+    Endereco_det = InventarioPrateleira.SituacaoEndereco(endereco, codUsuario, data)
+    # Obtém os nomes das colunas
+    column_names = Endereco_det.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    end_data = []
+    for index, row in Endereco_det.iterrows():
+        end_dict = {}
+        for column_name in column_names:
+            end_dict[column_name] = row[column_name]
+        end_data.append(end_dict)
+    return jsonify(end_data)
+@app.route('/api/ApontarTagInventario', methods=['POST'])
+@token_required
+def get_ApontarTagInventario():
+    # Obtém os dados do corpo da requisição (JSON)
+    datas = request.get_json()
+    codbarras = datas['codbarras']
+    codusuario = datas['codUsuario']
+    endereco = datas['endereço']
+
+    Endereco_det = InventarioPrateleira.ApontarTagInventario(codbarras, endereco, codusuario)
+    # Obtém os nomes das colunas
+    column_names = Endereco_det.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    end_data = []
+    for index, row in Endereco_det.iterrows():
+        end_dict = {}
+        for column_name in column_names:
+            end_dict[column_name] = row[column_name]
+        end_data.append(end_dict)
+    return jsonify(end_data)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
