@@ -379,6 +379,25 @@ def get_ApontarTagInventario():
         end_data.append(end_dict)
     return jsonify(end_data)
 
+@app.route('/api/FinalizarInventario', methods=['POST'])
+@token_required
+def get_FinalizarInventario():
+    # Obtém os dados do corpo da requisição (JSON)
+    datas = request.get_json()
+    endereco = datas['endereço']
+
+    Endereco_det = InventarioPrateleira.SalvarInventario(endereco)
+    # Obtém os nomes das colunas
+    column_names = Endereco_det.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    end_data = []
+    for index, row in Endereco_det.iterrows():
+        end_dict = {}
+        for column_name in column_names:
+            end_dict[column_name] = row[column_name]
+        end_data.append(end_dict)
+    return jsonify(end_data)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
     cursor.close()
