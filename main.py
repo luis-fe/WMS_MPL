@@ -348,6 +348,8 @@ def get_ProtocolarInventario():
     endereco = datas['endereço']
 
     Endereco_det = InventarioPrateleira.SituacaoEndereco(endereco, codUsuario, data)
+    Endereco_det = pd.DataFrame(Endereco_det)
+
     # Obtém os nomes das colunas
     column_names = Endereco_det.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
@@ -368,6 +370,7 @@ def get_ApontarTagInventario():
     endereco = datas['endereço']
 
     Endereco_det = InventarioPrateleira.ApontarTagInventario(codbarras, endereco, codusuario)
+
     # Obtém os nomes das colunas
     column_names = Endereco_det.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes

@@ -150,13 +150,28 @@ def SituacaoEndereco(endereco,usuario, data):
         else:
             skus = pd.read_sql('select "CodReduzido", count(codbarrastag)as Saldo  from "Reposicao".tagsreposicao t  '
                                     'where "Endereco"='+" '"+endereco+"'"+' group by "Endereco" , "CodReduzido" ',conn)
-            conn.close()
+
             skus['enderco'] = endereco
             skus['Status Endereco'] = True
             skus['Mensagem'] = f'Endereço {endereco} existe!'
             skus['Status do Saldo']='Cheio, será esvaziado para o INVENTARIO'
+
+            DetalhaSku =pd.read_sql('select "CodReduzido", "codbarrastag" ,"Epc"  from "Reposicao".tagsreposicao t  '
+                                    'where "Endereco"='+" '"+endereco+"'",conn)
+
+            conn.close()
             RegistrarInventario(usuario, data, endereco)
-            return skus
+
+            data = {
+                '2 - Endereco': f'{skus["enderco"][0]} ',
+                '3 - Status Endereco': f'{skus["Status Endereco"][0]} ',
+                '1 - Mensagem': f'{skus["Mensagem"][0]} ',
+                '4- Suituacao':f'{skus["Status do Saldo"][0]} ',
+                '5- Detalhamento dos Tags:':DetalhaSku.to_dict(orient='records')
+            }
+            return [data]
+
+
 def Estoque_endereco(endereco):
     conn = ConexaoPostgreRailway.conexao()
     consultaSql = 'select count(codbarrastag)as Saldo  from "Reposicao".tagsreposicao t  ' \
