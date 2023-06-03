@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-import psycopg2
+import pandas as pd
 import os
 from apscheduler.schedulers.background import BackgroundScheduler
 from functools import wraps
@@ -387,6 +387,7 @@ def get_FinalizarInventario():
     endereco = datas['endereço']
 
     Endereco_det = InventarioPrateleira.SalvarInventario(endereco)
+    Endereco_det = pd.DataFrame(Endereco_det)
     # Obtém os nomes das colunas
     column_names = Endereco_det.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
