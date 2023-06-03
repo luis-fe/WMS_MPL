@@ -225,5 +225,5 @@ def SalvarInventario(endereco):
         '2 - Tags Migradas de endereço': [
             f'{numero_tagsMigradas} foram migradas para o endereço {endereco} e inventariadas com sucesso'],
         '3 - Tags Nao encontradas': [f'{numero_tagsNaoEncontradas} não foram encontradas no endereço {endereco}'],
-        '3.1 - Listagem Tags Nao encontradas [Codigo Barras, EPP]   ': pd.Series({'codigo Barras/EPC': Aviso2.to_numpy().tolist()})
+        '3.1 - Listagem Tags Nao encontradas': pd.Series({'codigo Barras/EPC': [f'{Aviso2}']})
     })
