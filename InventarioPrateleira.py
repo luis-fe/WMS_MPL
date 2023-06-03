@@ -215,15 +215,17 @@ def SalvarInventario(endereco):
     cursor.close()
 
     # Tags nao encontradas , avisar e trazer a lista de codigo barras e epc para o usuario tomar decisao
-    Aviso2 = pd.read_sql('SELECT "codbarrastag" , "Epc" FROM "Reposicao".tagsreposicao_inventario t '
-             'WHERE "Endereco" = '+ "'"+endereco+"'"+' and "situacaoinventario" is  null ;', conn)
+    Aviso2 = pd.read_sql('SELECT "codbarrastag", "Epc" FROM "Reposicao".tagsreposicao_inventario t '
+                         'WHERE "Endereco" = ' + "'" + endereco + "'" + ' and "situacaoinventario" is null;', conn)
 
     numero_tagsNaoEncontradas = Aviso2["codbarrastag"].size
 
-    return pd.DataFrame({
-        '1 - Tags Encontradas': [f'{numero_linhas_afetadas} foram encontradas e inventariadas com sucesso'],
-        '2 - Tags Migradas de endereço': [
-            f'{numero_tagsMigradas} foram migradas para o endereço {endereco} e inventariadas com sucesso'],
-        '3 - Tags Nao encontradas': [f'{numero_tagsNaoEncontradas} não foram encontradas no endereço {endereco}'],
-        '3.1 - Listagem Tags Nao encontradas': pd.Series({'codigo Barras/EPC': [f'{Aviso2}']})
-    })
+    data = {
+        '1 - Tags Encontradas': f'{numero_linhas_afetadas} foram encontradas e inventariadas com sucesso',
+        '2 - Tags Migradas de endereço': 
+            f'{numero_tagsMigradas} foram migradas para o endereço {endereco} e inventariadas com sucesso',
+        '3 - Tags Nao encontradas': f'{numero_tagsNaoEncontradas} não foram encontradas no endereço {endereco}',
+        '3.1 - Listagem Tags Nao encontradas [Codigo Barras, EPC]': Aviso2.to_dict(orient='records')
+    }
+
+    return [data]
