@@ -170,7 +170,60 @@ def Estoque_endereco(endereco):
     else:
         return resultado[0][0]
 
+def SalvarInventario(endereco):
+    conn = ConexaoPostgreRailway.conexao()
+
+    # Inserir de volta as tags que deram certo
+    insert = 'INSERT INTO "Reposicao".tagsreposicao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
+             '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", ' \
+             '"numeroop", "cor", "tamanho", "totalop") ' \
+             'SELECT "Usuario", "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
+             '"DataReposicao", "Descricao", "Epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop"' \
+             'FROM "Reposicao".tagsreposicao_inventario t ' \
+             'WHERE "Endereco" = %s and "situacaoinventario" = %s ;'
+    cursor = conn.cursor()
+    cursor.execute(insert, (endereco,'OK'))
+    numero_linhas_afetadas = cursor.rowcount
+    conn.commit()
+    cursor.close()
+
+    #deletar as tag's ok
+
+    delete = 'Delete FROM "Reposicao".tagsreposicao_inventario t ' \
+             'WHERE "Endereco" = %s and "situacaoinventario" = %s;'
+    cursor = conn.cursor()
+    cursor.execute(delete, (endereco,'OK'))
+    conn.commit()
+    cursor.close()
 
 
-X = ApontarTagInventario('01000065158703000865','teste2',1414)
-print(X)
+    # Avisar sobre as Tags migradas
+    Aviso = pd.read_sql('SELECT * FROM "Reposicao".tagsreposicao_inventario t '
+             'WHERE "Endereco" = '+ "'"+endereco+"'"+' and "situacaoinventario" is not null ;', conn)
+
+    #Autorizar migracao
+
+    numero_tagsMigradas = Aviso["Endereco"].size
+
+    # deletar as tag's MIGRADAS
+
+    deleteMigradas = 'Delete FROM "Reposicao".tagsreposicao_inventario t ' \
+             'WHERE "Endereco" = %s and "situacaoinventario" is not null ;'
+    cursor = conn.cursor()
+    cursor.execute(deleteMigradas, (endereco,))
+    conn.commit()
+    cursor.close()
+
+    # Tags nao encontradas , avisar e trazer a lista de codigo barras e epc para o usuario tomar decisao
+    Aviso2 = pd.read_sql('SELECT "codbarrastag" , "Epc" FROM "Reposicao".tagsreposicao_inventario t '
+             'WHERE "Endereco" = '+ "'"+endereco+"'"+' and "situacaoinventario" is  null ;', conn)
+
+    numero_tagsNaoEncontradas = Aviso2["codbarrastag"].size
+
+    return pd.DataFrame({
+        '1 - Tags Encontradas': [f'{numero_linhas_afetadas} foram encontradas e inventariadas com sucesso'],
+        '2 - Tags Migradas de endereço': [
+            f'{numero_tagsMigradas} foram migradas para o endereço {endereco} e inventariadas com sucesso'],
+        '3 - Tags Nao encontradas': [f'{numero_tagsNaoEncontradas} não foram encontradas no endereço {endereco}'],
+        '3.1 - Listagem Tags Nao encontradas': pd.Series({'codigo Barras/EPC': [f'{Aviso2}']})
+    })
