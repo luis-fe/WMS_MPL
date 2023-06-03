@@ -148,8 +148,8 @@ def SituacaoEndereco(endereco,usuario, data):
             return pd.DataFrame({'Status Endereco': [True], 'Mensagem': [f'endereco {endereco} existe!'],
                                  'Status do Saldo': ['Vazio, preparado para o INVENTARIO !']})
         else:
-            skus = pd.read_sql('select  "codreduzido", "Saldo"  from "Reposicao"."estoque" e '
-                                    'where "endereco"='+" '"+endereco+"'",conn)
+            skus = pd.read_sql('select "CodReduzido", count(codbarrastag)as Saldo  from "Reposicao".tagsreposicao t  '
+                                    'where "Endereco"='+" '"+endereco+"'"+' group by "Endereco" , "CodReduzido" ',conn)
             conn.close()
             skus['enderco'] = endereco
             skus['Status Endereco'] = True
@@ -159,8 +159,10 @@ def SituacaoEndereco(endereco,usuario, data):
             return skus
 def Estoque_endereco(endereco):
     conn = ConexaoPostgreRailway.conexao()
-    consultaSql = 'select "Saldo" from "Reposicao"."estoque" e ' \
-                  'where "endereco" = %s'
+    consultaSql = 'select count(codbarrastag)as Saldo  from "Reposicao".tagsreposicao t  ' \
+                  'where "Endereco" = %s '\
+                    'group by "Endereco" '
+
     cursor = conn.cursor()
     cursor.execute(consultaSql, (endereco,))
     resultado = cursor.fetchall()
