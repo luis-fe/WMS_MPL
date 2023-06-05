@@ -5,6 +5,23 @@ import time
 
 
 # CLASSE COM AS FUNÇOES PARA INTERAGIR COM AS APIS DE ACESSO DA "REPOSICAO"
+def CadEndereco (rua, modulo, posicao):
+    inserir = 'insert into "Reposicao".cadendereco ("codendereco","rua","modulo","posicao")' \
+          ' VALUES (%s,%s,%s,%s);'
+    codenderco = "rua"+"-"+"modulo"+"posicao"
+
+    conn = ConexaoPostgreRailway.conexao()
+    cursor = conn.cursor()
+    cursor.execute(inserir
+                   , (codenderco, rua, modulo, posicao))
+
+    # Obter o número de linhas afetadas
+    numero_linhas_afetadas = cursor.rowcount
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return codenderco
+
 
 def ObeterEnderecos():
     conn = ConexaoPostgreRailway.conexao()

@@ -246,10 +246,12 @@ def criar_enderco():
     # Obtenha os dados do corpo da requisição
     novo_endereco = request.get_json()
     # Extraia os valores dos campos do novo usuário
-    codendereco = novo_endereco.get('codendereco')
+
     rua = novo_endereco.get('rua')
     modulo = novo_endereco.get('modulo')
     posicao = novo_endereco.get('posicao')
+
+    codendereco = ReposicaoRailway.CadEndereco(rua, modulo, posicao)
 
     # inserir o novo usuário no banco de dados
     return jsonify({'message': f'Novo endereco:{codendereco} criado com sucesso'}), 201
