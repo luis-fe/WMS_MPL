@@ -8,7 +8,7 @@ import time
 def CadEndereco (rua, modulo, posicao):
     inserir = 'insert into "Reposicao".cadendereco ("codendereco","rua","modulo","posicao")' \
           ' VALUES (%s,%s,%s,%s);'
-    codenderco = "rua"+"-"+"modulo"+"posicao"
+    codenderco = rua+"-"+modulo+"-"+posicao
 
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
