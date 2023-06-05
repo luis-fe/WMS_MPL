@@ -240,7 +240,19 @@ def get_enderecos():
             enderecos_dict[column_name] = row[column_name]
         enderecos_data.append(enderecos_dict)
     return jsonify(enderecos_data)
+@app.route('/api/NovoEndereco', methods=['PUT'])
+@token_required
+def criar_enderco():
+    # Obtenha os dados do corpo da requisição
+    novo_endereco = request.get_json()
+    # Extraia os valores dos campos do novo usuário
+    codendereco = novo_endereco.get('codendereco')
+    rua = novo_endereco.get('rua')
+    modulo = novo_endereco.get('modulo')
+    posicao = novo_endereco.get('posicao')
 
+    # inserir o novo usuário no banco de dados
+    return jsonify({'message': f'Novo endereco:{codendereco} criado com sucesso'}), 201
 @app.route('/api/DetalhaEndereco', methods=['GET'])
 @token_required
 def get_DetalhaEndereco():
