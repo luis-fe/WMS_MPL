@@ -14,7 +14,8 @@ def FilaPedidos():
         'select codigo as cod_usuario , nome as nomeusuario_atribuido  from "Reposicao".cadusuarios c ', conn)
     usuarios['cod_usuario'] = usuarios['cod_usuario'].astype(str)
     pedido = pd.merge(pedido, usuarios, on='cod_usuario', how='left')
-    pedido.rename(columns={'codigopedido': '1-CodPedido','desc_tiponota':'2-TipoNota','codcliente' :'3-codcliente', 'desc_cliente':'4 - desc_cliente' }, inplace=True)
+    pedido.rename(columns={'codigopedido': '1-CodPedido','datageracao':'2- datageracao','desc_tiponota':'3-TipoNota','codcliente' :'4-codcliente',
+                           'desc_cliente':'5-desc_cliente' }, inplace=True)
 
     return pedido
 
