@@ -19,7 +19,7 @@ def RegistrarInventario(usuario, data, endereco):
     conn.close()
     return True
 
-def ApontarTagInventario(codbarra, endereco, usuario):
+def ApontarTagInventario(codbarra, endereco, usuario, padrao=False):
     conn = ConexaoPostgreRailway.conexao()
 
     validador, colu1, colu_epc, colu_tamanho, colu_cor, colu_eng, colu_red, colu_desc, colu_numeroop, colu_totalop   = PesquisarTagPrateleira(codbarra)
@@ -67,7 +67,11 @@ def ApontarTagInventario(codbarra, endereco, usuario):
 
         conn.close()
         return pd.DataFrame({'Status Conferencia': [True], 'Mensagem': [f'tag: {codbarra} veio da FilaReposicao, será listado ao salvar ']})
-    if validador == 2:
+    if validador == 2 and padrao == False:
+
+        return pd.DataFrame({'Status Conferencia': [False],
+                             'Mensagem': [f'tag: {codbarra} veio de outro endereço: {colu1} , deseja prosseguir?']})
+    if validador == 2 and padrao == True:
         insert = 'INSERT INTO "Reposicao".tagsreposicao_inventario ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
                  '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", ' \
                  '"numeroop", "cor", "tamanho", "totalop", "situacaoinventario") ' \
@@ -94,6 +98,7 @@ def ApontarTagInventario(codbarra, endereco, usuario):
         return pd.DataFrame({'Status Conferencia': [False], 'Mensagem': [f'tag: {codbarra} não exite no estoque! ']})
 
 
+
 def PesquisarTagPrateleira(codbarra):
     conn = ConexaoPostgreRailway.conexao()
     query1 = pd.read_sql('SELECT "codbarrastag" from "Reposicao".tagsreposicao_inventario t '
@@ -104,12 +109,12 @@ def PesquisarTagPrateleira(codbarra):
         return 1, 2, 3, 4, 5, 6 ,7 ,8 , 9 , 10
 
     else:
-        query2 = pd.read_sql('select codbarrastag  from "Reposicao".tagsreposicao f  '
+        query2 = pd.read_sql('select codbarrastag, "Endereco"   from "Reposicao".tagsreposicao f  '
                              'where codbarrastag = ' + "'" + codbarra + "'", conn)
         if not query2.empty:
 
             conn.close()
-            return 2, 2, 2, 2,2,2,2,2,2,2
+            return 2, query2["Endereco"][0], 2, 2,2,2,2,2,2,2
         else:
             query3 = pd.read_sql('select "codbarrastag","epc", "tamanho", "Cor", "CodEngenharia" , "codReduzido",  '
                                  '"descricao" ,"numeroop", "totalop" from "Reposicao".filareposicaoportag f  '

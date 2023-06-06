@@ -6,6 +6,7 @@ from functools import wraps
 import ConecaoAWSRS
 import InventarioPrateleira
 import OPfilaRepor
+import PediosReporRailway
 import Silk_PesquisaTelas
 import Silk_PesquisaNew
 import UsuariosAWSRS
@@ -382,8 +383,9 @@ def get_ApontarTagInventario():
     codbarras = datas['codbarras']
     codusuario = datas['codUsuario']
     endereco = datas['endereço']
+    Prosseguir = datas.get('Prosseguir', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
 
-    Endereco_det = InventarioPrateleira.ApontarTagInventario(codbarras, endereco, codusuario)
+    Endereco_det = InventarioPrateleira.ApontarTagInventario(codbarras, endereco, codusuario, Prosseguir)
 
     # Obtém os nomes das colunas
     column_names = Endereco_det.columns
@@ -415,6 +417,22 @@ def get_FinalizarInventario():
             end_dict[column_name] = row[column_name]
         end_data.append(end_dict)
     return jsonify(end_data)
+
+# Aqui comeca as API's referente aos pedidos
+@app.route('/api/FilaPedidos', methods=['GET'])
+@token_required
+def get_FilaPedidos():
+    Pedidos= PediosReporRailway.FilaPedidos()
+    # Obtém os nomes das colunas
+    column_names = Pedidos.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    pedidos_data = []
+    for index, row in Pedidos.iterrows():
+        pedidos_dict = {}
+        for column_name in column_names:
+            pedidos_dict[column_name] = row[column_name]
+        pedidos_data.append(pedidos_dict)
+    return jsonify(pedidos_data)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
