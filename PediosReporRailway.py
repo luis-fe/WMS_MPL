@@ -6,9 +6,21 @@ import numpy
 def EndereçoTag(codbarra):
     conn = ConexaoPostgreRailway.conexao()
     pesquisa = pd.read_sql(
-        ' select t."Endereco"  from "Reposicao".tagsreposicao t  '
+        ' select t."Endereco",  from "Reposicao".tagsreposicao t  '
         'where codbarrastag = '+"'"+codbarra+"'", conn)
-    return pesquisa['Endereco'][0], pesquisa
+
+    pesquisa['Situacao'] = 'Reposto'
+    pesquisa2 = pd.read_sql(
+        ' select f.codbarrastag  from "Reposicao".filareposicaoportag f   '
+        'where codbarrastag = ' + "'" + codbarra + "'", conn)
+
+    pesquisa2['Situacao'] = 'na fila'
+
+    if pesquisa.empty:
+        return False, pesquisa2
+    else:
+
+        return pesquisa['Endereco'][0], pesquisa
 
 def FilaPedidos():
     conn = ConexaoPostgreRailway.conexao()
