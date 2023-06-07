@@ -96,9 +96,9 @@ def AtribuiRepositorOP(codigo, numeroop):
     cursor.close()
 def detalhaSku(codReduzido):
     conn = ConexaoPostgreRailway.conexao()
-    df_op2 = pd.read_sql('select "Enderco", "CodReduzido", "Descricao", sum(frt.CodReduzido) as saldo '
+    df_op2 = pd.read_sql('select "enderco", "CodReduzido", "Descricao", sum(frt.CodReduzido) as saldo '
                    'from "Reposicao"."tagsreposicao" frt where "CodReduzido" = ' +"'"+  codReduzido +"'"+
-                   ' group by "Enderco", "CodReduzido", "Descricao" ', conn)
+                   ' group by "enderco", "CodReduzido", "Descricao" ', conn)
     if df_op2.empty:
         return pd.DataFrame({'Mensagem':[f'O reduzido {codReduzido} ainda nao foi reposto ou esta com as prateleiras vazias ']})
     else:
