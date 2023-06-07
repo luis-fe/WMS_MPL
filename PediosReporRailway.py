@@ -10,8 +10,6 @@ def EndereçoTag(codbarra):
         'where codbarrastag = '+"'"+codbarra+"'", conn)
     return pesquisa['Endereco'][0]
 
-
-
 def FilaPedidos():
     conn = ConexaoPostgreRailway.conexao()
     pedido = pd.read_sql(' select f.codigopedido , f.vlrsugestao, f.codcliente , f.desc_cliente, f.cod_usuario, f.cidade, f.estado, '
