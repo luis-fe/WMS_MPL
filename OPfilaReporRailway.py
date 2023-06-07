@@ -96,7 +96,7 @@ def AtribuiRepositorOP(codigo, numeroop):
     cursor.close()
 def detalhaSku(codReduzido):
     conn = ConexaoPostgreRailway.conexao()
-    df_op2 = pd.read_sql('select "Endereco", "CodReduzido", "Descricao", sum(frt.CodReduzido) as saldo '
+    df_op2 = pd.read_sql('select "Endereco", "CodReduzido", "Descricao", sum("CodReduzido") as saldo '
                    'from "Reposicao"."tagsreposicao" frt where "CodReduzido" = ' +"'"+  codReduzido +"'"+
                    ' group by "Endereco", "CodReduzido", "Descricao" ', conn)
     if df_op2.empty:
