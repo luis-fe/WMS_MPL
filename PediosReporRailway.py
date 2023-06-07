@@ -11,7 +11,7 @@ def EndereçoTag(codbarra):
 
     pesquisa['Situacao'] = 'Reposto'
     pesquisa2 = pd.read_sql(
-        ' select "-" as Endereço  from "Reposicao".filareposicaoportag f   '
+        " select '-' as Endereço  from "+'"Reposicao".filareposicaoportag f   '
         'where codbarrastag = ' + "'" + codbarra + "'", conn)
 
     pesquisa2['Situacao'] = 'na fila'
