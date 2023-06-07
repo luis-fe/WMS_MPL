@@ -433,7 +433,21 @@ def get_FilaPedidos():
             pedidos_dict[column_name] = row[column_name]
         pedidos_data.append(pedidos_dict)
     return jsonify(pedidos_data)
-
+@app.route('/api/FilaPedidosUsuario', methods=['GET'])
+@token_required
+def get_FilaPedidosUsuario():
+    codUsuario = request.args.get('codUsuario')
+    Pedidos= PediosReporRailway.FilaAtribuidaUsuario(codUsuario)
+    # Obtém os nomes das colunas
+    column_names = Pedidos.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    pedidos_data = []
+    for index, row in Pedidos.iterrows():
+        pedidos_dict = {}
+        for column_name in column_names:
+            pedidos_dict[column_name] = row[column_name]
+        pedidos_data.append(pedidos_dict)
+    return jsonify(pedidos_data)
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
     cursor.close()

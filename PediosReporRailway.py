@@ -25,4 +25,9 @@ def FilaPedidos():
 
     return pedido
 
+def FilaAtribuidaUsuario(codUsuario):
+    x = FilaPedidos()
+    codUsuario = str(codUsuario)
+    x = x[x['10-codUsuarioAtribuido'] == codUsuario]
+    return x
 
