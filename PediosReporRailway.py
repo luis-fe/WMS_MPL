@@ -31,7 +31,7 @@ def EndereçoTag(codbarra):
 
         return pesquisa['Endereco'][0], pesquisa
     else:
-        return False, False
+        return False, pd.DataFrame({'Mensagem': [False]})
 
 
 def FilaPedidos():
