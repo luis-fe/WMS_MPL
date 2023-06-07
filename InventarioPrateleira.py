@@ -200,7 +200,7 @@ def SalvarInventario(endereco):
              '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", ' \
              '"numeroop", "cor", "tamanho", "totalop") ' \
              'SELECT "Usuario", "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
-             '"DataReposicao", "Descricao", "Epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop"' \
+             '"DataReposicao", "Descricao", "Epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop" ' \
              'FROM "Reposicao".tagsreposicao_inventario t ' \
              'WHERE "Endereco" = %s and "situacaoinventario" = %s ;'
     cursor = conn.cursor()

@@ -58,3 +58,20 @@ def FilaAtribuidaUsuario(codUsuario):
     x = x[x['10-codUsuarioAtribuido'] == codUsuario]
     return x
 
+def NecessidadesPedidos():
+    # Trazer o dataframe das sugestoes em abertos a nivel de sku
+    conn = ConexaoPostgreRailway.conexao()
+    pedidos = pd.read_sql()
+
+    # criar uma coluna para a necessidade do sku , segundo o criterio de ordenamento
+
+    # passo 3: criar uma coluna que busca no primeiro endereço se a quantidade atende
+
+
+    # Replicando a regra para os proximos endereços.
+
+    return 'calcaular a necessidade dos pedidos'
+
+def ApontamentoTagSeparacao():
+
+    return 'API de apontar as tags separadas'
