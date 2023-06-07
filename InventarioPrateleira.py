@@ -224,8 +224,20 @@ def SalvarInventario(endereco):
              'WHERE "Endereco" = '+ "'"+endereco+"'"+' and "situacaoinventario" is not null ;', conn)
 
     #Autorizar migracao
-
     numero_tagsMigradas = Aviso["Endereco"].size
+
+    insert = 'INSERT INTO "Reposicao".tagsreposicao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
+             '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", ' \
+             '"numeroop", "cor", "tamanho", "totalop") ' \
+             'SELECT "Usuario", "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
+             '"DataReposicao", "Descricao", "Epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop" ' \
+             'FROM "Reposicao".tagsreposicao_inventario t ' \
+             'WHERE "Endereco" = %s and "situacaoinventario" is not null ;'
+    cursor = conn.cursor()
+    cursor.execute(insert, (endereco))
+    numero_linhas_afetadas = cursor.rowcount
+    conn.commit()
+    cursor.close()
 
     # deletar as tag's MIGRADAS
 
