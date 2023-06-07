@@ -15,6 +15,12 @@ def EndereçoTag(codbarra):
         'where codbarrastag = ' + "'" + codbarra + "'", conn)
 
     pesquisa2['Situacao'] = 'na fila'
+    pesquisa3 = pd.read_sql(
+        ' select f.Endereco  from "Reposicao".tagsreposicao_inventario f   '
+        'where codbarrastag = ' + "'" + codbarra + "'", conn)
+
+    pesquisa3['Situacao'] = f'em inventario no endereço: {pesquisa3["Endereco"][0]}'
+    conn.close()
 
     if pesquisa.empty:
         return False, pesquisa2
