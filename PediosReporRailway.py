@@ -23,10 +23,10 @@ def EndereçoTag(codbarra):
     conn.close()
 
     if not pesquisa2.empty:
-        return False, pesquisa2
+        return 'Na fila ', pesquisa2
 
     if not pesquisa3.empty:
-        return False, pesquisa3
+        return 'em inventario ', pesquisa3
     else:
 
         return pesquisa['Endereco'][0], pesquisa
