@@ -8,7 +8,7 @@ import numpy
 def FilaPedidos():
     conn = ConexaoPostgreRailway.conexao()
     pedido = pd.read_sql(' select f.codigopedido , f.vlrsugestao, f.codcliente , f.desc_cliente, f.cod_usuario, f.cidade, f.estado, '
-                         'datageracao, f.codrepresentante , f.desc_representante, f.desc_tiponota, f,condicaopgto , f.agrupamentopedido  ' 
+                         'datageracao, f.codrepresentante , f.desc_representante, f.desc_tiponota, condicaopgto, agrupamentopedido  ' 
                         '  from "Reposicao".filaseparacaopedidos f ',conn)
 
     usuarios = pd.read_sql(

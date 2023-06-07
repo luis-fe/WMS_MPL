@@ -448,6 +448,7 @@ def get_FilaPedidosUsuario():
             pedidos_dict[column_name] = row[column_name]
         pedidos_data.append(pedidos_dict)
     return jsonify(pedidos_data)
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
     cursor.close()
