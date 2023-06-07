@@ -8,7 +8,7 @@ def EndereçoTag(codbarra):
     pesquisa = pd.read_sql(
         ' select t."Endereco"  from "Reposicao".tagsreposicao t  '
         'where codbarrastag = '+"'"+codbarra+"'", conn)
-    return pesquisa['Endereco'][0]
+    return pesquisa['Endereco'][0], pesquisa
 
 def FilaPedidos():
     conn = ConexaoPostgreRailway.conexao()

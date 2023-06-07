@@ -277,12 +277,12 @@ def get_DetalhaEndereco():
 def get_DetalhaTag():
     # Obtém o código do usuário e a senha dos parâmetros da URL
     codbarra = request.args.get('codbarra')
-    op = PediosReporRailway.EndereçoTag(codbarra)
+    codbarra, codbarra1 = PediosReporRailway.EndereçoTag(codbarra)
     # Obtém os nomes das colunas
-    column_names = op.columns
+    column_names = codbarra1.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
     OP_data = []
-    for index, row in op.iterrows():
+    for index, row in codbarra1.iterrows():
         op_dict = {}
         for column_name in column_names:
             op_dict[column_name] = row[column_name]
@@ -311,7 +311,7 @@ def get_ApontaReposicao():
             return jsonify({'message': f'codigoBarras {codbarra} estornado !'})
 
         else:
-            ender = PediosReporRailway.EndereçoTag(codbarra)
+            ender, ender2 = PediosReporRailway.EndereçoTag(codbarra)
             return jsonify({'message': f'codigoBarras {codbarra} ja reposto no endereço {ender}'})
     if Apontamento == False:
         return jsonify({'message': False, 'Status': f'codigoBarras {codbarra} nao existe no Estoque'})
