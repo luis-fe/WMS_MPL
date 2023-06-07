@@ -234,7 +234,7 @@ def SalvarInventario(endereco):
              'FROM "Reposicao".tagsreposicao_inventario t ' \
              'WHERE "Endereco" = %s and "situacaoinventario" is not null ;'
     cursor = conn.cursor()
-    cursor.execute(insert, (endereco))
+    cursor.execute(insert, (endereco,))
     numero_linhas_afetadas = cursor.rowcount
     conn.commit()
     cursor.close()
