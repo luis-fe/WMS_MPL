@@ -6,7 +6,7 @@ import numpy
 def EndereçoTag(codbarra):
     conn = ConexaoPostgreRailway.conexao()
     pesquisa = pd.read_sql(
-        ' select t."Endereco",  from "Reposicao".tagsreposicao t  '
+        ' select t."Endereco"  from "Reposicao".tagsreposicao t  '
         'where codbarrastag = '+"'"+codbarra+"'", conn)
 
     pesquisa['Situacao'] = 'Reposto'
