@@ -227,6 +227,23 @@ def get_DetalhaOPxSKU():
         OP_data.append(op_dict)
     return jsonify(OP_data)
 
+@app.route('/api/DetalhaSKU', methods=['GET'])
+@token_required
+def get_DetalhaSKU():
+    # Obtém o código do usuário e a senha dos parâmetros da URL
+    codreduzido = request.args.get('codreduzido')
+    op = OPfilaReporRailway.detalhaSku(codreduzido)
+    # Obtém os nomes das colunas
+    column_names = op.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    OP_data = []
+    for index, row in op.iterrows():
+        op_dict = {}
+        for column_name in column_names:
+            op_dict[column_name] = row[column_name]
+        OP_data.append(op_dict)
+    return jsonify(OP_data)
+
 @app.route('/api/Enderecos', methods=['GET'])
 @token_required
 def get_enderecos():
