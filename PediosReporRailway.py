@@ -27,9 +27,12 @@ def EndereçoTag(codbarra):
 
     if not pesquisa3.empty:
         return 'em inventario ', pesquisa3
-    else:
+    if not pesquisa.empty:
 
         return pesquisa['Endereco'][0], pesquisa
+    else:
+        return False, False
+
 
 def FilaPedidos():
     conn = ConexaoPostgreRailway.conexao()
