@@ -295,7 +295,8 @@ def get_ApontaReposicao():
             return jsonify({'message': f'codigoBarras {codbarra} estornado !'})
 
         else:
-            return jsonify({'message': f'codigoBarras {codbarra} ja reposto'})
+            ender = ReposicaoRailway.PesquisaEnderecosSKU(codbarra)
+            return jsonify({'message': f'codigoBarras {codbarra} ja reposto no endereço {ender}'})
     if Apontamento == False:
         return jsonify({'message': False, 'Status': f'codigoBarras {codbarra} nao existe no Estoque'})
     else:

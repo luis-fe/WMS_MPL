@@ -3,7 +3,12 @@ import pandas as pd
 
 import numpy
 
-
+def EndereçoTag(codbarra):
+    conn = ConexaoPostgreRailway.conexao()
+    pesquisa = pd.read_sql(
+        ' select codbarrastag  from "Reposicao".filareposicaoportag f  where '
+        'codbarrastag = '+"'"+codbarra+"'", conn)
+    return pesquisa['codbarrastag'][0]
 
 def FilaPedidos():
     conn = ConexaoPostgreRailway.conexao()
