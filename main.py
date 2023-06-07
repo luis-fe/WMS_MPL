@@ -272,6 +272,22 @@ def get_DetalhaEndereco():
             end_dict[column_name] = row[column_name]
         end_data.append(end_dict)
     return jsonify(end_data)
+@app.route('/api/DetalhaTag', methods=['GET'])
+@token_required
+def get_DetalhaTag():
+    # Obtém o código do endereco e a senha dos parâmetros da URL
+    Endereco = request.args.get('Endereco')
+    Endereco_det = ReposicaoRailway.SituacaoEndereco(Endereco)
+    # Obtém os nomes das colunas
+    column_names = Endereco_det.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    end_data = []
+    for index, row in Endereco_det.iterrows():
+        end_dict = {}
+        for column_name in column_names:
+            end_dict[column_name] = row[column_name]
+        end_data.append(end_dict)
+    return jsonify(end_data)
     
 
 @app.route('/api/ApontamentoReposicao', methods=['POST'])
