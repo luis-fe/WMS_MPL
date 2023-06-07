@@ -8,7 +8,7 @@ import numpy
 def FilaPedidos():
     conn = ConexaoPostgreRailway.conexao()
     pedido = pd.read_sql(' select f.codigopedido , f.vlrsugestao, f.codcliente , f.desc_cliente, f.cod_usuario, f.cidade, f.estado, '
-                         'datageracao, f.codrepresentante , f.desc_representante, f.desc_tiponota ' 
+                         'datageracao, f.codrepresentante , f.desc_representante, f.desc_tiponota, f,condicaopgto , f.agrupamentopedido  ' 
                         '  from "Reposicao".filaseparacaopedidos f ',conn)
 
     usuarios = pd.read_sql(
@@ -19,7 +19,8 @@ def FilaPedidos():
     pedido.rename(columns={'codigopedido': '01-CodPedido','datageracao':'02- Data Sugestao','desc_tiponota':'03-TipoNota','codcliente' :'04-codcliente',
                            'desc_cliente':'05-desc_cliente', 'cidade':'06-cidade', 'estado':'07-estado',
                            'codrepresentante':'08-codrepresentante', 'desc_representante':'09-Repesentante','cod_usuario' :'10-codUsuarioAtribuido',
-                           'nomeusuario_atribuido':'11-NomeUsuarioAtribuido','vlrsugestao':'12-vlrsugestao'}, inplace=True)
+                           'nomeusuario_atribuido':'11-NomeUsuarioAtribuido','vlrsugestao':'12-vlrsugestao',
+                           'condicaopgto':'13-CondPgto' , 'agrupamentopedido':'14-AgrupamentosPedido' }, inplace=True)
 
     pedido['12-vlrsugestao'] = 'R$ '+pedido['12-vlrsugestao']
 
