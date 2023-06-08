@@ -39,9 +39,9 @@ def FilaPedidos():
     pedido = pd.read_sql(' select f.codigopedido , f.vlrsugestao, f.codcliente , f.desc_cliente, f.cod_usuario, f.cidade, f.estado, '
                          'datageracao, f.codrepresentante , f.desc_representante, f.desc_tiponota, condicaopgto, agrupamentopedido  ' 
                         '  from "Reposicao".filaseparacaopedidos f ',conn)
-    pedidosku = pd.read_sql('select codpedido, sum(qtdesugerida) as 15-qtdesugerida  from "Reposicao".pedidossku p  '
+    pedidosku = pd.read_sql('select codpedido, sum(qtdesugerida) as qtdesugerida  from "Reposicao".pedidossku p  '
                             'group by codpedido ',conn)
-    pedidosku.rename(columns={'codpedido':'01-CodPedido'},inplace=True)
+    pedidosku.rename(columns={'codpedido':'01-CodPedido', 'qtdesugerida':'15-qtdesugerida'},inplace=True)
 
     usuarios = pd.read_sql(
         'select codigo as cod_usuario , nome as nomeusuario_atribuido  from "Reposicao".cadusuarios c ', conn)
