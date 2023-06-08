@@ -1,7 +1,11 @@
 import ConexaoPostgreRailway
 import pandas as pd
+import datetime
 import numpy
-
+def obterHoraAtual():
+    agora = datetime.datetime.now()
+    hora_str = agora.strftime('%Y-%m-%d %H:%M:%S')
+    return hora_str
 def RegistrarInventario(usuario, data, endereco):
     conn = ConexaoPostgreRailway.conexao()
     # VERIFICANDO SE EXISTE CODIGO DE BARRAS DUPLICADOS NA FILA
@@ -225,16 +229,16 @@ def SalvarInventario(endereco):
 
     #Autorizar migracao
     numero_tagsMigradas = Aviso["Endereco"].size
-
+    datahora = obterHoraAtual()
     insert = 'INSERT INTO "Reposicao".tagsreposicao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
              '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", ' \
              '"numeroop", "cor", "tamanho", "totalop") ' \
              'SELECT "Usuario", "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
-             '"DataReposicao", "Descricao", "Epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop" ' \
+             '%s , "Descricao", "Epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop" ' \
              'FROM "Reposicao".tagsreposicao_inventario t ' \
              'WHERE "Endereco" = %s and "situacaoinventario" is not null ;'
     cursor = conn.cursor()
-    cursor.execute(insert, (endereco,))
+    cursor.execute(insert, (datahora, endereco))
     numero_linhas_afetadas = cursor.rowcount
     conn.commit()
     cursor.close()
