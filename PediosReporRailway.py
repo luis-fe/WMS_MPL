@@ -139,7 +139,7 @@ def DetalhaPedido(codPedido):
                             ' from "Reposicao".pedidossku p  where codpedido= '+"'"+codPedido+"'",conn)
     descricaoSku = pd.read_sql( 'select f."codReduzido" as reduzido, f."descricao" , f."Cor" , f.tamanho  from "Reposicao".filareposicaoportag f '
                                 'group by f."codReduzido", f.descricao , f."Cor" , f.tamanho '
-                                ' union'
+                                ' union '
                                 'select t."CodReduzido", t."Descricao" , t.cor , t.tamanho  from "Reposicao".tagsreposicao t '
                                 'group by  t."CodReduzido", t."Descricao" , t.cor , t.tamanho',conn)
     descricaoSku.drop_duplicates(subset='reduzido', inplace=True)
