@@ -135,8 +135,15 @@ def DetalhaPedido(codPedido):
                                 ',codrepresentante  ||'+"'-'"+'|| desc_representante  as repres '
                                 'from "Reposicao".filaseparacaopedidos f  where codigopedido= '+"'"+codPedido+"'"
                                 ,conn)
-    DetalhaSku = pd.read_sql('select  produto as reduzido, qtdesugerida , status as concluido_X_total, enderco'
+    DetalhaSku = pd.read_sql('select  produto as reduzido, qtdesugerida , status as concluido_X_total, enderco as endereco'
                             ' from "Reposicao".pedidossku p  where codpedido= '+"'"+codPedido+"'",conn)
+    descricaoSku = pd.read_sql( 'select f."codReduzido" as reduzido, f."descricao" , f."Cor" , f.tamanho  from "Reposicao".filareposicaoportag f '
+                                'group by f."codReduzido", f.descricao , f."Cor" , f.tamanho '
+                                'union'
+                                'select t."CodReduzido", t."Descricao" , t.cor , t.tamanho  from "Reposicao".tagsreposicao t '
+                                'group by  t."CodReduzido", t."Descricao" , t.cor , t.tamanho',conn)
+    descricaoSku.drop_duplicates(subset='reduzido', inplace=True)
+    DetalhaSku = pd.merge(DetalhaSku,descricaoSku,on='reduzido',how='left')
 
     data = {
         '1 - codpedido': f'{skus["codigopedido"][0]} ',
