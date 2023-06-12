@@ -150,6 +150,9 @@ def get_TagsReposicao():
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
     TagReposicao_data = []
     for row in TagReposicao:
+        # Converte a coluna 'Qtde' para inteiro
+        row = list(row)  # Convertendo a tupla em uma lista mutável
+        row[1] = int(row[1])  # Convertendo o valor da coluna 'Qtde' para inteiro
         TagReposicao_dict = dict(zip(column_names, row))
         TagReposicao_data.append(TagReposicao_dict)
 

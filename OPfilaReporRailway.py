@@ -5,13 +5,23 @@ import numpy
 def ProdutividadeRepositores():
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
-    cursor.execute('select tr."Usuario", '
+    cursor.execute('select  "Usuario", sum(count), "DataReposicao", "min" , "max"   from '
+                   '(select tr."Usuario", '
                    'count(tr."codbarrastag"), '
-                   'substring("DataReposicao",1,10) as DataReposicao, '
+                   'substring("DataReposicao",1,10) as "DataReposicao", '
                    'min("DataReposicao") as min, '
                    'max("DataReposicao") as max '
                    'from "Reposicao"."tagsreposicao" tr '
-                   'group by "Usuario" , substring("DataReposicao",1,10) ')
+                   'group by "Usuario" , substring("DataReposicao",1,10) '
+                   'union '
+                   'select tr."Usuario", '
+                   'count(tr."codbarrastag"), '
+                   'substring("DataReposicao",1,10) as "DataReposicao", '
+                   'min("DataReposicao") as min, '
+                   'max("DataReposicao") as max '
+                   'from "Reposicao".tags_separacao tr '
+                   'group by "Usuario" , substring("DataReposicao",1,10)) as grupo '
+                   'group by "DataReposicao", "min", "max", "Usuario"  ')
     TagReposicao = cursor.fetchall()
     return TagReposicao
 
