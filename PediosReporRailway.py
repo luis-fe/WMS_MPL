@@ -96,41 +96,44 @@ def DetalhaPedido(codPedido):
 def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco):
     validacao, colunaReduzido, colunaNecessidade = VerificacoesApontamento(codbarra,codpedido)
     if validacao == 1:
-        conn = ConexaoPostgreRailway.conexao()
-        insert = 'INSERT INTO "Reposicao".tags_separacao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
-                 '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", ' \
-                 '"numeroop", "cor", "tamanho", "totalop", "codpedido") ' \
-                 'SELECT %s, "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
-                 '"DataReposicao", "Descricao", "Epc", %s, "numeroop", "cor", "tamanho", "totalop", ' \
-                 "%s" \
-                 'FROM "Reposicao".tagsreposicao t ' \
-                 'WHERE "codbarrastag" = %s;'
-        cursor = conn.cursor()
-        cursor.execute(insert, (codusuario,'tagSeparado',codpedido, codbarra))
-        conn.commit()
-        cursor.close()
-        delete = 'Delete from "Reposicao"."tagsreposicao"  ' \
-                 'where "codbarrastag" = %s;'
-        cursor = conn.cursor()
-        cursor.execute(delete
-                       , (
-                           codbarra,))
-        conn.commit()
-        cursor.close()
-        uptadePedido = 'UPDATE "Reposicao".pedidossku' \
-                 ' SET necessidade= %s ' \
-                 'where "produto" = %s and codpedido= %s ;'
-        colunaNecessidade = colunaNecessidade -1
-        cursor = conn.cursor()
-        cursor.execute(uptadePedido
-                       , (
-                           colunaNecessidade,colunaReduzido,codpedido))
-        conn.commit()
-        cursor.close()
+        if colunaNecessidade <= 0:
+            return pd.DataFrame({'Mensagem': [f'o produto {colunaReduzido} já foi totalmente bipado. Deseja estornar ?']})
+        else:
+            conn = ConexaoPostgreRailway.conexao()
+            insert = 'INSERT INTO "Reposicao".tags_separacao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
+                     '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", ' \
+                     '"numeroop", "cor", "tamanho", "totalop", "codpedido") ' \
+                     'SELECT %s, "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
+                     '"DataReposicao", "Descricao", "Epc", %s, "numeroop", "cor", "tamanho", "totalop", ' \
+                     "%s" \
+                     'FROM "Reposicao".tagsreposicao t ' \
+                     'WHERE "codbarrastag" = %s;'
+            cursor = conn.cursor()
+            cursor.execute(insert, (codusuario,'tagSeparado',codpedido, codbarra))
+            conn.commit()
+            cursor.close()
+            delete = 'Delete from "Reposicao"."tagsreposicao"  ' \
+                     'where "codbarrastag" = %s;'
+            cursor = conn.cursor()
+            cursor.execute(delete
+                           , (
+                               codbarra,))
+            conn.commit()
+            cursor.close()
+            uptadePedido = 'UPDATE "Reposicao".pedidossku' \
+                     ' SET necessidade= %s ' \
+                     'where "produto" = %s and codpedido= %s ;'
+            colunaNecessidade = colunaNecessidade -1
+            cursor = conn.cursor()
+            cursor.execute(uptadePedido
+                           , (
+                               colunaNecessidade,colunaReduzido,codpedido))
+            conn.commit()
+            cursor.close()
 
-        # atualizando a necessidade
-        conn.close()
-        return pd.DataFrame({'Mensagem': [f'tag {codbarra} apontada!']})
+            # atualizando a necessidade
+            conn.close()
+            return pd.DataFrame({'Mensagem': [f'tag {codbarra} apontada!']})
     if validacao ==2:
         return pd.DataFrame({'Mensagem': [f'pedido {codpedido} nao encontrado']})
     else:
