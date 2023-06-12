@@ -67,67 +67,6 @@ def FilaAtribuidaUsuario(codUsuario):
     x = x[x['10-codUsuarioAtribuido'] == codUsuario]
     return x
 
-def NecessidadesPedidos():
-    # Trazer o dataframe das sugestoes em abertos a nivel de sku
-    conn = ConexaoPostgreRailway.conexao()
-    pedidos = pd.read_sql('select codigopedido as codpedido, codtiponota , agrupamentopedido  from "Reposicao".filaseparacaopedidos f ',conn)
-    pedidossku = pd.read_sql(
-        'select codpedido, necessidade, produto as codreduzido  from "Reposicao".pedidossku p  '
-        'where necessidade > 0',conn)
-    pedidos = pd.merge(pedidos,pedidossku,on='codpedido')
-    # Passo 2 : criterio de prioridade
-    # Passo 3: criar uma coluna para a necessidade do sku , segundo o criterio de ordenamento
-    pedidos['necessidadeSKU'] =pedidos.groupby('codreduzido').cumcount() + 1
-
-    # passo 4: data frame do estoque por endereco
-    estoque = pd.read_sql('select "Endereco" , "CodReduzido" as codreduzido , count("CodReduzido") as saldo  from "Reposicao".tagsreposicao t '
-                          'group by "Endereco" , "CodReduzido" ',conn)
-    estoque = estoque.sort_values(by='saldo', ascending=False)  # escolher como deseja classificar
-    estoque['ordemAparicao'] =estoque.groupby('codreduzido').cumcount() + 1
-        #4.1 Obtendo o ordenamento max do estoque
-    maxOrdem = max(estoque['ordemAparicao'])
-
-    #Passo 5 - criando colunas de acordo com o numero maximo de estoque encontrado:
-    for i in range(maxOrdem):
-        col_name = f'endereco -{i+1}'  # Nome da coluna baseado no valor do loop
-        col_name2 = f'saldo -{i + 1}'  # Nome da coluna baseado no valor do loop
-        enderecoi = estoque[estoque['ordemAparicao']==(i+1)]
-        enderecoi = enderecoi[['codreduzido', 'Endereco', 'saldo']]  # Especificar as colunas 'A' e 'C'
-        enderecoi[col_name] = enderecoi['Endereco']  # Criar a coluna com o valor do loop
-        enderecoi[col_name2] = enderecoi['saldo']  # Criar a coluna com o valor do loop
-        enderecoi[col_name2] = enderecoi[col_name2].astype(int)
-        pedidos = pd.merge(pedidos, enderecoi, on='codreduzido',how='left')
-    pedidos['Necessidade Endereco'] = 0
-    pedidos['Endereco official'] = '%'
-    for i in range(maxOrdem):
-        col_name = f'endereco -{i+1}'  # Nome da coluna baseado no valor do loop
-        col_name2 = f'saldo -{i + 1}'  # Nome da coluna baseado no valor do loop
-        pedidos[col_name2] = pedidos[col_name2].replace('', numpy.nan).fillna(0)
-
-        pedidos["Necessidade Endereco"] = pedidos.apply(
-            lambda row: row['necessidadeSKU'] if row['necessidadeSKU'] <= row[col_name2] and row["Necessidade Endereco"]  ==0 else row["Necessidade Endereco"] , axis=1)
-
-        pedidos["Endereco official"] = pedidos.apply(
-            lambda row: row[col_name] if row['Necessidade Endereco'] >0 and row["Endereco official"]  =='%'   else '%' , axis=1)
-
-       # pedidos["necessidade"] = pedidos.apply(
-        #    lambda row: row['necessidade']-row["Necessidade Endereco"]  if row['necessidade'] > 0 else 0 , axis=1)
-
-       # pedidos['necessidadeSKU'] = pedidos.groupby('codreduzido')['necessidade'].cumsum()
-
-        #pedidos['Endereço Oficial'] = if
-
-
-    # Replicando a regra para os proximos endereços.
-    pedidos.to_csv('necessidade.csv')
-    estoque.to_csv('estoque.csv')
-    return print(pedidos)
-
-def ApontamentoTagSeparacao():
-
-    return 'API de apontar as tags separadas'
-
-
 
 def DetalhaPedido(codPedido):
     conn = ConexaoPostgreRailway.conexao()
@@ -135,7 +74,7 @@ def DetalhaPedido(codPedido):
                                 ',codrepresentante  ||'+"'-'"+'|| desc_representante  as repres '
                                 'from "Reposicao".filaseparacaopedidos f  where codigopedido= '+"'"+codPedido+"'"
                                 ,conn)
-    DetalhaSku = pd.read_sql('select  produto as reduzido, qtdesugerida , status as concluido_X_total, enderco as endereco'
+    DetalhaSku = pd.read_sql('select  produto as reduzido, qtdesugerida , status as concluido_X_total, endereco as endereco'
                             ' from "Reposicao".pedidossku p  where codpedido= '+"'"+codPedido+"'",conn)
     descricaoSku = pd.read_sql( 'select f."codReduzido" as reduzido, f."descricao" , f."Cor" , f.tamanho  from "Reposicao".filareposicaoportag f '
                                 'group by f."codReduzido", f.descricao , f."Cor" , f.tamanho '
@@ -153,3 +92,21 @@ def DetalhaPedido(codPedido):
         '5- Detalhamento dos Sku:': DetalhaSku.to_dict(orient='records')
     }
     return [data]
+
+def ApontamentoTagPedido(codusuario, codpedido, codbarra):
+    conn = ConexaoPostgreRailway.conexao()
+    insert = 'INSERT INTO "Reposicao".tags_separacao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
+             '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", ' \
+             '"numeroop", "cor", "tamanho", "totalop", "codpedido") ' \
+             'SELECT %s, "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
+             '"DataReposicao", "Descricao", "Epc", %s, "numeroop", "cor", "tamanho", "totalop", ' \
+             "%s" \
+             'FROM "Reposicao".tagsreposicao t ' \
+             'WHERE "codbarrastag" = %s;'
+    cursor = conn.cursor()
+    cursor.execute(insert, (codusuario,'tagSeparado',codpedido, codbarra))
+    conn.commit()
+    cursor.close()
+    return 'teste'
+
+ApontamentoTagPedido('1414', '2','01000065171203002917')
