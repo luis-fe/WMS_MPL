@@ -94,7 +94,7 @@ def DetalhaPedido(codPedido):
     return [data]
 
 def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco):
-    validacao = VerificacoesApontamento(codbarra)
+    validacao, colunaReduzido, colunaNecessidade = VerificacoesApontamento(codbarra,codpedido)
     if validacao == 1:
         conn = ConexaoPostgreRailway.conexao()
         insert = 'INSERT INTO "Reposicao".tags_separacao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
@@ -117,22 +117,54 @@ def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco):
                            codbarra,))
         conn.commit()
         cursor.close()
+        uptadePedido = 'UPDATE "Reposicao".pedidossku' \
+                 ' SET necessidade= %s ' \
+                 'where "produto" = %s and codpedido= %s ;'
+        colunaNecessidade = colunaNecessidade -1
+        cursor = conn.cursor()
+        cursor.execute(uptadePedido
+                       , (
+                           colunaNecessidade,colunaReduzido,codpedido))
+        conn.commit()
+        cursor.close()
+
+        # atualizando a necessidade
         conn.close()
         return pd.DataFrame({'Mensagem': [f'tag {codbarra} apontada!']})
+    if validacao ==2:
+        return pd.DataFrame({'Mensagem': [f'pedido {codpedido} nao encontrado']})
     else:
         return pd.DataFrame({'Mensagem': [f'tag nao encontrada no estoque do endereço']})
 
 
 
 
-def VerificacoesApontamento(codbarra):
+def VerificacoesApontamento(codbarra, codpedido):
     conn = ConexaoPostgreRailway.conexao()
     pesquisa = pd.read_sql(
-        ' select codbarrastag   from "Reposicao".tagsreposicao f   '
+        ' select "codbarrastag", "CodReduzido" as codreduzido  from "Reposicao".tagsreposicao f   '
         'where codbarrastag = ' + "'" + codbarra + "'", conn)
-    conn.close()
+
     if not pesquisa.empty:
-        return 1
+        pesquisa2 = pd.read_sql(
+            ' select p.codpedido, p.produto , p.necessidade  from "Reposicao".pedidossku p    '
+            'where codpedido = ' + "'" + codpedido + "' and produto = "+"'"+pesquisa['codreduzido'][0]+"'", conn)
+        conn.close()
+        if not pesquisa2.empty:
+            return 1, pesquisa['codreduzido'][0],pesquisa2['necessidade'][0]
+        else:
+            return 2, pesquisa['codreduzido'][0],2
     else:
-        return 0
+        conn.close()
+        return 0, 0,0
+
+def pesquisarSKUxPedido(codpedido,reduzido):
+    conn = ConexaoPostgreRailway.conexao()
+    pesquisa2 = pd.read_sql(
+        ' select p.codpedido, p.produto , p.necessidade  from "Reposicao".pedidossku p    '
+        'where codpedido = ' + "'" + codpedido + "' and produto = " + "'" + reduzido+ "'", conn)
+    conn.close()
+    return pesquisa2
+
+#print(pesquisarSKUxPedido('290175','591184'))
 
