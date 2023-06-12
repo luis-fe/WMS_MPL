@@ -93,20 +93,46 @@ def DetalhaPedido(codPedido):
     }
     return [data]
 
-def ApontamentoTagPedido(codusuario, codpedido, codbarra):
-    conn = ConexaoPostgreRailway.conexao()
-    insert = 'INSERT INTO "Reposicao".tags_separacao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
-             '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", ' \
-             '"numeroop", "cor", "tamanho", "totalop", "codpedido") ' \
-             'SELECT %s, "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
-             '"DataReposicao", "Descricao", "Epc", %s, "numeroop", "cor", "tamanho", "totalop", ' \
-             "%s" \
-             'FROM "Reposicao".tagsreposicao t ' \
-             'WHERE "codbarrastag" = %s;'
-    cursor = conn.cursor()
-    cursor.execute(insert, (codusuario,'tagSeparado',codpedido, codbarra))
-    conn.commit()
-    cursor.close()
-    return 'teste'
+def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco):
+    validacao = VerificacoesApontamento(codbarra)
+    if validacao == 1:
+        conn = ConexaoPostgreRailway.conexao()
+        insert = 'INSERT INTO "Reposicao".tags_separacao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
+                 '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", ' \
+                 '"numeroop", "cor", "tamanho", "totalop", "codpedido") ' \
+                 'SELECT %s, "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
+                 '"DataReposicao", "Descricao", "Epc", %s, "numeroop", "cor", "tamanho", "totalop", ' \
+                 "%s" \
+                 'FROM "Reposicao".tagsreposicao t ' \
+                 'WHERE "codbarrastag" = %s;'
+        cursor = conn.cursor()
+        cursor.execute(insert, (codusuario,'tagSeparado',codpedido, codbarra))
+        conn.commit()
+        cursor.close()
+        delete = 'Delete from "Reposicao"."tagsreposicao"  ' \
+                 'where "codbarrastag" = %s;'
+        cursor = conn.cursor()
+        cursor.execute(delete
+                       , (
+                           codbarra,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return pd.DataFrame({'Mensagem': [f'tag {codbarra} apontada!']})
+    else:
+        return pd.DataFrame({'Mensagem': [f'tag nao encontrada no estoque do endereço']})
 
-ApontamentoTagPedido('1414', '2','01000065171203002917')
+
+
+
+def VerificacoesApontamento(codbarra):
+    conn = ConexaoPostgreRailway.conexao()
+    pesquisa = pd.read_sql(
+        ' select codbarrastag   from "Reposicao".tagsreposicao f   '
+        'where codbarrastag = ' + "'" + codbarra + "'", conn)
+    conn.close()
+    if not pesquisa.empty:
+        return 1
+    else:
+        return 0
+
