@@ -551,7 +551,6 @@ def get_ApontarTagReduzido():
     return jsonify(end_data)
 
 @app.route('/api/RelatorioEndereços', methods=['GET'])
-@token_required
 
 def get_RelatorioEndereços():
     # Obtém os dados do corpo da requisição (JSON)
