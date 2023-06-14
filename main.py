@@ -1,19 +1,16 @@
 from flask import Flask, render_template, jsonify, request
 import pandas as pd
 import os
-
 from functools import wraps
 import ConecaoAWSRS
 import InventarioPrateleira
-
 import PediosReporRailway
-
+import Relatorios
 import Silk_PesquisaNew
-
 import UsuariosRailway
 import OPfilaReporRailway
-
 import ReposicaoRailway
+import ReposicaoSkuRailway
 #TESTE
 
 app = Flask(__name__)
@@ -517,6 +514,49 @@ def get_ApontamentoTagPedido():
     Prosseguir = datas.get('Prosseguir', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
 
     Endereco_det = PediosReporRailway.ApontamentoTagPedido(str(codusuario), codpedido, codbarra, endereco)
+
+    # Obtém os nomes das colunas
+    column_names = Endereco_det.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    end_data = []
+    for index, row in Endereco_det.iterrows():
+        end_dict = {}
+        for column_name in column_names:
+            end_dict[column_name] = row[column_name]
+        end_data.append(end_dict)
+    return jsonify(end_data)
+@app.route('/api/ApontarTagReduzido', methods=['POST'])
+@token_required
+def get_ApontarTagReduzido():
+    # Obtém os dados do corpo da requisição (JSON)
+    datas = request.get_json()
+
+    codusuario = datas['codUsuario']
+    dataHora = datas['dataHora']
+    endereco = datas['endereço']
+    codbarra = datas['codbarras']
+    Prosseguir = datas.get('Prosseguir', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
+
+    Endereco_det = ReposicaoSkuRailway.ApontarTagReduzido(codbarra,endereco,codusuario,'dataHora',Prosseguir)
+
+    # Obtém os nomes das colunas
+    column_names = Endereco_det.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    end_data = []
+    for index, row in Endereco_det.iterrows():
+        end_dict = {}
+        for column_name in column_names:
+            end_dict[column_name] = row[column_name]
+        end_data.append(end_dict)
+    return jsonify(end_data)
+
+@app.route('/api/RelatorioEndereços', methods=['GET'])
+@token_required
+def get_RelatorioEndereços():
+    # Obtém os dados do corpo da requisição (JSON)
+
+
+    Endereco_det = Relatorios.relatorioEndereços()
 
     # Obtém os nomes das colunas
     column_names = Endereco_det.columns
