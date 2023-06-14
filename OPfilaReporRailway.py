@@ -24,6 +24,18 @@ def ProdutividadeRepositores():
                    'group by "DataReposicao", "min", "max", "Usuario"  ')
     TagReposicao = cursor.fetchall()
     return TagReposicao
+def ProdutividadeSeparadores():
+    conn = ConexaoPostgreRailway.conexao()
+    cursor = conn.cursor()
+    cursor.execute('select tr."Usuario", '
+                   'count(tr."codbarrastag"), '
+                   'substring("DataReposicao",1,10) as "DataReposicao", '
+                   'min("DataReposicao") as min, '
+                   'max("DataReposicao") as max '
+                   'from "Reposicao".tags_separacao tr '
+                   'group by "Usuario" , substring("DataReposicao",1,10) ')
+    TagReposicao = cursor.fetchall()
+    return TagReposicao
 
 def FilaPorOP():
     conn = ConexaoPostgreRailway.conexao()
