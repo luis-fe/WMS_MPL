@@ -159,6 +159,27 @@ def TratandoErroTagsSemelhanteFilaxReposicao():
 
     return pd.DataFrame({'Mensagem': [f'Limpeza Feita']})
 
+def TratandoErroTagsSemelhanteInventarioxReposicao():
+
+    delete = 'delete from "Reposicao".tagsreposicao_inventario ' \
+              ' where codbarrastag in (select t.codbarrastag  from "Reposicao".tagsreposicao_inventario t' \
+              ' join "Reposicao".tagsreposicao ti  on t.codbarrastag = ti.codbarrastag) '
+
+
+    conn = ConexaoPostgreRailway.conexao()
+    cursor = conn.cursor()
+    cursor.execute(delete
+                   , ( ))
+
+    # Obter o número de linhas afetadas
+    numero_linhas_afetadas = cursor.rowcount
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+    return pd.DataFrame({'Mensagem': [f'Limpeza Feita']})
+
+TratandoErroTagsSemelhanteInventarioxReposicao()
 TratandoErroTagsSemelhanteFilaxReposicao()
 TratandoErroTagsSemelhanteFilaxInventario()
 print(ListaErros())
