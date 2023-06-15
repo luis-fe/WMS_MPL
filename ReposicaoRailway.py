@@ -1,7 +1,14 @@
+from datetime import datetime
+
 import pandas as pd
 import ConexaoPostgreRailway
 import numpy
 import time
+
+def obterHoraAtual():
+    agora = datetime.datetime.now()
+    hora_str = agora.strftime('%Y-%m-%d %H:%M:%S')
+    return hora_str
 
 
 # CLASSE COM AS FUNÇOES PARA INTERAGIR COM AS APIS DE ACESSO DA "REPOSICAO"
@@ -192,6 +199,7 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         numero_linhas_afetadas = cursor.rowcount
         conn.commit()
         cursor.close()
+        print(f'Apontado as {numeroop} , {endereco}')
 
         return  numero_linhas_afetadas
 def EstornoApontamento(codbarrastag):
