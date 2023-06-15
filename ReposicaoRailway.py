@@ -199,7 +199,8 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         numero_linhas_afetadas = cursor.rowcount
         conn.commit()
         cursor.close()
-        print(f'Apontado as {numeroop} , {endereco}')
+        data = dataHora()
+        print(f'Apontado a {numeroop} , endereco {endereco}, as {data}')
 
         return  numero_linhas_afetadas
 def EstornoApontamento(codbarrastag):
