@@ -90,7 +90,7 @@ def SituacaoEndereco(endereco):
             SaldoGeral = skus['Saldo Geral'][0]
 
             detalhatag = pd.read_sql(
-                'select codbarrastag, "Usuario", "CodReduzido" as codreduzido  from "Reposicao".tagsreposicao t '
+                'select codbarrastag, "Usuario", "CodReduzido" as codreduzido, "DataReposicao"  from "Reposicao".tagsreposicao t '
                 'where "Endereco"='+" '"+endereco+"'"'',conn)
             detalhatag = pd.merge(detalhatag, usuarios, on='Usuario', how='left')
             conn.close()
