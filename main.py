@@ -296,7 +296,9 @@ def criar_enderco():
 def get_DetalhaEndereco():
     # Obtém o código do endereco e a senha dos parâmetros da URL
     Endereco = request.args.get('Endereco')
+
     Endereco_det = ReposicaoRailway.SituacaoEndereco(Endereco)
+    Endereco_det = pd.DataFrame(Endereco_det)
     # Obtém os nomes das colunas
     column_names = Endereco_det.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes

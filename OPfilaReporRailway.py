@@ -146,3 +146,4 @@ def detalhaOPxSKU(numeroop):
     else:
         return  df_op
 
+print(ProdutividadeSeparadores())

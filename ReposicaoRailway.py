@@ -69,14 +69,38 @@ def SituacaoEndereco(endereco):
             return pd.DataFrame({'Status Endereco': [True], 'Mensagem': [f'endereco {endereco} existe!'],
                                  'Status do Saldo': ['Vazio']})
         else:
-            skus = pd.read_sql('select  count(codbarrastag) as "Saldo"  from "Reposicao".tagsreposicao e '
+            skus = pd.read_sql('select  count(codbarrastag) as "Saldo Geral"  from "Reposicao".tagsreposicao e '
                                     'where "Endereco"='+" '"+endereco+"'",conn)
+            SaldoSku_Usuario = pd.read_sql('select  "Endereco", "CodReduzido" as codreduzido , "Usuario", count(codbarrastag) as "Saldo Sku"  from "Reposicao".tagsreposicao e '
+                                    'where "Endereco"='+" '"+endereco+"'"
+                                    'group by "Endereco", "CodReduzido" , "Usuario" ', conn)
+            usuarios = pd.read_sql(
+                'select codigo as "Usuario" , nome  from "Reposicao".cadusuarios c ',
+                conn)
+            usuarios['Usuario'] = usuarios['Usuario'].astype(str)
+            SaldoSku_Usuario = pd.merge(SaldoSku_Usuario, usuarios, on='Usuario', how='left')
+            SaldoSku_Usuario['Usuario'] = SaldoSku_Usuario["Usuario"] + '-'+SaldoSku_Usuario["nome"]
+            SaldoSku_Usuario.drop('nome', axis=1, inplace=True)
+
             conn.close()
             skus['enderco'] = endereco
             skus['Status Endereco'] = True
             skus['Mensagem'] = f'Endereço {endereco} existe!'
             skus['Status do Saldo']='Cheio'
-            return skus
+            SaldoGeral = skus['Saldo Geral'][0]
+            data = {
+                '1- Endereço': f'{endereco} ',
+                '2- Status Endereco':
+                    f'{True}',
+                '3- Mensagem': f'Endereço {endereco} existe!',
+                '4- Status do Saldo': 'Cheio',
+                '5- Saldo Geral': f'{SaldoGeral}',
+                '6- Detalhamento': SaldoSku_Usuario.to_dict(orient='records')
+            }
+
+            return [data]
+
+
 
 def Estoque_endereco(endereco):
     conn = ConexaoPostgreRailway.conexao()
