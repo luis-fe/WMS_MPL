@@ -98,7 +98,7 @@ def SituacaoEndereco(endereco):
             data = {
                 '1- Endereço': f'{endereco} ',
                 '2- Status Endereco':
-                    f'{True}',
+                    True,
                 '3- Mensagem': f'Endereço {endereco} existe!',
                 '4- Status do Saldo': 'Cheio',
                 '5- Saldo Geral': f'{SaldoGeral}',

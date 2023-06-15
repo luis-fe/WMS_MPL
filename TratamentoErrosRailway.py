@@ -89,7 +89,22 @@ def VerificandoTagsSemelhanteFilaxInventario():
     else:
         erro1['Mensagem'] = 'Tag Duplicada na fila e no Inventario'
         return erro1
+def VerificarDuplicacoesAtribuicaoUsuarioOP():
+    conn = ConexaoPostgreRailway.conexao()
+    # VERIFICANDO SE EXISTE CODIGO DE BARRAS DUPLICADOS NA FILA
+    erro1 = pd.read_sql('select op from ( '
+                        'select op , count(ocorrencia) as ocorrencia from ( '
+                        'select numeroop as op , "Usuario" as usu, numeroop as ocorrencia from "Reposicao".filareposicaoportag f '
+                        'group by numeroop , "Usuario") as filadupla '
+                        'group by op) as teste '
+                        'where teste.ocorrencia > 1', conn)
+    conn.close()
+    if erro1.empty:
 
+        return pd.DataFrame({'Mensagem': [f'Nao tem duplicada de Usuario Atribuido Na fila']})
+    else:
+        erro1['Mensagem'] = f' tem duplicada de Usuario Atribuido Na fila!!!'
+        return erro1
 
 def ListaErros():
     a = VerificarDuplicacoesDeTagsFila()
@@ -98,7 +113,8 @@ def ListaErros():
     d = VerificandoTagsSemelhanteFIlaxReposicao()
     e = VerificandoTagsSemelhanteReposicaoxInventario()
     f = VerificandoTagsSemelhanteFilaxInventario()
-    df_concat = pd.concat([a, b, c, d,e, f], axis=0)
+    g = VerificarDuplicacoesAtribuicaoUsuarioOP()
+    df_concat = pd.concat([a, b, c, d,e, f,g], axis=0)
     return df_concat
 
 
@@ -143,5 +159,6 @@ def TratandoErroTagsSemelhanteFilaxReposicao():
 
     return pd.DataFrame({'Mensagem': [f'Limpeza Feita']})
 
-#TratandoErroTagsSemelhanteFilaxReposicao()
-#print(ListaErros())
+TratandoErroTagsSemelhanteFilaxReposicao()
+TratandoErroTagsSemelhanteFilaxInventario()
+print(ListaErros())
