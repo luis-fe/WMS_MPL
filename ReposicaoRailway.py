@@ -81,13 +81,20 @@ def SituacaoEndereco(endereco):
             SaldoSku_Usuario = pd.merge(SaldoSku_Usuario, usuarios, on='Usuario', how='left')
             SaldoSku_Usuario['Usuario'] = SaldoSku_Usuario["Usuario"] + '-'+SaldoSku_Usuario["nome"]
             SaldoSku_Usuario.drop('nome', axis=1, inplace=True)
+            SaldoSku_Usuario.drop('Endereco', axis=1, inplace=True)
 
-            conn.close()
             skus['enderco'] = endereco
             skus['Status Endereco'] = True
             skus['Mensagem'] = f'Endereço {endereco} existe!'
             skus['Status do Saldo']='Cheio'
             SaldoGeral = skus['Saldo Geral'][0]
+
+            detalhatag = pd.read_sql(
+                'select codbarrastag, "Usuario", "CodReduzido"  from "Reposicao".tagsreposicao t '
+                'where "Endereco"='+" '"+endereco+"'"'',conn)
+            detalhatag = pd.merge(detalhatag, usuarios, on='Usuario', how='left')
+            conn.close()
+
             data = {
                 '1- Endereço': f'{endereco} ',
                 '2- Status Endereco':
@@ -95,7 +102,8 @@ def SituacaoEndereco(endereco):
                 '3- Mensagem': f'Endereço {endereco} existe!',
                 '4- Status do Saldo': 'Cheio',
                 '5- Saldo Geral': f'{SaldoGeral}',
-                '6- Detalhamento': SaldoSku_Usuario.to_dict(orient='records')
+                '6- Detalhamento Reduzidos': SaldoSku_Usuario.to_dict(orient='records'),
+                '7- Detalhamento nivel tag':detalhatag.to_dict(orient='records')
             }
 
             return [data]
