@@ -243,13 +243,12 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
                        , (usuario, codbarras, endereco,dataHora,reduzido,codEngenharia,numeroop,descricao,cor,epc,tam,totalop))
 
         # Obter o número de linhas afetadas
-        numero_linhas_afetadas = cursor.rowcount
         conn.commit()
         cursor.close()
 
        # print(f'Apontado a {numeroop} , endereco {endereco}, as {dataHora}')
 
-        return  numero_linhas_afetadas
+        return  True
 def EstornoApontamento(codbarrastag):
     conn = ConexaoPostgreRailway.conexao()
     situacao, reduzido, codEngenharia, numeroop, descricao, cor, epc, tam, totalop, usuario = Devolver_Inf_Tag(codbarrastag, 1)
