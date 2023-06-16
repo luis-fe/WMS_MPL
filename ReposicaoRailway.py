@@ -131,7 +131,7 @@ def Estoque_endereco(endereco):
     else:
         return resultado[0][0]
 
-def Devolver_Inf_Tag(codbarras, padrao = 0):
+def Devolver_Inf_Tag(codbarras, padrao=0):
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
 
@@ -147,33 +147,70 @@ def Devolver_Inf_Tag(codbarras, padrao = 0):
     TagApontadas = pd.DataFrame(cursor.fetchall(), columns=['situacao', 'CodReduzido', 'Engenharia', 'numeroop', 'Descricao', 'cor', 'Epc', 'tamanho', 'totalop'])
 
     if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0 and padrao == 0:
-        conn.close()
-        return 'Reposto',TagApontadas['CodReduzido'][0] , TagApontadas['Engenharia'][0],TagApontadas['numeroop'][0],TagApontadas['Descricao'][0],TagApontadas['cor'][0], \
-                TagApontadas['Epc'][0],TagApontadas['tamanho'][0],TagApontadas['totalop'][0]
-    if padrao == 1:
-
-        Usuario = pd.read_sql('select "Usuario" from "Reposicao"."filareposicaoportag" ce' \
-                  ' where "numeroop" = '+"'"+TagApontadas['numeroop'][0]+"'", conn)
+        retorno = (
+            'Reposto',
+            TagApontadas['CodReduzido'][0],
+            TagApontadas['Engenharia'][0],
+            TagApontadas['numeroop'][0],
+            TagApontadas['Descricao'][0],
+            TagApontadas['cor'][0],
+            TagApontadas['Epc'][0],
+            TagApontadas['tamanho'][0],
+            TagApontadas['totalop'][0]
+        )
+    elif padrao == 1:
+        cursor.execute('select "Usuario" from "Reposicao"."filareposicaoportag" ce where "numeroop" = %s', (TagApontadas['numeroop'][0],))
+        Usuario = pd.DataFrame(cursor.fetchall(), columns=['Usuario'])
 
         if not Usuario.empty:
-            conn.close()
-            return 'Reposto', TagApontadas['CodReduzido'][0], TagApontadas['Engenharia'][0], TagApontadas['numeroop'][0], \
-            TagApontadas['Descricao'][0], TagApontadas['cor'][0], \
-                TagApontadas['Epc'][0], TagApontadas['tamanho'][0], TagApontadas['totalop'][0], Usuario['Usuario'][0]
+            retorno = (
+                'Reposto',
+                TagApontadas['CodReduzido'][0],
+                TagApontadas['Engenharia'][0],
+                TagApontadas['numeroop'][0],
+                TagApontadas['Descricao'][0],
+                TagApontadas['cor'][0],
+                TagApontadas['Epc'][0],
+                TagApontadas['tamanho'][0],
+                TagApontadas['totalop'][0],
+                Usuario['Usuario'][0]
+            )
         else:
-            conn.close()
-            return 'Reposto', TagApontadas['CodReduzido'][0], TagApontadas['Engenharia'][0], TagApontadas['numeroop'][0], \
-            TagApontadas['Descricao'][0], TagApontadas['cor'][0], \
-                TagApontadas['Epc'][0], TagApontadas['tamanho'][0], TagApontadas['totalop'][0], "-"
-
-    if codReduzido.empty:
-        conn.close()
-        return False, pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}), False, False,False,False,False,False, False
-
+            retorno = (
+                'Reposto',
+                TagApontadas['CodReduzido'][0],
+                TagApontadas['Engenharia'][0],
+                TagApontadas['numeroop'][0],
+                TagApontadas['Descricao'][0],
+                TagApontadas['cor'][0],
+                TagApontadas['Epc'][0],
+                TagApontadas['tamanho'][0],
+                TagApontadas['totalop'][0],
+                "-"
+            )
+    elif codReduzido.empty:
+        retorno = (
+            False,
+            pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}),
+            False, False, False, False, False, False, False
+        )
     else:
-        conn.close()
-        return codReduzido['codReduzido'][0], codReduzido['CodEngenharia'][0], codReduzido['Usuario'][0], \
-        codReduzido['numeroop'][0], codReduzido['descricao'][0], codReduzido['Cor'][0], codReduzido['epc'][0],codReduzido['tamanho'][0],codReduzido['totalop'][0]
+        retorno = (
+            codReduzido['codReduzido'][0],
+            codReduzido['CodEngenharia'][0],
+            codReduzido['Usuario'][0],
+            codReduzido['numeroop'][0],
+            codReduzido['descricao'][0],
+            codReduzido['Cor'][0],
+            codReduzido['epc'][0],
+            codReduzido['tamanho'][0],
+            codReduzido['totalop'][0]
+        )
+
+    cursor.close()
+    conn.close()
+
+    return retorno
 
 
 
