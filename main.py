@@ -325,38 +325,44 @@ def get_DetalhaTag():
             op_dict[column_name] = row[column_name]
         OP_data.append(op_dict)
     return jsonify(OP_data)
-    
+
 
 @app.route('/api/ApontamentoReposicao', methods=['POST'])
 @token_required
 def get_ApontaReposicao():
-    # Obtenha os dados do corpo da requisição
-    data = request.get_json()
-    codUsuario = data['codUsuario']
-    codbarra = data['codbarra']
-    endereco = data['endereco']
-    dataHora = data['dataHora']
-    estornar = data.get('estornar', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
-    
+    try:
+        # Obtenha os dados do corpo da requisição
+        data = request.get_json()
+        codUsuario = data['codUsuario']
+        codbarra = data['codbarra']
+        endereco = data['endereco']
+        dataHora = data['dataHora']
+        estornar = data.get('estornar', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
 
+        # Verifica se existe atribuição
+        Apontamento = ReposicaoRailway.ApontarReposicao(codUsuario, codbarra, endereco, dataHora)
 
-    #Verifica Se existe atribuicao
-    Apontamento = ReposicaoRailway.ApontarReposicao(codUsuario,codbarra, endereco, dataHora)
-    if Apontamento == 'Reposto':
-        if estornar is True:
-            ReposicaoRailway.EstornoApontamento(codbarra)
-            return jsonify({'message': f'codigoBarras {codbarra} estornado !'})
+        if Apontamento == 'Reposto':
+            if estornar:
+                ReposicaoRailway.EstornoApontamento(codbarra)
+                return jsonify({'message': f'codigoBarras {codbarra} estornado!'})
 
-        else:
             ender, ender2 = PediosReporRailway.EndereçoTag(codbarra)
             return jsonify({'message': f'codigoBarras {codbarra} ja reposto no endereço {ender}'})
-    if Apontamento == False:
-        return jsonify({'message': False, 'Status': f'codigoBarras {codbarra} nao existe no Estoque'})
-    else:
+
+        if Apontamento is False:
+            return jsonify({'message': False, 'Status': f'codigoBarras {codbarra} nao existe no Estoque'})
+
         return jsonify({'message': True, 'status': f'Salvo com Sucesso'})
 
+    except KeyError as e:
+        return jsonify({'message': 'Erro nos dados enviados.', 'error': str(e)}), 400
 
- #ETAPA 2:  Api para acesso do Quadro de Estamparia - Projeto WMS das Telas de  Silk:
+    except Exception as e:
+        return jsonify({'message': 'Ocorreu um erro interno.', 'error': str(e)}), 500
+
+
+#ETAPA 2:  Api para acesso do Quadro de Estamparia - Projeto WMS das Telas de  Silk:
 
 @app.route('/api/Silk/PesquisaEndereco', methods=['GET'])
 @token_required
