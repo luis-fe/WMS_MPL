@@ -7,6 +7,7 @@ import InventarioPrateleira
 import PediosReporRailway
 import Relatorios
 import Silk_PesquisaNew
+import TratamentoErrosRailway
 import UsuariosRailway
 import OPfilaReporRailway
 import ReposicaoRailway
@@ -609,6 +610,25 @@ def get_RelatorioEndereços():
             end_dict[column_name] = row[column_name]
         end_data.append(end_dict)
     return jsonify(end_data)
+@app.route('/api/ListagemErros', methods=['GET'])
+
+def get_ListagemErros():
+    # Obtém os dados do corpo da requisição (JSON)
+
+
+    Endereco_det = TratamentoErrosRailway.ListaErros()
+
+    # Obtém os nomes das colunas
+    column_names = Endereco_det.columns
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    end_data = []
+    for index, row in Endereco_det.iterrows():
+        end_dict = {}
+        for column_name in column_names:
+            end_dict[column_name] = row[column_name]
+        end_data.append(end_dict)
+    return jsonify(end_data)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
