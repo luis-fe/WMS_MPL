@@ -240,7 +240,7 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
                  ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);'
         cursor = conn.cursor()
         cursor.execute(Insert
-                       , (usuario, codbarras, endereco,dataHora,reduzido,codEngenharia,descricao,cor,epc,tam))
+                       , (usuario, codbarras, endereco,dataHora,reduzido,codEngenharia,descricao,cor,epc))
 
         # Obter o número de linhas afetadas
         conn.commit()
