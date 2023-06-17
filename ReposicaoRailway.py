@@ -246,7 +246,7 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
 def EstornoApontamento(codbarrastag):
     conn = ConexaoPostgreRailway.conexao()
     situacao, reduzido, engenharia, numeroop, descricao, cor, epc, tam, totalop, usuario = Devolver_Inf_Tag(codbarrastag, 1)
-    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "engenharia","codbarrastag","numeroop", "descricao", "cor", "epc", "tamanho", "totalop", "Situacao", "usuario") ' \
+    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codreduzido", "engenharia","codbarrastag","numeroop", "descricao", "cor", "epc", "tamanho", "totalop", "Situacao", "usuario") ' \
              'VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'+"'Reposição não Iniciada'"+',%s);'
     cursor = conn.cursor()
     cursor.execute(Insert
