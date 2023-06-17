@@ -136,9 +136,9 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
     cursor = conn.cursor()
 
     cursor.execute(
-        'select "codReduzido", "CodEngenharia", "Situacao", "Usuario", "numeroop", "descricao", "Cor", "epc",  "totalop"  from "Reposicao"."filareposicaoportag" ce '
+        'select "codReduzido", "CodEngenharia", "Situacao", "Usuario", "descricao", "Cor", "epc" from "Reposicao"."filareposicaoportag" ce '
         'where "codbarrastag" = %s', (codbarras,))
-    codReduzido = pd.DataFrame(cursor.fetchall(), columns=['codReduzido', 'CodEngenharia', 'Situacao', 'Usuario', 'numeroop', 'descricao', 'Cor', 'epc', 'totalop'])
+    codReduzido = pd.DataFrame(cursor.fetchall(), columns=['codReduzido', 'CodEngenharia', 'Situacao', 'Usuario',  'descricao', 'Cor', 'epc'])
 
     cursor.execute(
         'select count("codbarrastag") as situacao, "CodReduzido", "Engenharia", "numeroop", "Descricao", "cor", "Epc", "tamanho", "totalop" from "Reposicao"."tagsreposicao" tr '
@@ -151,12 +151,12 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
             'Reposto',
             TagApontadas['CodReduzido'][0],
             TagApontadas['Engenharia'][0],
-            TagApontadas['numeroop'][0],
+          #  TagApontadas['numeroop'][0],
             TagApontadas['Descricao'][0],
             TagApontadas['cor'][0],
-            TagApontadas['Epc'][0],
+            TagApontadas['Epc'][0]
             #TagApontadas['tamanho'][0],
-            TagApontadas['totalop'][0]
+           # TagApontadas['totalop'][0]
         )
     elif padrao == 1:
         cursor.execute('select "Usuario" from "Reposicao"."filareposicaoportag" ce where "numeroop" = %s', (TagApontadas['numeroop'][0],))
@@ -192,19 +192,19 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
         retorno = (
             False,
             pd.DataFrame({'Status': [True], 'Mensagem': [f'codbarras {codbarras} encontrado!']}),
-            False, False, False, False, False, False
+            False, False, False, False
         )
     else:
         retorno = (
             codReduzido['codReduzido'][0],
             codReduzido['CodEngenharia'][0],
             codReduzido['Usuario'][0],
-            codReduzido['numeroop'][0],
+          #  codReduzido['numeroop'][0],
             codReduzido['descricao'][0],
             codReduzido['Cor'][0],
-            codReduzido['epc'][0],
+            codReduzido['epc'][0]
            # codReduzido['tamanho'][0],
-            codReduzido['totalop'][0]
+           # codReduzido['totalop'][0]
         )
 
     cursor.close()
@@ -228,7 +228,7 @@ def Pesquisa_Estoque(reduzido, endereco):
 def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
     conn = ConexaoPostgreRailway.conexao()
     #devolvendo o reduzido do codbarras
-    reduzido, codEngenharia, usuario, numeroop, descricao, cor, epc, totalop = Devolver_Inf_Tag(codbarras)
+    reduzido, codEngenharia, usuario, descricao, cor, epc = Devolver_Inf_Tag(codbarras)
     if reduzido == False:
          return False
     if reduzido == 'Reposto':
