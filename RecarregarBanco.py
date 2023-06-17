@@ -61,7 +61,7 @@ def FilaTags():
         # Verificando as tag's que ja estam na fila
     ESTOQUE = pd.read_sql('select "Usuario", "codbarrastag" as codbarrastag, "Situacao" as sti_aterior  from "Reposicao"."filareposicaoportag" ',conn2)
     df_tags = pd.merge(df_tags,ESTOQUE,on='codbarrastag',how='left')
-    df_tags['Situacao'] = df_tags.apply(lambda row: 'Reposto' if not pd.isnull(row['Usuario']) else 'Reposição não Iniciada', axis=1)
+    df_tags['Situacao'] = df_tags.apply(lambda row: 'Reposto' if not pd.isnull(row['usuario']) else 'Reposição não Iniciada', axis=1)
     epc = LerEPC()
     df_tags = pd.merge(df_tags, epc, on='codbarrastag', how='left')
     df_tags.rename(columns={'codbarrastag': 'codbarrastag','codEngenharia':'CodEngenharia'

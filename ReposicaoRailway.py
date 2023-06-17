@@ -84,9 +84,9 @@ def SituacaoEndereco(endereco):
             usuarios = pd.read_sql(
                 'select codigo as "Usuario" , nome  from "Reposicao".cadusuarios c ',
                 conn)
-            usuarios['Usuario'] = usuarios['Usuario'].astype(str)
-            SaldoSku_Usuario = pd.merge(SaldoSku_Usuario, usuarios, on='Usuario', how='left')
-            SaldoSku_Usuario['Usuario'] = SaldoSku_Usuario["Usuario"] + '-'+SaldoSku_Usuario["nome"]
+            usuarios['usuario'] = usuarios['usuario'].astype(str)
+            SaldoSku_Usuario = pd.merge(SaldoSku_Usuario, usuarios, on='usuario', how='left')
+            SaldoSku_Usuario['usuario'] = SaldoSku_Usuario["Usuario"] + '-'+SaldoSku_Usuario["nome"]
             SaldoSku_Usuario.drop('nome', axis=1, inplace=True)
             SaldoSku_Usuario.drop('Endereco', axis=1, inplace=True)
 
@@ -99,7 +99,7 @@ def SituacaoEndereco(endereco):
             detalhatag = pd.read_sql(
                 'select codbarrastag, "Usuario", "CodReduzido" as codreduzido, "DataReposicao"  from "Reposicao".tagsreposicao t '
                 'where "Endereco"='+" '"+endereco+"'"'',conn)
-            detalhatag = pd.merge(detalhatag, usuarios, on='Usuario', how='left')
+            detalhatag = pd.merge(detalhatag, usuarios, on='usuario', how='left')
             conn.close()
 
             data = {
@@ -138,7 +138,7 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
     cursor.execute(
         'select "codReduzido", "CodEngenharia", "Situacao", "Usuario", "descricao", "cor", "epc", "numeroop" from "Reposicao"."filareposicaoportag" ce '
         'where "codbarrastag" = %s', (codbarras,))
-    codReduzido = pd.DataFrame(cursor.fetchall(), columns=['codReduzido', 'CodEngenharia', 'Situacao', 'Usuario',  'descricao', 'cor', 'epc','numeroop'])
+    codReduzido = pd.DataFrame(cursor.fetchall(), columns=['codReduzido', 'CodEngenharia', 'Situacao', 'usuario',  'descricao', 'cor', 'epc','numeroop'])
 
     cursor.execute(
         'select count("codbarrastag") as situacao, "CodReduzido", "Engenharia", "numeroop", "descricao", "cor", "epc", "tamanho", "totalop","Usuario" from "Reposicao"."tagsreposicao" tr '
@@ -157,7 +157,7 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
         )
     elif padrao == 1:
         cursor.execute('select "Usuario" from "Reposicao"."filareposicaoportag" ce where "numeroop" = %s', (TagApontadas['numeroop'][0],))
-        Usuario = pd.DataFrame(cursor.fetchall(), columns=['Usuario'])
+        Usuario = pd.DataFrame(cursor.fetchall(), columns=['usuario'])
 
         if not Usuario.empty:
             retorno = (
@@ -170,7 +170,7 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
                 TagApontadas['epc'][0],
                 TagApontadas['tamanho'][0],
                 TagApontadas['totalop'][0],
-                Usuario['Usuario'][0]
+                Usuario['usuario'][0]
             )
         else:
             retorno = (
@@ -195,7 +195,7 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
         retorno = (
             codReduzido['codReduzido'][0],
             codReduzido['CodEngenharia'][0],
-            codReduzido['Usuario'][0],
+            codReduzido['usuario'][0],
             codReduzido['descricao'][0],
             codReduzido['cor'][0],
             codReduzido['epc'][0]

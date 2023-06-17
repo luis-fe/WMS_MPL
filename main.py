@@ -159,7 +159,7 @@ def get_TagsReposicao():
     TagReposicao = OPfilaReporRailway.ProdutividadeRepositores()
    
      # Obtém os nomes das colunas
-    column_names = ['Usuario', 'Qtde', 'DataReposicao', 'min', 'max']
+    column_names = ['usuario', 'Qtde', 'DataReposicao', 'min', 'max']
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
     TagReposicao_data = []
     for row in TagReposicao:
@@ -178,7 +178,7 @@ def get_TagsSeparacao():
     TagReposicao = OPfilaReporRailway.ProdutividadeSeparadores()
 
     # Obtém os nomes das colunas
-    column_names = ['Usuario', 'Qtde', 'DataReposicao', 'min', 'max']
+    column_names = ['usuario', 'Qtde', 'DataReposicao', 'min', 'max']
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
     TagReposicao_data = []
     for row in TagReposicao:
