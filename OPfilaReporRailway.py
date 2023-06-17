@@ -77,7 +77,7 @@ def detalhaOP(numeroop):
 
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     df_op2 = pd.read_sql(
-        'select "numeroop" , "codbarrastag" AS codbarrastag, "Epc" as epc, "Usuario" as codusuario_atribuido,' +"'reposto'"+ 'as situacao, "CodReduzido" '
+        'select "numeroop" , "codbarrastag" AS codbarrastag, "epc" as epc, "Usuario" as codusuario_atribuido,' +"'reposto'"+ 'as situacao, "CodReduzido" '
       'from "Reposicao"."tagsreposicao" frt where "numeroop" = ' + "'" + numeroop + "'", conn)
     df_op2.rename(columns={'CodReduzido': 'codReduzido', "situacao":'Situacao'}, inplace=True)
 
@@ -118,9 +118,9 @@ def AtribuiRepositorOP(codigo, numeroop):
     cursor.close()
 def detalhaSku(codReduzido):
     conn = ConexaoPostgreRailway.conexao()
-    df_op2 = pd.read_sql('select "Endereco", "CodReduzido", "Descricao", count("CodReduzido") as saldo '
+    df_op2 = pd.read_sql('select "Endereco", "CodReduzido", "descricao", count("CodReduzido") as saldo '
                    'from "Reposicao"."tagsreposicao" frt where "CodReduzido" = ' +"'"+  codReduzido +"'"+
-                   ' group by "Endereco", "CodReduzido", "Descricao" ', conn)
+                   ' group by "Endereco", "CodReduzido", "descricao" ', conn)
     if df_op2.empty:
         return pd.DataFrame({'Mensagem':[f'O reduzido {codReduzido} ainda nao foi reposto ou esta com as prateleiras vazias ']})
     else:
@@ -131,10 +131,10 @@ def detalhaOPxSKU(numeroop):
     df_op = pd.read_sql('select "numeroop", "codReduzido", "CodEngenharia", "Cor", "tamanho", "descricao" '
                    'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' +"'"+  numeroop +"' "+
                    'group by "numeroop", "codReduzido","descricao" , "Cor","tamanho","CodEngenharia"', conn)
-    df_op2 = pd.read_sql('select "numeroop", "CodReduzido", "Engenharia", "cor", "tamanho", "Descricao" '
+    df_op2 = pd.read_sql('select "numeroop", "CodReduzido", "Engenharia", "cor", "tamanho", "descricao" '
                    'from "Reposicao"."tagsreposicao" frt where "numeroop" = ' +"'"+  numeroop +"'"+
-                   ' group by "numeroop", "CodReduzido","Descricao" , "cor","tamanho","Engenharia"', conn)
-    df_op2.rename(columns={'CodReduzido': 'codReduzido', "Engenharia": 'CodEngenharia', "cor": "Cor", "Descricao": "descricao"}, inplace=True)
+                   ' group by "numeroop", "CodReduzido","descricao" , "cor","tamanho","Engenharia"', conn)
+    df_op2.rename(columns={'CodReduzido': 'codReduzido', "Engenharia": 'CodEngenharia', "cor": "Cor", "descricao": "descricao"}, inplace=True)
 
     df_op = pd.concat([df_op, df_op2])
     df_op.drop_duplicates(subset={'numeroop', 'codReduzido'}, inplace=True)

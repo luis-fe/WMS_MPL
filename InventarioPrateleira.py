@@ -48,7 +48,7 @@ def ApontarTagInventario(codbarra, endereco, usuario, padrao=False):
         return pd.DataFrame({'Status Conferencia': [False], 'Mensagem': [f'tag: {codbarra} não exite no estoque! ']})
     if validador ==3:
         query = 'insert into  "Reposicao".tagsreposicao_inventario ' \
-                '("codbarrastag","Endereco","situacaoinventario","Epc","tamanho","cor","Engenharia","CodReduzido","Descricao","numeroop","totalop","Usuario") ' \
+                '("codbarrastag","Endereco","situacaoinventario","epc","tamanho","cor","Engenharia","CodReduzido","descricao","numeroop","totalop","Usuario") ' \
                 'values(%s,%s,'+"'adicionado do fila'"+',%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         cursor = conn.cursor()
         cursor.execute(query
@@ -77,10 +77,10 @@ def ApontarTagInventario(codbarra, endereco, usuario, padrao=False):
                              'Mensagem': [f'tag: {codbarra} veio de outro endereço: {colu1} , deseja prosseguir?']})
     if validador == 2 and padrao == True:
         insert = 'INSERT INTO "Reposicao".tagsreposicao_inventario ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
-                 '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", ' \
+                 '"Engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
                  '"numeroop", "cor", "tamanho", "totalop", "situacaoinventario") ' \
                  'SELECT "Usuario", "codbarrastag", "CodReduzido", %s, "Engenharia", ' \
-                 '"DataReposicao", "Descricao", "Epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop", ' \
+                 '"DataReposicao", "descricao", "epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop", ' \
                  "'endereco migrado'" \
                  'FROM "Reposicao".tagsreposicao t ' \
                  'WHERE "codbarrastag" = %s;'
@@ -165,7 +165,7 @@ def SituacaoEndereco(endereco,usuario, data):
             skus['Mensagem'] = f'Endereço {endereco} existe!'
             skus['Status do Saldo']='Cheio, será esvaziado para o INVENTARIO'
 
-            DetalhaSku =pd.read_sql('select "CodReduzido", "codbarrastag" ,"Epc"  from "Reposicao".tagsreposicao t  '
+            DetalhaSku =pd.read_sql('select "CodReduzido", "codbarrastag" ,"epc"  from "Reposicao".tagsreposicao t  '
                                     'where "Endereco"='+" '"+endereco+"'",conn)
 
             conn.close()
@@ -201,10 +201,10 @@ def SalvarInventario(endereco):
 
     # Inserir de volta as tags que deram certo
     insert = 'INSERT INTO "Reposicao".tagsreposicao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
-             '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", ' \
+             '"Engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
              '"numeroop", "cor", "tamanho", "totalop") ' \
              'SELECT "Usuario", "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
-             '"DataReposicao", "Descricao", "Epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop" ' \
+             '"DataReposicao", "descricao", "epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop" ' \
              'FROM "Reposicao".tagsreposicao_inventario t ' \
              'WHERE "Endereco" = %s and "situacaoinventario" = %s ;'
     cursor = conn.cursor()
@@ -231,10 +231,10 @@ def SalvarInventario(endereco):
     numero_tagsMigradas = Aviso["Endereco"].size
     datahora = obterHoraAtual()
     insert = 'INSERT INTO "Reposicao".tagsreposicao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
-             '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", ' \
+             '"Engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
              '"numeroop", "cor", "tamanho", "totalop") ' \
              'SELECT "Usuario", "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
-             '%s , "Descricao", "Epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop" ' \
+             '%s , "descricao", "epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop" ' \
              'FROM "Reposicao".tagsreposicao_inventario t ' \
              'WHERE "Endereco" = %s and "situacaoinventario" is not null ;'
     cursor = conn.cursor()
@@ -253,7 +253,7 @@ def SalvarInventario(endereco):
     cursor.close()
 
     # Tags nao encontradas , avisar e trazer a lista de codigo barras e epc para o usuario tomar decisao
-    Aviso2 = pd.read_sql('SELECT "codbarrastag", "Epc" FROM "Reposicao".tagsreposicao_inventario t '
+    Aviso2 = pd.read_sql('SELECT "codbarrastag", "epc" FROM "Reposicao".tagsreposicao_inventario t '
                          'WHERE "Endereco" = ' + "'" + endereco + "'" + ' and "situacaoinventario" is null;', conn)
 
     numero_tagsNaoEncontradas = Aviso2["codbarrastag"].size

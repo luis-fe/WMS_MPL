@@ -12,7 +12,7 @@ def ApontarTagReduzido(codbarra,endereco,usuario,dthora, Prosseguir = 0):
     if pesquisa == 1 and Prosseguir ==0:
         conn = ConexaoPostgreRailway.conexao()
         query = 'insert into  "Reposicao".tagsreposicao ' \
-                '("codbarrastag","Endereco","Epc","tamanho","cor","Engenharia","CodReduzido","Descricao","numeroop","totalop","Usuario") ' \
+                '("codbarrastag","Endereco","epc","tamanho","cor","Engenharia","CodReduzido","descricao","numeroop","totalop","Usuario") ' \
                 'values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         cursor = conn.cursor()
         cursor.execute(query
@@ -38,7 +38,7 @@ def ApontarTagReduzido(codbarra,endereco,usuario,dthora, Prosseguir = 0):
     if pesquisa == 2 and Prosseguir ==0:
         conn = ConexaoPostgreRailway.conexao()
         query = 'insert into  "Reposicao".tagsreposicao ' \
-                '("codbarrastag","Endereco","situacaoinventario","Epc","tamanho","cor","Engenharia","CodReduzido","Descricao","numeroop","totalop","Usuario") ' \
+                '("codbarrastag","Endereco","situacaoinventario","epc","tamanho","cor","Engenharia","CodReduzido","descricao","numeroop","totalop","Usuario") ' \
                 'values(%s,%s,' + "'adicionado do fila'" + ',%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         cursor = conn.cursor()
         cursor.execute(query
@@ -83,21 +83,21 @@ def PesquisarTagPrateleira(codbarra):
     else:
 
         query2 = pd.read_sql('SELECT "Usuario", "codbarrastag", "CodReduzido", "Endereco", '
-                 '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", '
+                 '"Engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", '
                  '"numeroop", "cor", "tamanho", "totalop" from "Reposicao".tagsreposicao_inventario t '
                  'where codbarrastag = ' + "'" + codbarra + "'", conn)
 
         if not query2.empty:
             conn.close()
-            return 2, query2['Epc'][0],query2['tamanho'][0],query2['cor'][0],query2['Engenharia'][0],\
-                    query2['CodReduzido'][0], query2['Descricao'][0], query2['numeroop'][0],query2['totalop'][0],2
+            return 2, query2['epc'][0],query2['tamanho'][0],query2['cor'][0],query2['Engenharia'][0],\
+                    query2['CodReduzido'][0], query2['descricao'][0], query2['numeroop'][0],query2['totalop'][0],2
         else:
             query3 = pd.read_sql('SELECT * from "Reposicao".tagsreposicao t '
                  'where codbarrastag = ' + "'" + codbarra + "'", conn)
             if not query3.empty:
                 conn.close()
-                return 3, query3['Epc'][0], query3['tamanho'][0], query3['cor'][0], query3['Engenharia'][0], \
-                        query3['CodReduzido'][0], query3['Descricao'][0], query3['numeroop'][0], query3['totalop'][0],query3['Endereco'][0]
+                return 3, query3['epc'][0], query3['tamanho'][0], query3['cor'][0], query3['Engenharia'][0], \
+                        query3['CodReduzido'][0], query3['descricao'][0], query3['numeroop'][0], query3['totalop'][0],query3['Endereco'][0]
             else:
                 return 4,4,4,4,4,4,4,4,4,4
 

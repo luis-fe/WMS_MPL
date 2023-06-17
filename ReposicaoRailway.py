@@ -136,27 +136,24 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
     cursor = conn.cursor()
 
     cursor.execute(
-        'select "codReduzido", "CodEngenharia", "Situacao", "Usuario", "descricao", "Cor", "epc" from "Reposicao"."filareposicaoportag" ce '
+        'select "codReduzido", "CodEngenharia", "Situacao", "Usuario", "descricao", "Cor", "epc", "numeroop" from "Reposicao"."filareposicaoportag" ce '
         'where "codbarrastag" = %s', (codbarras,))
-    codReduzido = pd.DataFrame(cursor.fetchall(), columns=['codReduzido', 'CodEngenharia', 'Situacao', 'Usuario',  'descricao', 'Cor', 'epc'])
+    codReduzido = pd.DataFrame(cursor.fetchall(), columns=['codReduzido', 'CodEngenharia', 'Situacao', 'Usuario',  'descricao', 'Cor', 'epc','numeroop'])
 
     cursor.execute(
-        'select count("codbarrastag") as situacao, "CodReduzido", "Engenharia", "numeroop", "Descricao", "cor", "Epc", "tamanho", "totalop" from "Reposicao"."tagsreposicao" tr '
+        'select count("codbarrastag") as situacao, "CodReduzido", "Engenharia", "numeroop", "descricao", "cor", "epc", "tamanho", "totalop","Usuario" from "Reposicao"."tagsreposicao" tr '
         'where "codbarrastag" = %s '
-        'group by "codbarrastag", "CodReduzido", "Engenharia", "numeroop", "Descricao", "cor", "Epc", "tamanho", "totalop"', (codbarras,))
-    TagApontadas = pd.DataFrame(cursor.fetchall(), columns=['situacao', 'CodReduzido', 'Engenharia', 'numeroop', 'Descricao', 'cor', 'Epc', 'tamanho', 'totalop'])
+        'group by "Usuario","codbarrastag", "CodReduzido", "Engenharia", "numeroop", "descricao", "cor", "epc", "tamanho", "totalop"', (codbarras,))
+    TagApontadas = pd.DataFrame(cursor.fetchall(), columns=['situacao', 'CodReduzido', 'Engenharia', 'numeroop', 'descricao', 'cor', 'epc', 'tamanho', 'totalop',"Usuario"])
 
     if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0 and padrao == 0:
         retorno = (
             'Reposto',
             TagApontadas['CodReduzido'][0],
             TagApontadas['Engenharia'][0],
-          #  TagApontadas['numeroop'][0],
-            TagApontadas['Descricao'][0],
+            TagApontadas['descricao'][0],
             TagApontadas['cor'][0],
-            TagApontadas['Epc'][0]
-            #TagApontadas['tamanho'][0],
-           # TagApontadas['totalop'][0]
+            TagApontadas['epc'][0]
         )
     elif padrao == 1:
         cursor.execute('select "Usuario" from "Reposicao"."filareposicaoportag" ce where "numeroop" = %s', (TagApontadas['numeroop'][0],))
@@ -168,9 +165,9 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
                 TagApontadas['CodReduzido'][0],
                 TagApontadas['Engenharia'][0],
                 TagApontadas['numeroop'][0],
-                TagApontadas['Descricao'][0],
+                TagApontadas['descricao'][0],
                 TagApontadas['cor'][0],
-                TagApontadas['Epc'][0],
+                TagApontadas['epc'][0],
                 TagApontadas['tamanho'][0],
                 TagApontadas['totalop'][0],
                 Usuario['Usuario'][0]
@@ -181,9 +178,9 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
                 TagApontadas['CodReduzido'][0],
                 TagApontadas['Engenharia'][0],
                 TagApontadas['numeroop'][0],
-                TagApontadas['Descricao'][0],
+                TagApontadas['descricao'][0],
                 TagApontadas['cor'][0],
-                TagApontadas['Epc'][0],
+                TagApontadas['epc'][0],
                 TagApontadas['tamanho'][0],
                 TagApontadas['totalop'][0],
                 "-"
@@ -199,12 +196,9 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
             codReduzido['codReduzido'][0],
             codReduzido['CodEngenharia'][0],
             codReduzido['Usuario'][0],
-          #  codReduzido['numeroop'][0],
             codReduzido['descricao'][0],
             codReduzido['Cor'][0],
             codReduzido['epc'][0]
-           # codReduzido['tamanho'][0],
-           # codReduzido['totalop'][0]
         )
 
     cursor.close()
@@ -235,8 +229,8 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         return 'Reposto'
     else:
         #insere os dados da reposicao
-        Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia","Descricao", ' \
-                 '"cor", "Epc" )' \
+        Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia","descricao", ' \
+                 '"cor", "epc" )' \
                  ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);'
         cursor = conn.cursor()
         cursor.execute(Insert
@@ -272,3 +266,49 @@ def EstornoApontamento(codbarrastag):
     conn.close()
 
     return True
+
+
+def RetornoLocalCodBarras(codbarras):
+    conn = ConexaoPostgreRailway.conexao()
+    cursor = conn.cursor()
+
+    # Verificando se está na Fila de Reposição
+    cursor.execute(
+        'SELECT "codbarrastag" FROM "Reposicao"."filareposicaoportag" ce '
+        'WHERE "codbarrastag" = %s', (codbarras,)
+    )
+    fila_reposicao = pd.DataFrame(cursor.fetchall(), columns=['codbarrastag'])
+
+    if not fila_reposicao.empty:
+
+        retorno = 'A Repor'
+    else:
+        # Verificando se está na Prateleira
+        cursor.execute(
+            'SELECT "codbarrastag" FROM "Reposicao"."tagsreposicao" ce '
+            'WHERE "codbarrastag" = %s', (codbarras,)
+        )
+        prateleira = pd.DataFrame(cursor.fetchall(), columns=['codbarrastag'])
+
+        if not prateleira.empty:
+            retorno = 'Reposto'
+        else:
+            retorno = False
+
+    cursor.close()
+    conn.close()
+
+    return retorno
+# Iniciar o temporizador
+inicio = time.time()
+
+# Chamar a função que você deseja medir
+print(RetornoLocalCodBarras('01000067443603000512'))
+
+# Parar o temporizador
+fim = time.time()
+
+# Calcular o tempo decorrido
+tempo_decorrido = fim - inicio
+
+print("Tempo decorrido:", tempo_decorrido, "segundos")

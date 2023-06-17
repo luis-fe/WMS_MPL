@@ -79,8 +79,8 @@ def DetalhaPedido(codPedido):
     descricaoSku = pd.read_sql( 'select f."codReduzido" as reduzido, f."descricao" , f."Cor" , f.tamanho  from "Reposicao".filareposicaoportag f '
                                 'group by f."codReduzido", f.descricao , f."Cor" , f.tamanho '
                                 ' union '
-                                'select t."CodReduzido", t."Descricao" , t.cor , t.tamanho  from "Reposicao".tagsreposicao t '
-                                'group by  t."CodReduzido", t."Descricao" , t.cor , t.tamanho',conn)
+                                'select t."CodReduzido", t."descricao" , t.cor , t.tamanho  from "Reposicao".tagsreposicao t '
+                                'group by  t."CodReduzido", t."descricao" , t.cor , t.tamanho',conn)
     descricaoSku.drop_duplicates(subset='reduzido', inplace=True)
     DetalhaSku = pd.merge(DetalhaSku,descricaoSku,on='reduzido',how='left')
 
@@ -101,10 +101,10 @@ def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco):
         else:
             conn = ConexaoPostgreRailway.conexao()
             insert = 'INSERT INTO "Reposicao".tags_separacao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
-                     '"Engenharia", "DataReposicao", "Descricao", "Epc", "StatusEndereco", ' \
+                     '"Engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
                      '"numeroop", "cor", "tamanho", "totalop", "codpedido") ' \
                      'SELECT %s, "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
-                     '"DataReposicao", "Descricao", "Epc", %s, "numeroop", "cor", "tamanho", "totalop", ' \
+                     '"DataReposicao", "descricao", "epc", %s, "numeroop", "cor", "tamanho", "totalop", ' \
                      "%s" \
                      'FROM "Reposicao".tagsreposicao t ' \
                      'WHERE "codbarrastag" = %s;'
