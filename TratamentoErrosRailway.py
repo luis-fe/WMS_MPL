@@ -57,7 +57,7 @@ def VerificandoTagsSemelhanteFIlaxReposicao():
 
         return pd.DataFrame({'4-Mensagem': [f'Nao tem tag duplicada na Fila x Pratleiras']})
     else:
-        erro1['4-Mensagem'] = 'Atencao, Tag Duplicada na Fila e no Bipada'
+        erro1['Mensagem'] = 'Atencao, Tag Duplicada na Fila e no Bipada'
         return erro1
 
 def VerificandoTagsSemelhanteReposicaoxInventario():
@@ -72,7 +72,7 @@ def VerificandoTagsSemelhanteReposicaoxInventario():
 
         return pd.DataFrame({'5-Mensagem': [f'Nao tem tag duplicada na Prateleira  x inventario']})
     else:
-        erro1['5-Mensagem'] = 'Tag Duplicada na Prateleira e no Inventario'
+        erro1['Mensagem'] = 'Tag Duplicada na Prateleira e no Inventario'
         return erro1
 
 def VerificandoTagsSemelhanteFilaxInventario():
@@ -85,9 +85,9 @@ def VerificandoTagsSemelhanteFilaxInventario():
 
     if erro1.empty:
 
-        return pd.DataFrame({'6-Mensagem': [f'Nao tem Tag duplicada na Fila Reposicao x inventario']})
+        return pd.DataFrame({'Mensagem': [f'Nao tem Tag duplicada na Fila Reposicao x inventario']})
     else:
-        erro1['6-Mensagem'] = 'Tag Duplicada na Fila Reposicao e no Inventario'
+        erro1['Mensagem'] = 'Tag Duplicada na Fila Reposicao e no Inventario'
         return erro1
 def VerificarDuplicacoesAtribuicaoUsuarioOP():
     conn = ConexaoPostgreRailway.conexao()
@@ -103,7 +103,7 @@ def VerificarDuplicacoesAtribuicaoUsuarioOP():
 
         return pd.DataFrame({'7-Mensagem': [f'Nao tem dados duplicados de Usuario Atribuido na Fila Reposicao']})
     else:
-        erro1['7-Mensagem'] = f' Tem dados duplicados de Usuario Atribuido Na Fila Reposicao!!!'
+        erro1['Mensagem'] = f' Tem dados duplicados de Usuario Atribuido Na Fila Reposicao!!!'
         return erro1
 
 def ListaErros():
@@ -179,7 +179,3 @@ def TratandoErroTagsSemelhanteInventarioxReposicao():
 
     return pd.DataFrame({'Mensagem': [f'Limpeza Feita']})
 
-TratandoErroTagsSemelhanteInventarioxReposicao()
-TratandoErroTagsSemelhanteFilaxReposicao()
-TratandoErroTagsSemelhanteFilaxInventario()
-print(ListaErros())
