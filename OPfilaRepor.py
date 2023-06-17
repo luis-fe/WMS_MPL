@@ -77,9 +77,9 @@ def detalhaOP(numeroop):
     
 def detalhaOPxSKU(numeroop):
     conn = ConecaoAWSRS.conexao()
-    df_op = pd.read_sql('select "numeroop", "codReduzido", "CodEngenharia", "Cor", "tamanho", "descricao" '
+    df_op = pd.read_sql('select "numeroop", "codReduzido", "CodEngenharia", "cor", "tamanho", "descricao" '
                    'from "Reposicao"."FilaReposicaoporTag" frt where "numeroop" = ' +"'"+  numeroop +"'"+
-                   'group by "numeroop", "codReduzido","descricao" , "Cor","tamanho","CodEngenharia"', conn)
+                   'group by "numeroop", "codReduzido","descricao" , "cor","tamanho","CodEngenharia"', conn)
     conn.close()
     if df_op.empty:
         return pd.DataFrame({'Status': [False],'Mensagem':['OP nao Encontrada']})

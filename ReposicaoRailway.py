@@ -136,9 +136,9 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
     cursor = conn.cursor()
 
     cursor.execute(
-        'select "codReduzido", "CodEngenharia", "Situacao", "Usuario", "descricao", "Cor", "epc", "numeroop" from "Reposicao"."filareposicaoportag" ce '
+        'select "codReduzido", "CodEngenharia", "Situacao", "Usuario", "descricao", "cor", "epc", "numeroop" from "Reposicao"."filareposicaoportag" ce '
         'where "codbarrastag" = %s', (codbarras,))
-    codReduzido = pd.DataFrame(cursor.fetchall(), columns=['codReduzido', 'CodEngenharia', 'Situacao', 'Usuario',  'descricao', 'Cor', 'epc','numeroop'])
+    codReduzido = pd.DataFrame(cursor.fetchall(), columns=['codReduzido', 'CodEngenharia', 'Situacao', 'Usuario',  'descricao', 'cor', 'epc','numeroop'])
 
     cursor.execute(
         'select count("codbarrastag") as situacao, "CodReduzido", "Engenharia", "numeroop", "descricao", "cor", "epc", "tamanho", "totalop","Usuario" from "Reposicao"."tagsreposicao" tr '
@@ -197,7 +197,7 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
             codReduzido['CodEngenharia'][0],
             codReduzido['Usuario'][0],
             codReduzido['descricao'][0],
-            codReduzido['Cor'][0],
+            codReduzido['cor'][0],
             codReduzido['epc'][0]
         )
 
@@ -246,7 +246,7 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
 def EstornoApontamento(codbarrastag):
     conn = ConexaoPostgreRailway.conexao()
     situacao, reduzido, codEngenharia, numeroop, descricao, cor, epc, tam, totalop, usuario = Devolver_Inf_Tag(codbarrastag, 1)
-    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao", "Cor", "epc", "tamanho", "totalop", "Situacao", "Usuario") ' \
+    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao", "cor", "epc", "tamanho", "totalop", "Situacao", "Usuario") ' \
              'VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'+"'Reposição não Iniciada'"+',%s);'
     cursor = conn.cursor()
     cursor.execute(Insert

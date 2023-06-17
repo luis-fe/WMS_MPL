@@ -76,8 +76,8 @@ def DetalhaPedido(codPedido):
                                 ,conn)
     DetalhaSku = pd.read_sql('select  produto as reduzido, qtdesugerida , status as concluido_X_total, endereco as endereco'
                             ' from "Reposicao".pedidossku p  where codpedido= '+"'"+codPedido+"'",conn)
-    descricaoSku = pd.read_sql( 'select f."codReduzido" as reduzido, f."descricao" , f."Cor" , f.tamanho  from "Reposicao".filareposicaoportag f '
-                                'group by f."codReduzido", f.descricao , f."Cor" , f.tamanho '
+    descricaoSku = pd.read_sql( 'select f."codReduzido" as reduzido, f."descricao" , f."cor" , f.tamanho  from "Reposicao".filareposicaoportag f '
+                                'group by f."codReduzido", f.descricao , f."cor" , f.tamanho '
                                 ' union '
                                 'select t."CodReduzido", t."descricao" , t.cor , t.tamanho  from "Reposicao".tagsreposicao t '
                                 'group by  t."CodReduzido", t."descricao" , t.cor , t.tamanho',conn)

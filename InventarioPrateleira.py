@@ -120,13 +120,13 @@ def PesquisarTagPrateleira(codbarra):
             conn.close()
             return 2, query2["Endereco"][0], 2, 2,2,2,2,2,2,2
         else:
-            query3 = pd.read_sql('select "codbarrastag","epc", "tamanho", "Cor", "CodEngenharia" , "codReduzido",  '
+            query3 = pd.read_sql('select "codbarrastag","epc", "tamanho", "cor", "CodEngenharia" , "codReduzido",  '
                                  '"descricao" ,"numeroop", "totalop" from "Reposicao".filareposicaoportag f  '
                                  'where codbarrastag = ' + "'" + codbarra + "'", conn)
 
             if not query3.empty:
                 conn.close()
-                return 3, query3["codbarrastag"][0],query3["epc"][0],query3["tamanho"][0],query3["Cor"][0],query3["CodEngenharia"][0],query3["codReduzido"][0], \
+                return 3, query3["codbarrastag"][0],query3["epc"][0],query3["tamanho"][0],query3["cor"][0],query3["CodEngenharia"][0],query3["codReduzido"][0], \
                     query3["descricao"][0],query3["numeroop"][0],query3["totalop"][0]
 
             else:

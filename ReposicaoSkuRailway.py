@@ -73,12 +73,12 @@ def ApontarTagReduzido(codbarra,endereco,usuario,dthora, Prosseguir = 0):
 def PesquisarTagPrateleira(codbarra):
     conn = ConexaoPostgreRailway.conexao()
 
-    query3 = pd.read_sql('select "codbarrastag","epc", "tamanho", "Cor", "CodEngenharia" , "codReduzido",  '
+    query3 = pd.read_sql('select "codbarrastag","epc", "tamanho", "cor", "CodEngenharia" , "codReduzido",  '
                                  '"descricao" ,"numeroop", "totalop" from "Reposicao".filareposicaoportag f  '
                                  'where codbarrastag = ' + "'" + codbarra + "'", conn)
     if not query3.empty :
         conn.close()
-        return 1, query3['epc'][0],query3['tamanho'][0],query3['Cor'][0],query3['CodEngenharia'][0],query3['codReduzido'][0],query3['descricao'][0],\
+        return 1, query3['epc'][0],query3['tamanho'][0],query3['cor'][0],query3['CodEngenharia'][0],query3['codReduzido'][0],query3['descricao'][0],\
             query3['numeroop'][0],query3['totalop'][0],1
     else:
 
@@ -106,7 +106,7 @@ def EstornoApontamento(codbarra, usuario):
     usuario = str(usuario)
     pesquisa, epc, tam, colu_cor, codEngenharia, reduzido, descricao, \
         colu_numeroop, colu_totalop, enderecoAntes = PesquisarTagPrateleira(codbarra)
-    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao", "Cor", "epc", "tamanho", "totalop", "Situacao", "Usuario") ' \
+    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao", "cor", "epc", "tamanho", "totalop", "Situacao", "Usuario") ' \
              'VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'+"'Reposição não Iniciada'"+',%s);'
     cursor = conn.cursor()
     cursor.execute(Insert

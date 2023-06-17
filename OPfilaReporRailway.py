@@ -128,13 +128,13 @@ def detalhaSku(codReduzido):
     
 def detalhaOPxSKU(numeroop):
     conn = ConexaoPostgreRailway.conexao()
-    df_op = pd.read_sql('select "numeroop", "codReduzido", "CodEngenharia", "Cor", "tamanho", "descricao" '
+    df_op = pd.read_sql('select "numeroop", "codReduzido", "CodEngenharia", "cor", "tamanho", "descricao" '
                    'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' +"'"+  numeroop +"' "+
-                   'group by "numeroop", "codReduzido","descricao" , "Cor","tamanho","CodEngenharia"', conn)
+                   'group by "numeroop", "codReduzido","descricao" , "cor","tamanho","CodEngenharia"', conn)
     df_op2 = pd.read_sql('select "numeroop", "CodReduzido", "Engenharia", "cor", "tamanho", "descricao" '
                    'from "Reposicao"."tagsreposicao" frt where "numeroop" = ' +"'"+  numeroop +"'"+
                    ' group by "numeroop", "CodReduzido","descricao" , "cor","tamanho","Engenharia"', conn)
-    df_op2.rename(columns={'CodReduzido': 'codReduzido', "Engenharia": 'CodEngenharia', "cor": "Cor", "descricao": "descricao"}, inplace=True)
+    df_op2.rename(columns={'CodReduzido': 'codReduzido', "Engenharia": 'CodEngenharia', "cor": "cor", "descricao": "descricao"}, inplace=True)
 
     df_op = pd.concat([df_op, df_op2])
     df_op.drop_duplicates(subset={'numeroop', 'codReduzido'}, inplace=True)
