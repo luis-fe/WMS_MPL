@@ -48,7 +48,7 @@ def ApontarTagInventario(codbarra, endereco, usuario, padrao=False):
         return pd.DataFrame({'Status Conferencia': [False], 'Mensagem': [f'tag: {codbarra} não exite no estoque! ']})
     if validador ==3:
         query = 'insert into  "Reposicao".tagsreposicao_inventario ' \
-                '("codbarrastag","Endereco","situacaoinventario","epc","tamanho","cor","Engenharia","CodReduzido","descricao","numeroop","totalop","Usuario") ' \
+                '("codbarrastag","Endereco","situacaoinventario","epc","tamanho","cor","Engenharia","CodReduzido","descricao","numeroop","totalop","usuario") ' \
                 'values(%s,%s,'+"'adicionado do fila'"+',%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         cursor = conn.cursor()
         cursor.execute(query
@@ -76,10 +76,10 @@ def ApontarTagInventario(codbarra, endereco, usuario, padrao=False):
         return pd.DataFrame({'Status Conferencia': [False],
                              'Mensagem': [f'tag: {codbarra} veio de outro endereço: {colu1} , deseja prosseguir?']})
     if validador == 2 and padrao == True:
-        insert = 'INSERT INTO "Reposicao".tagsreposicao_inventario ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
+        insert = 'INSERT INTO "Reposicao".tagsreposicao_inventario ("usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
                  '"Engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
                  '"numeroop", "cor", "tamanho", "totalop", "situacaoinventario") ' \
-                 'SELECT "Usuario", "codbarrastag", "CodReduzido", %s, "Engenharia", ' \
+                 'SELECT "usuario", "codbarrastag", "CodReduzido", %s, "Engenharia", ' \
                  '"DataReposicao", "descricao", "epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop", ' \
                  "'endereco migrado'" \
                  'FROM "Reposicao".tagsreposicao t ' \
@@ -200,10 +200,10 @@ def SalvarInventario(endereco):
     conn = ConexaoPostgreRailway.conexao()
 
     # Inserir de volta as tags que deram certo
-    insert = 'INSERT INTO "Reposicao".tagsreposicao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
+    insert = 'INSERT INTO "Reposicao".tagsreposicao ("usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
              '"Engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
              '"numeroop", "cor", "tamanho", "totalop") ' \
-             'SELECT "Usuario", "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
+             'SELECT "usuario", "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
              '"DataReposicao", "descricao", "epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop" ' \
              'FROM "Reposicao".tagsreposicao_inventario t ' \
              'WHERE "Endereco" = %s and "situacaoinventario" = %s ;'
@@ -230,10 +230,10 @@ def SalvarInventario(endereco):
     #Autorizar migracao
     numero_tagsMigradas = Aviso["Endereco"].size
     datahora = obterHoraAtual()
-    insert = 'INSERT INTO "Reposicao".tagsreposicao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
+    insert = 'INSERT INTO "Reposicao".tagsreposicao ("usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
              '"Engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
              '"numeroop", "cor", "tamanho", "totalop") ' \
-             'SELECT "Usuario", "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
+             'SELECT "usuario", "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
              '%s , "descricao", "epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop" ' \
              'FROM "Reposicao".tagsreposicao_inventario t ' \
              'WHERE "Endereco" = %s and "situacaoinventario" is not null ;'

@@ -54,12 +54,12 @@ def FilaTags():
     df_tags['totalop'] = df_tags['totalop'].astype(int)
     # CRIANDO O DATAFRAME DO QUE JA FOI REPOSTO E USANDO MERGE
        # Verificando as tag's que ja foram repostas
-    TagsRepostas = pd.read_sql('select "codbarrastag" as codbarrastag, "Usuario" as usuario_  from "Reposicao"."tagsreposicao" tr ',conn2)
+    TagsRepostas = pd.read_sql('select "codbarrastag" as codbarrastag, "usuario" as usuario_  from "Reposicao"."tagsreposicao" tr ',conn2)
     df_tags = pd.merge(df_tags, TagsRepostas, on='codbarrastag', how='left')
     df_tags = df_tags.loc[df_tags['usuario_'].isnull()]
     df_tags.drop('usuario_', axis=1, inplace=True)
         # Verificando as tag's que ja estam na fila
-    ESTOQUE = pd.read_sql('select "Usuario", "codbarrastag" as codbarrastag, "Situacao" as sti_aterior  from "Reposicao"."filareposicaoportag" ',conn2)
+    ESTOQUE = pd.read_sql('select "usuario", "codbarrastag" as codbarrastag, "Situacao" as sti_aterior  from "Reposicao"."filareposicaoportag" ',conn2)
     df_tags = pd.merge(df_tags,ESTOQUE,on='codbarrastag',how='left')
     df_tags['Situacao'] = df_tags.apply(lambda row: 'Reposto' if not pd.isnull(row['usuario']) else 'Reposição não Iniciada', axis=1)
     epc = LerEPC()

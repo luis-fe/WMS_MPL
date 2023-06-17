@@ -78,15 +78,15 @@ def SituacaoEndereco(endereco):
         else:
             skus = pd.read_sql('select  count(codbarrastag) as "Saldo Geral"  from "Reposicao".tagsreposicao e '
                                     'where "Endereco"='+" '"+endereco+"'",conn)
-            SaldoSku_Usuario = pd.read_sql('select  "Endereco", "CodReduzido" as codreduzido , "Usuario", count(codbarrastag) as "Saldo Sku"  from "Reposicao".tagsreposicao e '
+            SaldoSku_Usuario = pd.read_sql('select  "Endereco", "CodReduzido" as codreduzido , "usuario", count(codbarrastag) as "Saldo Sku"  from "Reposicao".tagsreposicao e '
                                     'where "Endereco"='+" '"+endereco+"'"
-                                    'group by "Endereco", "CodReduzido" , "Usuario" ', conn)
+                                    'group by "Endereco", "CodReduzido" , "usuario" ', conn)
             usuarios = pd.read_sql(
-                'select codigo as "Usuario" , nome  from "Reposicao".cadusuarios c ',
+                'select codigo as "usuario" , nome  from "Reposicao".cadusuarios c ',
                 conn)
             usuarios['usuario'] = usuarios['usuario'].astype(str)
             SaldoSku_Usuario = pd.merge(SaldoSku_Usuario, usuarios, on='usuario', how='left')
-            SaldoSku_Usuario['usuario'] = SaldoSku_Usuario["Usuario"] + '-'+SaldoSku_Usuario["nome"]
+            SaldoSku_Usuario['usuario'] = SaldoSku_Usuario["usuario"] + '-'+SaldoSku_Usuario["nome"]
             SaldoSku_Usuario.drop('nome', axis=1, inplace=True)
             SaldoSku_Usuario.drop('Endereco', axis=1, inplace=True)
 
@@ -97,7 +97,7 @@ def SituacaoEndereco(endereco):
             SaldoGeral = skus['Saldo Geral'][0]
 
             detalhatag = pd.read_sql(
-                'select codbarrastag, "Usuario", "CodReduzido" as codreduzido, "DataReposicao"  from "Reposicao".tagsreposicao t '
+                'select codbarrastag, "usuario", "CodReduzido" as codreduzido, "DataReposicao"  from "Reposicao".tagsreposicao t '
                 'where "Endereco"='+" '"+endereco+"'"'',conn)
             detalhatag = pd.merge(detalhatag, usuarios, on='usuario', how='left')
             conn.close()
@@ -136,15 +136,15 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
     cursor = conn.cursor()
 
     cursor.execute(
-        'select "codReduzido", "CodEngenharia", "Situacao", "Usuario", "descricao", "cor", "epc", "numeroop" from "Reposicao"."filareposicaoportag" ce '
+        'select "codReduzido", "CodEngenharia", "Situacao", "usuario", "descricao", "cor", "epc", "numeroop" from "Reposicao"."filareposicaoportag" ce '
         'where "codbarrastag" = %s', (codbarras,))
     codReduzido = pd.DataFrame(cursor.fetchall(), columns=['codReduzido', 'CodEngenharia', 'Situacao', 'usuario',  'descricao', 'cor', 'epc','numeroop'])
 
     cursor.execute(
-        'select count("codbarrastag") as situacao, "CodReduzido", "Engenharia", "numeroop", "descricao", "cor", "epc", "tamanho", "totalop","Usuario" from "Reposicao"."tagsreposicao" tr '
+        'select count("codbarrastag") as situacao, "CodReduzido", "Engenharia", "numeroop", "descricao", "cor", "epc", "tamanho", "totalop","usuario" from "Reposicao"."tagsreposicao" tr '
         'where "codbarrastag" = %s '
-        'group by "Usuario","codbarrastag", "CodReduzido", "Engenharia", "numeroop", "descricao", "cor", "epc", "tamanho", "totalop"', (codbarras,))
-    TagApontadas = pd.DataFrame(cursor.fetchall(), columns=['situacao', 'CodReduzido', 'Engenharia', 'numeroop', 'descricao', 'cor', 'epc', 'tamanho', 'totalop',"Usuario"])
+        'group by "usuario","codbarrastag", "CodReduzido", "Engenharia", "numeroop", "descricao", "cor", "epc", "tamanho", "totalop"', (codbarras,))
+    TagApontadas = pd.DataFrame(cursor.fetchall(), columns=['situacao', 'CodReduzido', 'Engenharia', 'numeroop', 'descricao', 'cor', 'epc', 'tamanho', 'totalop',"usuario"])
 
     if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0 and padrao == 0:
         retorno = (
@@ -156,7 +156,7 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
             TagApontadas['epc'][0]
         )
     elif padrao == 1:
-        cursor.execute('select "Usuario" from "Reposicao"."filareposicaoportag" ce where "numeroop" = %s', (TagApontadas['numeroop'][0],))
+        cursor.execute('select "usuario" from "Reposicao"."filareposicaoportag" ce where "numeroop" = %s', (TagApontadas['numeroop'][0],))
         Usuario = pd.DataFrame(cursor.fetchall(), columns=['usuario'])
 
         if not Usuario.empty:
@@ -229,7 +229,7 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         return 'Reposto'
     else:
         #insere os dados da reposicao
-        Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia","descricao", ' \
+        Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia","descricao", ' \
                  '"cor", "epc" )' \
                  ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);'
         cursor = conn.cursor()
@@ -246,7 +246,7 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
 def EstornoApontamento(codbarrastag):
     conn = ConexaoPostgreRailway.conexao()
     situacao, reduzido, codEngenharia, numeroop, descricao, cor, epc, tam, totalop, usuario = Devolver_Inf_Tag(codbarrastag, 1)
-    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao", "cor", "epc", "tamanho", "totalop", "Situacao", "Usuario") ' \
+    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao", "cor", "epc", "tamanho", "totalop", "Situacao", "usuario") ' \
              'VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'+"'Reposição não Iniciada'"+',%s);'
     cursor = conn.cursor()
     cursor.execute(Insert

@@ -5,42 +5,42 @@ import numpy
 def ProdutividadeRepositores():
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
-    cursor.execute('select  "Usuario", sum(count), "DataReposicao", "min" , "max"   from '
-                   '(select tr."Usuario", '
+    cursor.execute('select  "usuario", sum(count), "DataReposicao", "min" , "max"   from '
+                   '(select tr."usuario", '
                    'count(tr."codbarrastag"), '
                    'substring("DataReposicao",1,10) as "DataReposicao", '
                    'min("DataReposicao") as min, '
                    'max("DataReposicao") as max '
                    'from "Reposicao"."tagsreposicao" tr '
-                   'group by "Usuario" , substring("DataReposicao",1,10) '
+                   'group by "usuario" , substring("DataReposicao",1,10) '
                    'union '
-                   'select tr."Usuario", '
+                   'select tr."usuario", '
                    'count(tr."codbarrastag"), '
                    'substring("DataReposicao",1,10) as "DataReposicao", '
                    'min("DataReposicao") as min, '
                    'max("DataReposicao") as max '
                    'from "Reposicao".tags_separacao tr '
-                   'group by "Usuario" , substring("DataReposicao",1,10)) as grupo '
-                   'group by "DataReposicao", "min", "max", "Usuario"  ')
+                   'group by "usuario" , substring("DataReposicao",1,10)) as grupo '
+                   'group by "DataReposicao", "min", "max", "usuario"  ')
     TagReposicao = cursor.fetchall()
     return TagReposicao
 def ProdutividadeSeparadores():
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
-    cursor.execute('select tr."Usuario", '
+    cursor.execute('select tr."usuario", '
                    'count(tr."codbarrastag"), '
                    'substring("DataReposicao",1,10) as "DataReposicao", '
                    'min("DataReposicao") as min, '
                    'max("DataReposicao") as max '
                    'from "Reposicao".tags_separacao tr '
-                   'group by "Usuario" , substring("DataReposicao",1,10) ')
+                   'group by "usuario" , substring("DataReposicao",1,10) ')
     TagReposicao = cursor.fetchall()
     return TagReposicao
 
 def FilaPorOP():
     conn = ConexaoPostgreRailway.conexao()
-    df_OP1 = pd.read_sql(' select "numeroop", "totalop" as qtdpeçs_total, "Usuario" as codusuario_atribuido, count("numeroop") as qtdpeçs_arepor  from "Reposicao"."filareposicaoportag" frt ' 
-                        '  group by "numeroop", "Usuario", "totalop"  ',conn)
+    df_OP1 = pd.read_sql(' select "numeroop", "totalop" as qtdpeçs_total, "usuario" as codusuario_atribuido, count("numeroop") as qtdpeçs_arepor  from "Reposicao"."filareposicaoportag" frt ' 
+                        '  group by "numeroop", "usuario", "totalop"  ',conn)
 
     df_OP_Iniciada =pd.read_sql(' select "numeroop", count("numeroop") as qtdpeçs_reposto  from "Reposicao"."tagsreposicao" frt ' 
                         ' group by "numeroop" ',conn)
@@ -71,13 +71,13 @@ def FilaPorOP():
 
 def detalhaOP(numeroop):
     conn = ConexaoPostgreRailway.conexao()
-    df_op = pd.read_sql('select "numeroop" , "codbarrastag", "epc", "Usuario" as codusuario_atribuido, "Situacao", "codReduzido" '
+    df_op = pd.read_sql('select "numeroop" , "codbarrastag", "epc", "usuario" as codusuario_atribuido, "Situacao", "codReduzido" '
                    'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' +"'"+  numeroop +"'", conn)
 
 
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     df_op2 = pd.read_sql(
-        'select "numeroop" , "codbarrastag" AS codbarrastag, "epc" as epc, "Usuario" as codusuario_atribuido,' +"'reposto'"+ 'as situacao, "CodReduzido" '
+        'select "numeroop" , "codbarrastag" AS codbarrastag, "epc" as epc, "usuario" as codusuario_atribuido,' +"'reposto'"+ 'as situacao, "CodReduzido" '
       'from "Reposicao"."tagsreposicao" frt where "numeroop" = ' + "'" + numeroop + "'", conn)
     df_op2.rename(columns={'CodReduzido': 'codReduzido', "situacao":'Situacao'}, inplace=True)
 
@@ -97,8 +97,8 @@ def detalhaOP(numeroop):
 def ConsultaSeExisteAtribuicao(numeroop):
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
-    cursor.execute('select "numeroop", "Usuario"  from "Reposicao"."filareposicaoportag" frt  '
-                   'WHERE "numeroop" = %s AND "Usuario" IS NULL', (numeroop,))
+    cursor.execute('select "numeroop", "usuario"  from "Reposicao"."filareposicaoportag" frt  '
+                   'WHERE "numeroop" = %s AND "usuario" IS NULL', (numeroop,))
     # Obter o número de linhas afetadas
     NumeroLInhas = cursor.rowcount
 
@@ -110,7 +110,7 @@ def AtribuiRepositorOP(codigo, numeroop):
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
     cursor.execute('update "Reposicao"."filareposicaoportag" '
-                   'set "Usuario"  = %s where "numeroop" = %s'
+                   'set "usuario"  = %s where "numeroop" = %s'
                    , (codigo, numeroop))
     # Obter o número de linhas afetadas
     numero_linhas_afetadas = cursor.rowcount

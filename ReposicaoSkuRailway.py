@@ -12,7 +12,7 @@ def ApontarTagReduzido(codbarra,endereco,usuario,dthora, Prosseguir = 0):
     if pesquisa == 1 and Prosseguir ==0:
         conn = ConexaoPostgreRailway.conexao()
         query = 'insert into  "Reposicao".tagsreposicao ' \
-                '("codbarrastag","Endereco","epc","tamanho","cor","Engenharia","CodReduzido","descricao","numeroop","totalop","Usuario") ' \
+                '("codbarrastag","Endereco","epc","tamanho","cor","Engenharia","CodReduzido","descricao","numeroop","totalop","usuario") ' \
                 'values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         cursor = conn.cursor()
         cursor.execute(query
@@ -38,7 +38,7 @@ def ApontarTagReduzido(codbarra,endereco,usuario,dthora, Prosseguir = 0):
     if pesquisa == 2 and Prosseguir ==0:
         conn = ConexaoPostgreRailway.conexao()
         query = 'insert into  "Reposicao".tagsreposicao ' \
-                '("codbarrastag","Endereco","situacaoinventario","epc","tamanho","cor","Engenharia","CodReduzido","descricao","numeroop","totalop","Usuario") ' \
+                '("codbarrastag","Endereco","situacaoinventario","epc","tamanho","cor","Engenharia","CodReduzido","descricao","numeroop","totalop","usuario") ' \
                 'values(%s,%s,' + "'adicionado do fila'" + ',%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         cursor = conn.cursor()
         cursor.execute(query
@@ -82,7 +82,7 @@ def PesquisarTagPrateleira(codbarra):
             query3['numeroop'][0],query3['totalop'][0],1
     else:
 
-        query2 = pd.read_sql('SELECT "Usuario", "codbarrastag", "CodReduzido", "Endereco", '
+        query2 = pd.read_sql('SELECT "usuario", "codbarrastag", "CodReduzido", "Endereco", '
                  '"Engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", '
                  '"numeroop", "cor", "tamanho", "totalop" from "Reposicao".tagsreposicao_inventario t '
                  'where codbarrastag = ' + "'" + codbarra + "'", conn)
@@ -106,7 +106,7 @@ def EstornoApontamento(codbarra, usuario):
     usuario = str(usuario)
     pesquisa, epc, tam, colu_cor, codEngenharia, reduzido, descricao, \
         colu_numeroop, colu_totalop, enderecoAntes = PesquisarTagPrateleira(codbarra)
-    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao", "cor", "epc", "tamanho", "totalop", "Situacao", "Usuario") ' \
+    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codReduzido", "CodEngenharia","codbarrastag","numeroop", "descricao", "cor", "epc", "tamanho", "totalop", "Situacao", "usuario") ' \
              'VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'+"'Reposição não Iniciada'"+',%s);'
     cursor = conn.cursor()
     cursor.execute(Insert

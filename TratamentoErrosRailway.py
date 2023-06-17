@@ -94,8 +94,8 @@ def VerificarDuplicacoesAtribuicaoUsuarioOP():
     # VERIFICANDO SE EXISTE CODIGO DE BARRAS DUPLICADOS NA FILA
     erro1 = pd.read_sql('select op from ( '
                         'select op , count(ocorrencia) as ocorrencia from ( '
-                        'select numeroop as op , "Usuario" as usu, numeroop as ocorrencia from "Reposicao".filareposicaoportag f '
-                        'group by numeroop , "Usuario") as filadupla '
+                        'select numeroop as op , "usuario" as usu, numeroop as ocorrencia from "Reposicao".filareposicaoportag f '
+                        'group by numeroop , "usuario") as filadupla '
                         'group by op) as teste '
                         'where teste.ocorrencia > 1', conn)
     conn.close()

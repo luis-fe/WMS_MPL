@@ -5,8 +5,8 @@ import numpy
 
 def FilaPorOP():
     conn = ConecaoAWSRS.conexao()
-    df_OP1 = pd.read_sql(' select "numeroop", "totalop" as qtdpeçs_total, "Usuario" as codusuario_atribuido, count("numeroop") as qtdpeçs_arepor  from "Reposicao"."FilaReposicaoporTag" frt ' 
-                        '  group by "numeroop", "Usuario", "totalop"  ',conn)
+    df_OP1 = pd.read_sql(' select "numeroop", "totalop" as qtdpeçs_total, "usuario" as codusuario_atribuido, count("numeroop") as qtdpeçs_arepor  from "Reposicao"."FilaReposicaoporTag" frt ' 
+                        '  group by "numeroop", "usuario", "totalop"  ',conn)
     df_OP_Iniciada =pd.read_sql(' select "numeroop", count("numeroop") as qtdpeçs_reposto  from "Reposicao"."TagsReposicao" frt ' 
                         ' group by "numeroop" ',conn)
     df_OP1 = pd.merge(df_OP1,df_OP_Iniciada,on='numeroop',how='left')
@@ -38,7 +38,7 @@ def AtribuiRepositorOP(codigo, numeroop):
     conn = ConecaoAWSRS.conexao()
     cursor = conn.cursor()
     cursor.execute('update "Reposicao"."FilaReposicaoporTag" '
-                   'set "Usuario"  = %s where "numeroop" = %s'
+                   'set "usuario"  = %s where "numeroop" = %s'
                    , (codigo, numeroop))
     # Obter o número de linhas afetadas
     numero_linhas_afetadas = cursor.rowcount
@@ -50,8 +50,8 @@ def AtribuiRepositorOP(codigo, numeroop):
 def ConsultaSeExisteAtribuicao(numeroop):
     conn = ConecaoAWSRS.conexao()
     cursor = conn.cursor()
-    cursor.execute('select "numeroop", "Usuario"  from "Reposicao"."FilaReposicaoporTag" frt  '
-                   'WHERE "numeroop" = %s AND "Usuario" IS NULL', (numeroop,))
+    cursor.execute('select "numeroop", "usuario"  from "Reposicao"."FilaReposicaoporTag" frt  '
+                   'WHERE "numeroop" = %s AND "usuario" IS NULL', (numeroop,))
     # Obter o número de linhas afetadas
     NumeroLInhas = cursor.rowcount
 
@@ -61,7 +61,7 @@ def ConsultaSeExisteAtribuicao(numeroop):
 
 def detalhaOP(numeroop):
     conn = ConecaoAWSRS.conexao()
-    df_op = pd.read_sql('select "numeroop" , "codbarrastag" , epc, "Usuario" as codusuario_atribuido, "Situacao", "codReduzido" '
+    df_op = pd.read_sql('select "numeroop" , "codbarrastag" , epc, "usuario" as codusuario_atribuido, "Situacao", "codReduzido" '
                    'from "Reposicao"."FilaReposicaoporTag" frt where "numeroop" = ' +"'"+  numeroop +"'", conn)
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     usuarios = pd.read_sql('select codigo as codusuario_atribuido , nome as nomeusuario_atribuido  from "Reposicao".cadusuarios c ',conn)

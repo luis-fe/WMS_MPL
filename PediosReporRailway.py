@@ -100,7 +100,7 @@ def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco):
             return pd.DataFrame({'Mensagem': [f'o produto {colunaReduzido} já foi totalmente bipado. Deseja estornar ?']})
         else:
             conn = ConexaoPostgreRailway.conexao()
-            insert = 'INSERT INTO "Reposicao".tags_separacao ("Usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
+            insert = 'INSERT INTO "Reposicao".tags_separacao ("usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
                      '"Engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
                      '"numeroop", "cor", "tamanho", "totalop", "codpedido") ' \
                      'SELECT %s, "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
