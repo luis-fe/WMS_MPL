@@ -31,27 +31,22 @@ def token_required(f):
             return f(*args, **kwargs)
         return jsonify({'message': 'Acesso negado'}), 401
     return decorated_function
-
 # Rota pagina inicial
 @app.route('/')
 def home():
     return render_template('index.html')
-
 # Rota protegida que requer o token fixo para trazer os Usuarios Cadastrados
 @app.route('/api/Usuarios', methods=['GET'])
 @token_required
 def get_usuarios():
     usuarios = UsuariosRailway.PesquisarUsuarios()
-
     # Obtém os nomes das colunas
     column_names = ['codigo', 'nome', 'funcao', 'situacao']
-
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
     usuarios_data = []
     for row in usuarios:
         usuario_dict = dict(zip(column_names, row))
         usuarios_data.append(usuario_dict)
-
     return jsonify(usuarios_data)
 @app.route('/api/UsuarioSenhaRestricao', methods=['GET'])
 @token_required
@@ -90,7 +85,7 @@ def update_usuario(codigo):
         situacao_novo = data['situacao']
     else:
         situacao_novo = situacao_ant
-    UsuariosRailway.AtualizarInformacoes(nome_novo, nova_funcao, situacao_novo, codigo)    
+    UsuariosRailway.AtualizarInformacoes(nome_novo, nova_funcao, situacao_novo, codigo)
 
     return jsonify({'message': f'Dados do Usuário {codigo} - {nome_novo} atualizado com sucesso'})
 
@@ -129,11 +124,11 @@ def check_user_password():
 
     # Consulta no banco de dados para verificar se o usuário e senha correspondem
     result = UsuariosRailway.ConsultaUsuarioSenha(codigo, senha)
-    
+
     # Verifica se o usuário existe
     if result == 1:
         # Consulta no banco de dados para obter informações adicionais do usuário
-        
+
         nome, funcao, situacao = UsuariosRailway.PesquisarUsuariosCodigo(codigo)
 
         # Verifica se foram encontradas informações adicionais do usuário
@@ -152,12 +147,12 @@ def check_user_password():
     else:
         return jsonify({"status": False,
             "message":'Usuário ou senha não existe'}), 401
-    
+
 @app.route('/api/TagsReposicao/Resumo', methods=['GET'])
 @token_required
 def get_TagsReposicao():
     TagReposicao = OPfilaReporRailway.ProdutividadeRepositores()
-   
+
      # Obtém os nomes das colunas
     column_names = ['usuario', 'Qtde', 'DataReposicao', 'min', 'max']
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
