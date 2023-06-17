@@ -12,9 +12,9 @@ def VerificarDuplicacoesDeTagsFila():
     conn.close()
     if erro1.empty:
 
-        return pd.DataFrame({'1-Mensagem': [f'Nao tem Tag duplicada na Fila de Reposicao']})
+        return pd.DataFrame({'Mensagem': [f'Nao tem Tag duplicada na Fila de Reposicao']})
     else:
-        return pd.DataFrame({'1-Mensagem': [f' Atencao, há  Tags duplicada na Fila de Reposicao!!!']})
+        return pd.DataFrame({'Mensagem': [f' Atencao, há  Tags duplicada na Fila de Reposicao!!!']})
 
 def VerificarDuplicacoesTagReposta():
     conn = ConexaoPostgreRailway.conexao()
@@ -26,9 +26,9 @@ def VerificarDuplicacoesTagReposta():
     conn.close()
     if erro1.empty:
 
-        return pd.DataFrame({'2-Mensagem': [f'Nao tem Tag duplicada nas Prateleiras (endereço)']})
+        return pd.DataFrame({'Mensagem': [f'Nao tem Tag duplicada nas Prateleiras (endereço)']})
     else:
-        return pd.DataFrame({'2-Mensagem': [f' Atencao,  tem Tag nas Prateleiras (endereço)!!!']})
+        return pd.DataFrame({'Mensagem': [f' Atencao,  tem Tag nas Prateleiras (endereço)!!!']})
 
 def VerificarDuplicacoesTagRepostaInventario():
     conn = ConexaoPostgreRailway.conexao()
@@ -40,9 +40,9 @@ def VerificarDuplicacoesTagRepostaInventario():
     conn.close()
     if erro1.empty:
 
-        return pd.DataFrame({'3-Mensagem': [f'Nao tem Tag duplicada no Inventario']})
+        return pd.DataFrame({'Mensagem': [f'Nao tem Tag duplicada no Inventario']})
     else:
-        return pd.DataFrame({'3-Mensagem': [f' Atencao,  tem Tag duplicada no Inventario!!!']})
+        return pd.DataFrame({'Mensagem': [f' Atencao,  tem Tag duplicada no Inventario!!!']})
 
 
 def VerificandoTagsSemelhanteFIlaxReposicao():
@@ -55,7 +55,7 @@ def VerificandoTagsSemelhanteFIlaxReposicao():
 
     if erro1.empty:
 
-        return pd.DataFrame({'4-Mensagem': [f'Nao tem tag duplicada na Fila x Pratleiras']})
+        return pd.DataFrame({'Mensagem': [f'Nao tem tag duplicada na Fila x Pratleiras']})
     else:
         erro1['Mensagem'] = 'Atencao, Tag Duplicada na Fila e no Bipada'
         return erro1
@@ -70,7 +70,7 @@ def VerificandoTagsSemelhanteReposicaoxInventario():
 
     if erro1.empty:
 
-        return pd.DataFrame({'5-Mensagem': [f'Nao tem tag duplicada na Prateleira  x inventario']})
+        return pd.DataFrame({'Mensagem': [f'Nao tem tag duplicada na Prateleira  x inventario']})
     else:
         erro1['Mensagem'] = 'Tag Duplicada na Prateleira e no Inventario'
         return erro1
@@ -101,7 +101,7 @@ def VerificarDuplicacoesAtribuicaoUsuarioOP():
     conn.close()
     if erro1.empty:
 
-        return pd.DataFrame({'7-Mensagem': [f'Nao tem dados duplicados de Usuario Atribuido na Fila Reposicao']})
+        return pd.DataFrame({'Mensagem': [f'Nao tem dados duplicados de Usuario Atribuido na Fila Reposicao']})
     else:
         erro1['Mensagem'] = f' Tem dados duplicados de Usuario Atribuido Na Fila Reposicao!!!'
         return erro1
