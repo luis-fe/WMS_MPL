@@ -55,7 +55,7 @@ def get_usuarios():
 @app.route('/api/UsuarioSenhaRestricao', methods=['GET'])
 @token_required
 def get_usuariosRestricao():
-    usuarios = UsuariosRailway.PesquisarUsuarios()
+    usuarios = UsuariosRailway.PesquisarSenha()
 
     # Obtém os nomes das colunas
     column_names = ['codigo', 'nome ','senha']
