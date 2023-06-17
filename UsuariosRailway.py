@@ -16,6 +16,14 @@ def PesquisarUsuarios():
     cursor.close()
     conn.close()
     return usuarios
+def PesquisarSenha():
+    conn = ConexaoPostgreRailway.conexao()
+    cursor = conn.cursor()
+    cursor.execute('select codigo, nome, senha from "Reposicao"."cadusuarios" c')
+    usuarios = cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return usuarios
 
 def PesquisarUsuariosCodigo(codigo):
     conn = ConexaoPostgreRailway.conexao()

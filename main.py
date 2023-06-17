@@ -52,6 +52,21 @@ def get_usuarios():
         usuarios_data.append(usuario_dict)
 
     return jsonify(usuarios_data)
+@app.route('/api/UsuarioSenhaRestricao', methods=['GET'])
+@token_required
+def get_usuariosRestricao():
+    usuarios = UsuariosRailway.PesquisarUsuarios()
+
+    # Obtém os nomes das colunas
+    column_names = ['codigo', 'nome ','senha']
+
+    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+    usuarios_data = []
+    for row in usuarios:
+        usuario_dict = dict(zip(column_names, row))
+        usuarios_data.append(usuario_dict)
+
+    return jsonify(usuarios_data)
 
 
 # Rota para atualizar um usuário pelo código
