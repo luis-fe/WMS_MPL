@@ -61,7 +61,7 @@ def ConsultaSeExisteAtribuicao(numeroop):
 
 def detalhaOP(numeroop):
     conn = ConecaoAWSRS.conexao()
-    df_op = pd.read_sql('select "numeroop" , "codbarrastag" , epc, "usuario" as codusuario_atribuido, "Situacao", "codReduzido" '
+    df_op = pd.read_sql('select "numeroop" , "codbarrastag" , epc, "usuario" as codusuario_atribuido, "Situacao", "codreduzido" '
                    'from "Reposicao"."FilaReposicaoporTag" frt where "numeroop" = ' +"'"+  numeroop +"'", conn)
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     usuarios = pd.read_sql('select codigo as codusuario_atribuido , nome as nomeusuario_atribuido  from "Reposicao".cadusuarios c ',conn)
@@ -77,9 +77,9 @@ def detalhaOP(numeroop):
     
 def detalhaOPxSKU(numeroop):
     conn = ConecaoAWSRS.conexao()
-    df_op = pd.read_sql('select "numeroop", "codReduzido", "CodEngenharia", "cor", "tamanho", "descricao" '
+    df_op = pd.read_sql('select "numeroop", "codreduzido", "engenharia", "cor", "tamanho", "descricao" '
                    'from "Reposicao"."FilaReposicaoporTag" frt where "numeroop" = ' +"'"+  numeroop +"'"+
-                   'group by "numeroop", "codReduzido","descricao" , "cor","tamanho","CodEngenharia"', conn)
+                   'group by "numeroop", "codreduzido","descricao" , "cor","tamanho","engenharia"', conn)
     conn.close()
     if df_op.empty:
         return pd.DataFrame({'Status': [False],'Mensagem':['OP nao Encontrada']})

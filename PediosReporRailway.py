@@ -76,11 +76,11 @@ def DetalhaPedido(codPedido):
                                 ,conn)
     DetalhaSku = pd.read_sql('select  produto as reduzido, qtdesugerida , status as concluido_X_total, endereco as endereco'
                             ' from "Reposicao".pedidossku p  where codpedido= '+"'"+codPedido+"'",conn)
-    descricaoSku = pd.read_sql( 'select f."codReduzido" as reduzido, f."descricao" , f."cor" , f.tamanho  from "Reposicao".filareposicaoportag f '
-                                'group by f."codReduzido", f.descricao , f."cor" , f.tamanho '
+    descricaoSku = pd.read_sql( 'select f."codreduzido" as reduzido, f."descricao" , f."cor" , f.tamanho  from "Reposicao".filareposicaoportag f '
+                                'group by f."codreduzido", f.descricao , f."cor" , f.tamanho '
                                 ' union '
-                                'select t."CodReduzido", t."descricao" , t.cor , t.tamanho  from "Reposicao".tagsreposicao t '
-                                'group by  t."CodReduzido", t."descricao" , t.cor , t.tamanho',conn)
+                                'select t."codreduzido", t."descricao" , t.cor , t.tamanho  from "Reposicao".tagsreposicao t '
+                                'group by  t."codreduzido", t."descricao" , t.cor , t.tamanho',conn)
     descricaoSku.drop_duplicates(subset='reduzido', inplace=True)
     DetalhaSku = pd.merge(DetalhaSku,descricaoSku,on='reduzido',how='left')
 
@@ -100,10 +100,10 @@ def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco):
             return pd.DataFrame({'Mensagem': [f'o produto {colunaReduzido} já foi totalmente bipado. Deseja estornar ?']})
         else:
             conn = ConexaoPostgreRailway.conexao()
-            insert = 'INSERT INTO "Reposicao".tags_separacao ("usuario", "codbarrastag", "CodReduzido", "Endereco", ' \
+            insert = 'INSERT INTO "Reposicao".tags_separacao ("usuario", "codbarrastag", "codreduzido", "Endereco", ' \
                      '"Engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
                      '"numeroop", "cor", "tamanho", "totalop", "codpedido") ' \
-                     'SELECT %s, "codbarrastag", "CodReduzido", "Endereco", "Engenharia", ' \
+                     'SELECT %s, "codbarrastag", "codreduzido", "Endereco", "Engenharia", ' \
                      '"DataReposicao", "descricao", "epc", %s, "numeroop", "cor", "tamanho", "totalop", ' \
                      "%s" \
                      'FROM "Reposicao".tagsreposicao t ' \
@@ -145,7 +145,7 @@ def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco):
 def VerificacoesApontamento(codbarra, codpedido):
     conn = ConexaoPostgreRailway.conexao()
     pesquisa = pd.read_sql(
-        ' select "codbarrastag", "CodReduzido" as codreduzido  from "Reposicao".tagsreposicao f   '
+        ' select "codbarrastag", "codreduzido" as codreduzido  from "Reposicao".tagsreposicao f   '
         'where codbarrastag = ' + "'" + codbarra + "'", conn)
 
     if not pesquisa.empty:

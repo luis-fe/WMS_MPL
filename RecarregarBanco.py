@@ -39,9 +39,9 @@ def FilaTags():
 )
     conn2 = ConexaoPostgreRailway.conexao()
     df_tags = pd.read_sql(
-        "SELECT  codBarrasTag as codbarrastag, codNaturezaAtual , codEngenharia , codReduzido,(SELECT i.nome  FROM cgi.Item i WHERE i.codigo = t.codReduzido) as descricao , numeroop as numeroop,"
-        " (SELECT i2.codCor  FROM cgi.Item2  i2 WHERE i2.Empresa = 1 and  i2.codItem  = t.codReduzido) as Cor,"
-        " (SELECT tam.descricao  FROM cgi.Item2  i2 join tcp.Tamanhos tam on tam.codEmpresa = i2.Empresa and tam.sequencia = i2.codSeqTamanho  WHERE i2.Empresa = 1 and  i2.codItem  = t.codReduzido) as tamanho"
+        "SELECT  codBarrasTag as codbarrastag, codNaturezaAtual , engenharia , codreduzido,(SELECT i.nome  FROM cgi.Item i WHERE i.codigo = t.codreduzido) as descricao , numeroop as numeroop,"
+        " (SELECT i2.codCor  FROM cgi.Item2  i2 WHERE i2.Empresa = 1 and  i2.codItem  = t.codreduzido) as Cor,"
+        " (SELECT tam.descricao  FROM cgi.Item2  i2 join tcp.Tamanhos tam on tam.codEmpresa = i2.Empresa and tam.sequencia = i2.codSeqTamanho  WHERE i2.Empresa = 1 and  i2.codItem  = t.codreduzido) as tamanho"
         " from tcr.TagBarrasProduto t WHERE codEmpresa = 1 and codNaturezaAtual = 5 and situacao = 3", conn)
 
     df_opstotal = pd.read_sql('SELECT top 200000 numeroOP as numeroop , totPecasOPBaixadas as totalop  '
@@ -64,7 +64,7 @@ def FilaTags():
     df_tags['Situacao'] = df_tags.apply(lambda row: 'Reposto' if not pd.isnull(row['usuario']) else 'Reposição não Iniciada', axis=1)
     epc = LerEPC()
     df_tags = pd.merge(df_tags, epc, on='codbarrastag', how='left')
-    df_tags.rename(columns={'codbarrastag': 'codbarrastag','codEngenharia':'CodEngenharia'
+    df_tags.rename(columns={'codbarrastag': 'codbarrastag','engenharia':'engenharia'
                             , 'numeroop':'numeroop'}, inplace=True)
     conn2.close()
     df_tags = df_tags.loc[df_tags['sti_aterior'].isnull()]

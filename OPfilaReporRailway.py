@@ -71,15 +71,15 @@ def FilaPorOP():
 
 def detalhaOP(numeroop):
     conn = ConexaoPostgreRailway.conexao()
-    df_op = pd.read_sql('select "numeroop" , "codbarrastag", "epc", "usuario" as codusuario_atribuido, "Situacao", "codReduzido" '
+    df_op = pd.read_sql('select "numeroop" , "codbarrastag", "epc", "usuario" as codusuario_atribuido, "Situacao", "codreduzido" '
                    'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' +"'"+  numeroop +"'", conn)
 
 
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     df_op2 = pd.read_sql(
-        'select "numeroop" , "codbarrastag" AS codbarrastag, "epc" as epc, "usuario" as codusuario_atribuido,' +"'reposto'"+ 'as situacao, "CodReduzido" '
+        'select "numeroop" , "codbarrastag" AS codbarrastag, "epc" as epc, "usuario" as codusuario_atribuido,' +"'reposto'"+ 'as situacao, "codreduzido" '
       'from "Reposicao"."tagsreposicao" frt where "numeroop" = ' + "'" + numeroop + "'", conn)
-    df_op2.rename(columns={'CodReduzido': 'codReduzido', "situacao":'Situacao'}, inplace=True)
+    df_op2.rename(columns={'codreduzido': 'codreduzido', "situacao":'Situacao'}, inplace=True)
 
     df_op = pd.concat([df_op, df_op2])
     usuarios = pd.read_sql('select codigo as codusuario_atribuido , nome as nomeusuario_atribuido  from "Reposicao".cadusuarios c ',conn)
@@ -116,28 +116,28 @@ def AtribuiRepositorOP(codigo, numeroop):
     numero_linhas_afetadas = cursor.rowcount
     conn.commit()
     cursor.close()
-def detalhaSku(codReduzido):
+def detalhaSku(codreduzido):
     conn = ConexaoPostgreRailway.conexao()
-    df_op2 = pd.read_sql('select "Endereco", "CodReduzido", "descricao", count("CodReduzido") as saldo '
-                   'from "Reposicao"."tagsreposicao" frt where "CodReduzido" = ' +"'"+  codReduzido +"'"+
-                   ' group by "Endereco", "CodReduzido", "descricao" ', conn)
+    df_op2 = pd.read_sql('select "Endereco", "codreduzido", "descricao", count("codreduzido") as saldo '
+                   'from "Reposicao"."tagsreposicao" frt where "codreduzido" = ' +"'"+  codreduzido +"'"+
+                   ' group by "Endereco", "codreduzido", "descricao" ', conn)
     if df_op2.empty:
-        return pd.DataFrame({'Mensagem':[f'O reduzido {codReduzido} ainda nao foi reposto ou esta com as prateleiras vazias ']})
+        return pd.DataFrame({'Mensagem':[f'O reduzido {codreduzido} ainda nao foi reposto ou esta com as prateleiras vazias ']})
     else:
         return df_op2
     
 def detalhaOPxSKU(numeroop):
     conn = ConexaoPostgreRailway.conexao()
-    df_op = pd.read_sql('select "numeroop", "codReduzido", "CodEngenharia", "cor", "tamanho", "descricao" '
+    df_op = pd.read_sql('select "numeroop", "codreduzido", "engenharia", "cor", "tamanho", "descricao" '
                    'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' +"'"+  numeroop +"' "+
-                   'group by "numeroop", "codReduzido","descricao" , "cor","tamanho","CodEngenharia"', conn)
-    df_op2 = pd.read_sql('select "numeroop", "CodReduzido", "Engenharia", "cor", "tamanho", "descricao" '
+                   'group by "numeroop", "codreduzido","descricao" , "cor","tamanho","engenharia"', conn)
+    df_op2 = pd.read_sql('select "numeroop", "codreduzido", "Engenharia", "cor", "tamanho", "descricao" '
                    'from "Reposicao"."tagsreposicao" frt where "numeroop" = ' +"'"+  numeroop +"'"+
-                   ' group by "numeroop", "CodReduzido","descricao" , "cor","tamanho","Engenharia"', conn)
-    df_op2.rename(columns={'CodReduzido': 'codReduzido', "Engenharia": 'CodEngenharia', "cor": "cor", "descricao": "descricao"}, inplace=True)
+                   ' group by "numeroop", "codreduzido","descricao" , "cor","tamanho","Engenharia"', conn)
+    df_op2.rename(columns={'codreduzido': 'codreduzido', "Engenharia": 'engenharia', "cor": "cor", "descricao": "descricao"}, inplace=True)
 
     df_op = pd.concat([df_op, df_op2])
-    df_op.drop_duplicates(subset={'numeroop', 'codReduzido'}, inplace=True)
+    df_op.drop_duplicates(subset={'numeroop', 'codreduzido'}, inplace=True)
 
 
     conn.close()
