@@ -235,12 +235,12 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         return 'Reposto'
     else:
         #insere os dados da reposicao
-        Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia","numeroop","Descricao", ' \
-                 '"cor", "Epc", "tamanho","totalop" )' \
-                 ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);'
+        Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia","Descricao", ' \
+                 '"cor", "Epc", "tamanho" )' \
+                 ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);'
         cursor = conn.cursor()
         cursor.execute(Insert
-                       , (usuario, codbarras, endereco,dataHora,reduzido,codEngenharia,numeroop,descricao,cor,epc,tam,totalop))
+                       , (usuario, codbarras, endereco,dataHora,reduzido,codEngenharia,descricao,cor,epc,tam))
 
         # Obter o número de linhas afetadas
         conn.commit()
