@@ -35,7 +35,6 @@ def ProdutividadeSeparadores():
                    'from "Reposicao".tags_separacao tr '
                    'group by "usuario" , substring("DataReposicao",1,10) ')
     TagReposicao = cursor.fetchall()
-
     return TagReposicao
 
 def FilaPorOP():
