@@ -235,9 +235,9 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
         return 'Reposto'
     else:
         #insere os dados da reposicao
-        Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("Usuario","codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia","Descricao", ' \
+        Insert = ' INSERT INTO "Reposicao"."tagsreposicao" ("codbarrastag","Endereco","DataReposicao","CodReduzido","Engenharia","Descricao", ' \
                  '"cor", "Epc", "tamanho" )' \
-                 ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);'
+                 ' VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s);'
         cursor = conn.cursor()
         cursor.execute(Insert
                        , (usuario, codbarras, endereco,dataHora,reduzido,codEngenharia,descricao,cor,epc,tam))
