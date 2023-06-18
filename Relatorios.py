@@ -12,4 +12,15 @@ def relatorioEndereços ():
     conn.close()
     return relatorioEndereço
 
+def relatorioFila ():
+    conn = ConexaoPostgreRailway.conexao()
+    relatorioFila = pd.read_sql('select * from "Reposicao".filareposicaoportag t ',conn)
+    conn.close()
+    return relatorioFila
+
+def relatorioTotalFila ():
+    conn = ConexaoPostgreRailway.conexao()
+    relatorioFila = pd.read_sql('select count(codbarrastag) as SaldoFila from "Reposicao".filareposicaoportag t ',conn)
+    conn.close()
+    return relatorioTotalFila
 
