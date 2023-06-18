@@ -283,7 +283,7 @@ def RetornoLocalCodBarras(codbarras,endereco, dataHora):
 
 
 
-        insert = 'insert into (codbarrastag, "DataReposicao" , "Endereco" ) values (%s, %s, %s )'
+        insert = 'insert into "Reposicao"."tagsreposicao" ("codbarrastag", "DataReposicao" , "Endereco" ) values (%s, %s, %s )'
         cursor.execute(
            insert, (codbarras,dataHora,endereco,)
         )
@@ -312,7 +312,7 @@ def RetornoLocalCodBarras(codbarras,endereco, dataHora):
 inicio = time.time()
 
 # Chamar a função que você deseja medir
-
+RetornoLocalCodBarras('01000067443603000512','teste','test')
 
 # Parar o temporizador
 fim = time.time()
