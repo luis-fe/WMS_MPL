@@ -141,9 +141,9 @@ def Devolver_Inf_Tag(codbarras, padrao=0):
     codreduzido = pd.DataFrame(cursor.fetchall(), columns=['codreduzido', 'engenharia', 'Situacao', 'usuario',  'descricao', 'cor', 'epc','numeroop'])
 
     cursor.execute(
-        'select count("codbarrastag") as situacao, "codreduzido", "Engenharia", "numeroop", "descricao", "cor", "epc", "tamanho", "totalop","usuario" from "Reposicao"."tagsreposicao" tr '
+        'select count("codbarrastag") as situacao, "codreduzido", "engenharia", "numeroop", "descricao", "cor", "epc", "tamanho", "totalop","usuario" from "Reposicao"."tagsreposicao" tr '
         'where "codbarrastag" = %s '
-        'group by "usuario","codbarrastag", "codreduzido", "Engenharia", "numeroop", "descricao", "cor", "epc", "tamanho", "totalop"', (codbarras,))
+        'group by "usuario","codbarrastag", "codreduzido", "engenharia", "numeroop", "descricao", "cor", "epc", "tamanho", "totalop"', (codbarras,))
     TagApontadas = pd.DataFrame(cursor.fetchall(), columns=['situacao', 'codreduzido', 'Engenharia', 'numeroop', 'descricao', 'cor', 'epc', 'tamanho', 'totalop',"usuario"])
 
     if not TagApontadas.empty and TagApontadas["situacao"][0] >= 0 and padrao == 0:
@@ -282,8 +282,15 @@ def RetornoLocalCodBarras(codbarras):
     if not fila_reposicao.empty:
 
         retorno = 'A Repor'
+        insert = 'insert into (codbarrastag) values (%s)'
+        cursor.execute(
+           insert, (codbarras,)
+        )
+        conn.commit()
+        cursor.close()
     else:
         # Verificando se está na Prateleira
+
         cursor.execute(
             'SELECT "codbarrastag" FROM "Reposicao"."tagsreposicao" ce '
             'WHERE "codbarrastag" = %s', (codbarras,)
@@ -304,7 +311,7 @@ inicio = time.time()
 
 # Chamar a função que você deseja medir
 print(RetornoLocalCodBarras('01000067443603000512'))
-
+print(ApontarReposicao(1,'01000067443603000512','te','te'))
 # Parar o temporizador
 fim = time.time()
 
