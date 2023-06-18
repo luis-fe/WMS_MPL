@@ -282,7 +282,6 @@ def RetornoLocalCodBarras(codbarras,endereco, dataHora):
     if not fila_reposicao.empty:
 
 
-
         insert = 'insert into "Reposicao"."tagsreposicao" ("codbarrastag", "DataReposicao" , "Endereco" ) values (%s, %s, %s )'
         cursor.execute(
            insert, (codbarras,dataHora,endereco,)
