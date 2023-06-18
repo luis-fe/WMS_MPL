@@ -351,7 +351,7 @@ def get_ApontaReposicao():
         estornar = data.get('estornar', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
 
         # Verifica se existe atribuição
-        Apontamento = ReposicaoRailway.ApontarReposicao(codUsuario, codbarra, endereco, dataHora)
+        Apontamento = ReposicaoRailway.RetornoLocalCodBarras(codbarra,endereco,dataHora)
 
         if Apontamento == 'Reposto':
             if estornar:

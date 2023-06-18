@@ -268,7 +268,7 @@ def EstornoApontamento(codbarrastag):
     return True
 
 
-def RetornoLocalCodBarras(codbarras):
+def RetornoLocalCodBarras(codbarras,endereco, dataHora):
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
 
@@ -281,13 +281,15 @@ def RetornoLocalCodBarras(codbarras):
 
     if not fila_reposicao.empty:
 
-        retorno = 'A Repor'
-        insert = 'insert into (codbarrastag) values (%s)'
+
+
+        insert = 'insert into (codbarrastag, "DataReposicao" , "Endereco" ) values (%s, %s, %s )'
         cursor.execute(
-           insert, (codbarras,)
+           insert, (codbarras,dataHora,endereco,)
         )
         conn.commit()
         cursor.close()
+        retorno = 'A Repor'
     else:
         # Verificando se está na Prateleira
 
@@ -310,8 +312,8 @@ def RetornoLocalCodBarras(codbarras):
 inicio = time.time()
 
 # Chamar a função que você deseja medir
-print(RetornoLocalCodBarras('01000067443603000512'))
-print(ApontarReposicao(1,'01000067443603000512','te','te'))
+
+
 # Parar o temporizador
 fim = time.time()
 
