@@ -201,9 +201,9 @@ def SalvarInventario(endereco):
 
     # Inserir de volta as tags que deram certo
     insert = 'INSERT INTO "Reposicao".tagsreposicao ("usuario", "codbarrastag", "codreduzido", "Endereco", ' \
-             '"Engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
+             '"engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
              '"numeroop", "cor", "tamanho", "totalop") ' \
-             'SELECT "usuario", "codbarrastag", "codreduzido", "Endereco", "Engenharia", ' \
+             'SELECT "usuario", "codbarrastag", "codreduzido", "Endereco", "engenharia", ' \
              '"DataReposicao", "descricao", "epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop" ' \
              'FROM "Reposicao".tagsreposicao_inventario t ' \
              'WHERE "Endereco" = %s and "situacaoinventario" = %s ;'
