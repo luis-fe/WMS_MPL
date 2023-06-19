@@ -231,9 +231,9 @@ def SalvarInventario(endereco):
     numero_tagsMigradas = Aviso["Endereco"].size
     datahora = obterHoraAtual()
     insert = 'INSERT INTO "Reposicao".tagsreposicao ("usuario", "codbarrastag", "codreduzido", "Endereco", ' \
-             '"Engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
+             '"engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
              '"numeroop", "cor", "tamanho", "totalop") ' \
-             'SELECT "usuario", "codbarrastag", "codreduzido", "Endereco", "Engenharia", ' \
+             'SELECT "usuario", "codbarrastag", "codreduzido", "Endereco", "engenharia", ' \
              '%s , "descricao", "epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop" ' \
              'FROM "Reposicao".tagsreposicao_inventario t ' \
              'WHERE "Endereco" = %s and "situacaoinventario" is not null ;'
