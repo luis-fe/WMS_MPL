@@ -81,6 +81,7 @@ def DetalhaPedido(codPedido):
                                 'group by f."codreduzido", f.descricao , f."cor" , f.tamanho , f.engenharia'
                                 ' union '
                                 'select t."codreduzido", t."descricao" , t.cor , t.tamanho  from "Reposicao".filareposicaoportag t '
+                                ' where t.descricao is not null '
                                 'group by  t."codreduzido", t."descricao" , t.cor , t.tamanho, t.engenharia',conn)
     descricaoSku.drop_duplicates(subset='reduzido', inplace=True)
 
