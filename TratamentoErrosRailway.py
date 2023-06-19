@@ -178,4 +178,7 @@ def TratandoErroTagsSemelhanteInventarioxReposicao():
     conn.close()
 
     return pd.DataFrame({'Mensagem': [f'Limpeza Feita']})
-
+TratandoErroTagsSemelhanteInventarioxReposicao()
+TratandoErroTagsSemelhanteFilaxInventario()
+TratandoErroTagsSemelhanteFilaxReposicao()
+print(ListaErros())
