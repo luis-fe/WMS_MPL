@@ -71,7 +71,7 @@ def FilaAtribuidaUsuario(codUsuario):
 def DetalhaPedido(codPedido):
     conn = ConexaoPostgreRailway.conexao()
     skus = pd.read_sql('select codigopedido, desc_tiponota  , codcliente ||'+"'-'"+'|| desc_cliente as cliente  '
-                                ',codrepresentante  ||'+"'-'"+'|| desc_representante  as repres '
+                                ',codrepresentante  ||'+"'-'"+'|| desc_representante  as repres, agrupamentopedido '
                                 'from "Reposicao".filaseparacaopedidos f  where codigopedido= '+"'"+codPedido+"'"
                                 ,conn)
     DetalhaSku = pd.read_sql('select  produto as reduzido, qtdesugerida , status as concluido_X_total, endereco as endereco'
