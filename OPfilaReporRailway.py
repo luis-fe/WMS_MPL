@@ -131,10 +131,10 @@ def detalhaOPxSKU(numeroop):
     df_op = pd.read_sql('select "numeroop", "codreduzido", "engenharia", "cor", "tamanho", "descricao" '
                    'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' +"'"+  numeroop +"' "+
                    'group by "numeroop", "codreduzido","descricao" , "cor","tamanho","engenharia"', conn)
-    df_op2 = pd.read_sql('select "numeroop", "codreduzido", "Engenharia", "cor", "tamanho", "descricao" '
+    df_op2 = pd.read_sql('select "numeroop", "codreduzido", "engenharia", "cor", "tamanho", "descricao" '
                    'from "Reposicao"."tagsreposicao" frt where "numeroop" = ' +"'"+  numeroop +"'"+
-                   ' group by "numeroop", "codreduzido","descricao" , "cor","tamanho","Engenharia"', conn)
-    df_op2.rename(columns={'codreduzido': 'codreduzido', "Engenharia": 'engenharia', "cor": "cor", "descricao": "descricao"}, inplace=True)
+                   ' group by "numeroop", "codreduzido","descricao" , "cor","tamanho","engenharia"', conn)
+    df_op2.rename(columns={'codreduzido': 'codreduzido', "engenharia": 'engenharia', "cor": "cor", "descricao": "descricao"}, inplace=True)
 
     df_op = pd.concat([df_op, df_op2])
     df_op.drop_duplicates(subset={'numeroop', 'codreduzido'}, inplace=True)
