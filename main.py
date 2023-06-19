@@ -550,7 +550,7 @@ def get_ApontamentoTagPedido():
     codbarra = datas['codbarras']
     Prosseguir = datas.get('Prosseguir', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
 
-    Endereco_det = PediosReporRailway.ApontamentoTagPedido(str(codusuario), codpedido, codbarra, endereco)
+    Endereco_det = PediosReporRailway.ApontamentoTagPedido(str(codusuario), codpedido, codbarra, endereco,Prosseguir)
 
     # Obtém os nomes das colunas
     column_names = Endereco_det.columns

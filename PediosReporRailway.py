@@ -133,7 +133,7 @@ def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco):
 
             # atualizando a necessidade
             conn.close()
-            return pd.DataFrame({'Mensagem': [f'tag {codbarra} apontada!']})
+            return pd.DataFrame({'Mensagem': [f'tag {codbarra} apontada!'], 'status':[True]})
     if validacao ==2:
         return pd.DataFrame({'Mensagem': [f'pedido {codpedido} nao encontrado']})
     else:
