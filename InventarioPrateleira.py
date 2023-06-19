@@ -48,7 +48,7 @@ def ApontarTagInventario(codbarra, endereco, usuario, padrao=False):
         return pd.DataFrame({'Status Conferencia': [False], 'Mensagem': [f'tag: {codbarra} não exite no estoque! ']})
     if validador ==3:
         query = 'insert into  "Reposicao".tagsreposicao_inventario ' \
-                '("codbarrastag","Endereco","situacaoinventario","epc","tamanho","cor","Engenharia","codreduzido","descricao","numeroop","totalop","usuario") ' \
+                '("codbarrastag","Endereco","situacaoinventario","epc","tamanho","cor","engenharia","codreduzido","descricao","numeroop","totalop","usuario") ' \
                 'values(%s,%s,'+"'adicionado do fila'"+',%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         cursor = conn.cursor()
         cursor.execute(query
@@ -77,9 +77,9 @@ def ApontarTagInventario(codbarra, endereco, usuario, padrao=False):
                              'Mensagem': [f'tag: {codbarra} veio de outro endereço: {colu1} , deseja prosseguir?']})
     if validador == 2 and padrao == True:
         insert = 'INSERT INTO "Reposicao".tagsreposicao_inventario ("usuario", "codbarrastag", "codreduzido", "Endereco", ' \
-                 '"Engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
+                 '"engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
                  '"numeroop", "cor", "tamanho", "totalop", "situacaoinventario") ' \
-                 'SELECT "usuario", "codbarrastag", "codreduzido", %s, "Engenharia", ' \
+                 'SELECT "usuario", "codbarrastag", "codreduzido", %s, "engenharia", ' \
                  '"DataReposicao", "descricao", "epc", "StatusEndereco", "numeroop", "cor", "tamanho", "totalop", ' \
                  "'endereco migrado'" \
                  'FROM "Reposicao".tagsreposicao t ' \
