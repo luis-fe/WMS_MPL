@@ -14,8 +14,8 @@ def relatorioEndereços ():
 
 def relatorioFila ():
     conn = ConexaoPostgreRailway.conexao()
-    relatorioFila = pd.read_sql('select "numeroop", count(codbarrastag) as Saldo from "Reposicao".filareposicaoportag t '
-                                'group by "numeroop" ',conn)
+    relatorioFila = pd.read_sql('select "numeroop", count(codbarrastag) as Saldo, engenharia, descricao from "Reposicao".filareposicaoportag t '
+                                'group by "numeroop", "engenharia", "descricao" ',conn)
     conn.close()
     return relatorioFila
 
