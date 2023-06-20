@@ -27,10 +27,11 @@ def relatorioTotalFila():
         'FROM "Reposicao".filareposicaoportag t' 
         ' GROUP BY "numeroop" ',conn)
 
-    query = query['saldo'].sum()
+    query['saldo'] = query['saldo'].sum()
     conn.close()
     data = {
-        '1 - Saldo na Fila':  query.to_dict(orient='records')
+        '1-Saldo na Fila':   f'{query["saldo"][0]}'
 
     }
     return [data]
+print(relatorioTotalFila())
