@@ -19,11 +19,17 @@ def relatorioFila ():
     conn.close()
     return relatorioFila
 
-def relatorioTotalFila ():
+
+
+def relatorioTotalFila():
     conn = ConexaoPostgreRailway.conexao()
-    relatorioFila = pd.read_sql('select count(codbarrastag) as SaldoFila from "Reposicao".filareposicaoportag t '
-                                '',conn)
-    relatorioFila['total'] = 'total:'
+    query = pd.read_sql('SELECT numeroop, COUNT(codbarrastag) AS Saldo '
+        'FROM "Reposicao".filareposicaoportag t' 
+        ' GROUP BY "numeroop" ',conn)
+
+    query = query['saldo'].sum()
     conn.close()
-    return relatorioTotalFila
+    return query
+
+
 
