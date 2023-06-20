@@ -30,7 +30,7 @@ def relatorioTotalFila():
     query['saldo'] = query['saldo'].sum()
     conn.close()
     data = {
-        '1-Saldo na Fila':   f'{query["saldo"][0]}'
+        '1-Saldo na Fila':   query["saldo"][0]
 
     }
     return [data]
