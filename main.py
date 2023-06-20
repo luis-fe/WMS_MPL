@@ -626,12 +626,10 @@ def get_RelatorioFila():
 @app.route('/api/RelatorioTotalFila', methods=['GET'])
 def get_RelatorioTotalFila():
     # Obtém os dados do corpo da requisição (JSON)
-
-
     Endereco_det = Relatorios.relatorioTotalFila()
 
     # Obtém os nomes das colunas
-    column_names = Endereco_det.columns
+    column_names = Endereco_det
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
     end_data = []
     for index, row in Endereco_det.iterrows():
