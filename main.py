@@ -609,8 +609,6 @@ def get_RelatorioEndereços():
 @app.route('/api/RelatorioFila', methods=['GET'])
 def get_RelatorioFila():
     # Obtém os dados do corpo da requisição (JSON)
-
-
     Endereco_det = Relatorios.relatorioFila()
 
     # Obtém os nomes das colunas
@@ -626,8 +624,6 @@ def get_RelatorioFila():
 @app.route('/api/RelatorioTotalFila', methods=['GET'])
 def get_RelatorioTotalFila():
     # Obtém os dados do corpo da requisição (JSON)
-
-
     Endereco_det = Relatorios.relatorioTotalFila()
 
     # Obtém os nomes das colunas

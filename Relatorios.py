@@ -29,7 +29,8 @@ def relatorioTotalFila():
 
     query = query['saldo'].sum()
     conn.close()
-    return query
+    data = {
+        '1 - Saldo na Fila':  query.to_dict(orient='records')
 
-
-
+    }
+    return [data]
