@@ -20,7 +20,7 @@ def ProdutividadeRepositores():
                    'min("DataReposicao") as min, '
                    'max("DataReposicao") as max '
                    'from "Reposicao".tags_separacao tr '
-                   'group by "usuario" , substring("DataReposicao",1,10)) as grupo '
+                   'group by "usuario_rep" , substring("DataReposicao",1,10)) as grupo '
                    'group by "DataReposicao", "min", "max", "usuario"  ')
     TagReposicao = cursor.fetchall()
     return TagReposicao
