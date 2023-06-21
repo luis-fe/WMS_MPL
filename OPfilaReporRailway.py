@@ -14,7 +14,7 @@ def ProdutividadeRepositores():
                    'from "Reposicao"."tagsreposicao" tr '
                    'group by "usuario" , substring("DataReposicao",1,10) '
                    'union '
-                   'select tr."usuario_rep", '
+                   'select tr."usuario_rep" as usuario, '
                    'count(tr."codbarrastag"), '
                    'substring("DataReposicao",1,10) as "DataReposicao", '
                    'min("DataReposicao") as min, '
