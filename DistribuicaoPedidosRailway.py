@@ -8,7 +8,7 @@ def AtribuirPedido(usuario, pedidos, dataAtribuicao):
        incr =  str(pedidos[i])
        pedidosNovo.append(incr)
 
-    pedidosNovo = [p.replace(',', '/') for p in pedidos]
+    pedidosNovo = [p.replace(',', '/') for p in pedidosNovo]
 
     if tamanho >= 0:
         conn = ConexaoPostgreRailway.conexao()
