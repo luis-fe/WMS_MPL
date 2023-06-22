@@ -33,7 +33,7 @@ def ProdutividadeSeparadores():
                    'min("dataseparacao") as min, '
                    'max("dataseparacao") as max '
                    'from "Reposicao".tags_separacao tr '
-                   ' where usuario is not null'
+                   ' where "dataseparacao" is not null '
                    'group by "usuario" , substring("dataseparacao",1,10) ')
     TagReposicao = cursor.fetchall()
     return TagReposicao
