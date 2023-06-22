@@ -10,6 +10,8 @@ def AtribuirPedido(usuario, pedidos, dataAtribuicao):
 
     pedidosNovo = [p.replace(',', '/') for p in pedidosNovo]
 
+
+
     if tamanho >= 0:
         conn = ConexaoPostgreRailway.conexao()
         for i in range(tamanho):
