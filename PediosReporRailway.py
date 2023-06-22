@@ -109,7 +109,7 @@ def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco, datahora):
             conn = ConexaoPostgreRailway.conexao()
             insert = 'INSERT INTO "Reposicao".tags_separacao ("usuario", "codbarrastag", "codreduzido", "Endereco", ' \
                      '"engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
-                     '"numeroop", "cor", "tamanho", "totalop", "codpedido","dataSeparacao") ' \
+                     '"numeroop", "cor", "tamanho", "totalop", "codpedido","dataseparacao") ' \
                      'SELECT %s, "codbarrastag", "codreduzido", "Endereco", "engenharia", ' \
                      '"DataReposicao", "descricao", "epc", %s, "numeroop", "cor", "tamanho", "totalop", ' \
                      "%s, %s " \
