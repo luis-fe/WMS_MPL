@@ -5,7 +5,7 @@ def AtribuirPedido(usuario, pedidos, dataAtribuicao):
     tamanho = len(pedidos)
     pedidosNovo = []
     for i in range(tamanho):
-       incr =  str[pedidos[i]]
+       incr =  str(pedidos[i])
        pedidosNovo.append(incr)
 
     pedidosNovo = [p.replace(',', '/') for p in pedidos]
