@@ -29,11 +29,11 @@ def ProdutividadeSeparadores():
     cursor = conn.cursor()
     cursor.execute('select tr."usuario", '
                    'count(tr."codbarrastag"), '
-                   'substring("DataReposicao",1,10) as "DataReposicao", '
-                   'min("DataReposicao") as min, '
-                   'max("DataReposicao") as max '
+                   'substring("dataseparacao",1,10) as "dataseparacao", '
+                   'min("dataseparacao") as min, '
+                   'max("dataseparacao") as max '
                    'from "Reposicao".tags_separacao tr '
-                   'group by "usuario" , substring("DataReposicao",1,10) ')
+                   'group by "usuario" , substring("dataseparacao",1,10) ')
     TagReposicao = cursor.fetchall()
     return TagReposicao
 
