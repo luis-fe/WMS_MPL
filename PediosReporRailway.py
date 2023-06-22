@@ -74,6 +74,9 @@ def DetalhaPedido(codPedido):
                                 ',codrepresentante  ||'+"'-'"+'|| desc_representante  as repres, agrupamentopedido '
                                 'from "Reposicao".filaseparacaopedidos f  where codigopedido= '+"'"+codPedido+"'"
                                 ,conn)
+    grupo = pd.read_sql('select agrupamentopedido '
+                                'from "Reposicao".filaseparacaopedidos f  where codigopedido= '+"'"+codPedido+"'"
+                                ,conn)
     DetalhaSku = pd.read_sql('select  produto as reduzido, qtdesugerida , status as concluido_X_total, endereco as endereco'
                             ' from "Reposicao".pedidossku p  where codpedido= '+"'"+codPedido+"'"
                                                                                               " order by endereco asc",conn)
@@ -92,11 +95,12 @@ def DetalhaPedido(codPedido):
         '2 - Tiponota': f'{skus["desc_tiponota"][0]} ',
         '3 - Cliente': f'{skus["cliente"][0]} ',
         '4- Repres.': f'{skus["repres"][0]} ',
+        #'4.1- Grupo.': f'{skus["grupo"][0]} ',
         '5- Detalhamento dos Sku:': DetalhaSku.to_dict(orient='records')
     }
     return [data]
 
-def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco):
+def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco, datahora):
     validacao, colunaReduzido, colunaNecessidade = VerificacoesApontamento(codbarra,codpedido)
     if validacao == 1:
         if colunaNecessidade <= 0:
@@ -105,14 +109,14 @@ def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco):
             conn = ConexaoPostgreRailway.conexao()
             insert = 'INSERT INTO "Reposicao".tags_separacao ("usuario", "codbarrastag", "codreduzido", "Endereco", ' \
                      '"engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
-                     '"numeroop", "cor", "tamanho", "totalop", "codpedido") ' \
+                     '"numeroop", "cor", "tamanho", "totalop", "codpedido","dataSeparacao") ' \
                      'SELECT %s, "codbarrastag", "codreduzido", "Endereco", "engenharia", ' \
                      '"DataReposicao", "descricao", "epc", %s, "numeroop", "cor", "tamanho", "totalop", ' \
-                     "%s" \
+                     "%s, %s " \
                      'FROM "Reposicao".tagsreposicao t ' \
                      'WHERE "codbarrastag" = %s;'
             cursor = conn.cursor()
-            cursor.execute(insert, (codusuario,'tagSeparado',codpedido, codbarra))
+            cursor.execute(insert, (codusuario,'tagSeparado',codpedido,datahora, codbarra))
             conn.commit()
             cursor.close()
             delete = 'Delete from "Reposicao"."tagsreposicao"  ' \
