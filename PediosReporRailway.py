@@ -41,8 +41,6 @@ def FilaPedidos():
                         '  from "Reposicao".filaseparacaopedidos f ',conn)
     pedidosku = pd.read_sql('select codpedido, sum(qtdesugerida) as qtdesugerida  from "Reposicao".pedidossku p  '
                             'group by codpedido ',conn)
-
-
     pedidosku.rename(columns={'codpedido':'01-CodPedido', 'qtdesugerida':'15-qtdesugerida'},inplace=True)
 
     usuarios = pd.read_sql(
@@ -179,4 +177,3 @@ def pesquisarSKUxPedido(codpedido,reduzido):
     return pesquisa2
 
 #print(pesquisarSKUxPedido('290175','591184'))
-
