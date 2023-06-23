@@ -4,6 +4,7 @@ import os
 from functools import wraps
 import ConecaoAWSRS
 import DistribuicaoPedidosRailway
+import Incremento
 import InventarioPrateleira
 import PediosReporRailway
 import Relatorios
@@ -688,6 +689,35 @@ def get_AtribuirPedidos():
 
     except Exception as e:
         return jsonify({'message': 'Ocorreu um erro interno.', 'error': str(e)}), 500
+
+@app.route('/api/AtualizaEnderecoPedidoss', methods=['POST'])
+@token_required
+def get_AtualizaEnderecoPedidoss():
+    try:
+        # Obtém os dados do corpo da requisição (JSON)
+        datas = request.get_json()
+        iteracoes = datas['iteracoes']
+
+
+        Endereco_det = Incremento.testeAtualizacao(iteracoes)
+        Endereco_det = pd.DataFrame(Endereco_det)
+
+        # Obtém os nomes das colunas
+        column_names = Endereco_det.columns
+        # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
+        end_data = []
+        for index, row in Endereco_det.iterrows():
+            end_dict = {}
+            for column_name in column_names:
+                end_dict[column_name] = row[column_name]
+            end_data.append(end_dict)
+        return jsonify(end_data)
+    except KeyError as e:
+        return jsonify({'message': 'Erro nos dados enviados.', 'error': str(e)}), 400
+
+    except Exception as e:
+        return jsonify({'message': 'Ocorreu um erro interno.', 'error': str(e)}), 500
+
 
 
 if __name__ == '__main__':
