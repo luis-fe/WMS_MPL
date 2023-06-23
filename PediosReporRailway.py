@@ -69,6 +69,12 @@ def FilaPedidos():
                             'group by codpedido ',conn)
     pedidoskuReposto2.rename(columns={'codpedido': '01-CodPedido', 'naoreposto': '17-Endereco NaoReposto'}, inplace=True)
     pedido = pd.merge(pedido, pedidoskuReposto2, on='01-CodPedido', how='left')
+    pedido['16-Endereco Reposto'] = pedido['15-qtdesugerida'].fillna(0)
+    pedido['17-Endereco NaoReposto'] = pedido['15-qtdesugerida'].fillna(0)
+    pedido['18-%Reposto'] = pedido['17-Endereco NaoReposto'] + pedido['16-Endereco Reposto']
+    pedido['18-%Reposto'] = pedido['16-Endereco Reposto']/pedido['18-%Reposto']
+    pedido['18-%Reposto'] = (pedido['18-%Reposto'] * 100).round(2)
+
     return pedido
 
 def FilaAtribuidaUsuario(codUsuario):
