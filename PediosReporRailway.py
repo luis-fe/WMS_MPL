@@ -73,6 +73,7 @@ def FilaPedidos():
     pedido['17-Endereco NaoReposto'] = pedido['17-Endereco NaoReposto'].fillna(0)
     pedido['18-%Reposto'] = pedido['17-Endereco NaoReposto'] + pedido['16-Endereco Reposto']
     pedido['18-%Reposto'] = pedido['16-Endereco Reposto']/pedido['18-%Reposto']
+    pedido['18-%Reposto'] = pedido['18-%Reposto'].fillna(0)
     pedido['18-%Reposto'] = (pedido['18-%Reposto'] * 100).round(2)
 
     return pedido
