@@ -59,7 +59,11 @@ def FilaPedidos():
 
     pedido = pd.merge(pedido,pedidosku,on='01-CodPedido',how='left')
     pedido['15-qtdesugerida'] =  pedido['15-qtdesugerida'].fillna(0)
-
+    pedidoskuReposto = pd.read_sql('select codpedido, sum(necessidade) as Reposto  from "Reposicao".pedidossku p '
+                                   "where endereco <> 'Não Reposto' "
+                            'group by codpedido ',conn)
+    pedidoskuReposto.rename(columns={'codpedido': '01-CodPedido', 'Reposto': '16-Endereco Reposto'}, inplace=True)
+    pedido = pd.merge(pedido, pedidoskuReposto, on='01-CodPedido', how='left')
 
     return pedido
 
