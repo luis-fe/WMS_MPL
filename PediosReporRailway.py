@@ -41,24 +41,12 @@ def FilaPedidos():
                         '  from "Reposicao".filaseparacaopedidos f ',conn)
     pedidosku = pd.read_sql('select codpedido, sum(qtdesugerida) as qtdesugerida  from "Reposicao".pedidossku p  '
                             'group by codpedido ',conn)
-    necessidadePedido = pd.read_sql('select codpedido as codigopedido , sum(necessidade) as encontrado  from "Reposicao".pedidossku p '
-                                    "where endereco like '%-%' "
-                                    'group by codpedido , produto ',conn )
-
-    pedido = pd.merge(pedido, necessidadePedido, on='codigopedido', how='left')
-
-    necessidadePedidoLocalizado = pd.read_sql('select codpedido as codigopedido , sum(necessidade) as necessidade  from "Reposicao".pedidossku p '
-                                    'group by codpedido , produto ',conn )
-
-    pedido = pd.merge(pedido, necessidadePedidoLocalizado, on='codigopedido', how='left')
-
-
 
 
     pedidosku.rename(columns={'codpedido':'01-CodPedido', 'qtdesugerida':'15-qtdesugerida'},inplace=True)
 
     usuarios = pd.read_sql(
-        "select codigo as cod_usuario , nome as nomeusuario_atribuido  from "+'"Reposicao"'+".cadusuarios c", conn)
+        'select codigo as cod_usuario , nome as nomeusuario_atribuido  from "Reposicao".cadusuarios c ', conn)
     usuarios['cod_usuario'] = usuarios['cod_usuario'].astype(str)
     pedido = pd.merge(pedido, usuarios, on='cod_usuario', how='left')
 
@@ -66,11 +54,9 @@ def FilaPedidos():
                            'desc_cliente':'05-desc_cliente', 'cidade':'06-cidade', 'estado':'07-estado',
                            'codrepresentante':'08-codrepresentante', 'desc_representante':'09-Repesentante','cod_usuario' :'10-codUsuarioAtribuido',
                            'nomeusuario_atribuido':'11-NomeUsuarioAtribuido','vlrsugestao':'12-vlrsugestao',
-                           'condicaopgto':'13-CondPgto' , 'agrupamentopedido':'14-AgrupamentosPedido','necessidade':'15- Necessidade', 'encontrado':'16- %encontrado' }, inplace=True)
+                           'condicaopgto':'13-CondPgto' , 'agrupamentopedido':'14-AgrupamentosPedido' }, inplace=True)
 
     pedido['12-vlrsugestao'] = 'R$ '+pedido['12-vlrsugestao']
-    pedido['16- %encontrado'] = pedido['15- Necessidade']/pedido['16- %encontrado']
-    pedido['16- %encontrado'] = pedido['16- %encontrado'].round(2)
 
     pedido = pd.merge(pedido,pedidosku,on='01-CodPedido',how='left')
 
