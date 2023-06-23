@@ -37,7 +37,8 @@ def relatorioTotalFila():
     query2['contagem'] = query2['contagem'].sum()
     query3['contagem'] = query3['contagem'].sum()
     total =  query3['contagem'][0] +  query2['contagem'][0]
-    Percentual = round(query3['contagem'][0] / (total), 0)
+    Percentual = query3['contagem'][0] / total
+    Percentual = round(Percentual, 2)
 
     conn.close()
     data = {
