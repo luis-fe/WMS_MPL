@@ -28,15 +28,15 @@ def relatorioTotalFila():
         ' GROUP BY "numeroop" ',conn)
 
     query2 = pd.read_sql('select *, 1 as contagem from "Reposicao".pedidossku p'
-                        " where endereco = 'Não Reposto'",conn)
+                        " where endereco = 'Não Reposto' and necessidade > 0",conn)
 
     query3 = pd.read_sql('select *, 1 as contagem from "Reposicao".pedidossku p'
-                        " where endereco <> 'Não Reposto'",conn)
+                        " where endereco <> 'Não Reposto' and necessidade > 0",conn)
 
     query['saldo'] = query['saldo'].sum()
     query2['contagem'] = query2['contagem'].sum()
     query3['contagem'] = query3['contagem'].sum()
-    total =  query3['contagem'].sum() +  query2['contagem'].sum()
+    total =  query3['contagem'][0] +  query2['contagem'][0]
     Percentual = round(query3['contagem'][0] / (total), 0)
 
     conn.close()
