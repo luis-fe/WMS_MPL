@@ -56,7 +56,9 @@ def FilaPedidos():
 
     pedido['12-vlrsugestao'] = 'R$ '+pedido['12-vlrsugestao']
 
+
     pedido = pd.merge(pedido,pedidosku,on='01-CodPedido',how='left')
+    pedido['15-qtdesugerida'] =  pedido['15-qtdesugerida'].fillna(0)
 
 
     return pedido
