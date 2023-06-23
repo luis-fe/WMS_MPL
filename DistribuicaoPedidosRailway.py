@@ -18,7 +18,7 @@ def AtribuirPedido(usuario, pedidos, dataAtribuicao):
             pedido_x = str(pedidosNovo[i])
             query = 'update "Reposicao".filaseparacaopedidos '\
                     'set cod_usuario = %s '\
-                    'where agrupamentopedido = %s'
+                    'where codigopedido = %s'
             cursor = conn.cursor()
             cursor.execute(query, (usuario,pedido_x, ))
             conn.commit()
