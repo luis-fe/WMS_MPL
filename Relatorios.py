@@ -36,13 +36,16 @@ def relatorioTotalFila():
     query['saldo'] = query['saldo'].sum()
     query2['contagem'] = query2['contagem'].sum()
     query3['contagem'] = query3['contagem'].sum()
-    Percentual = round(query3['contagem'][0] / (query2['contagem'][0]+query3['contagem'][0]), 2)
+    total =  query3['contagem'].sum() +  query2['contagem'].sum()
+    Percentual = round(query3['contagem'][0] / (total), 0)
 
     conn.close()
     data = {
         '1-Saldo na Fila':   f'{query["saldo"][0]}',
-        'Informacoes de Pedidos\n 2-Qtd de Enderecos Nao Reposto em Pedido': f'{query2["contagem"][0]}',
-        '3-Qtd de Enderecos OK Reposto nos Pedido': f'{query3["contagem"][0]}, percentual reposto {Percentual}%'
+        '2.0- Informacoes dos pedidos':'',
+        '2.1- Total de Skus nos Pedidos em aberto ': f'{total} pçs',
+        '2.2-Qtd de Enderecos Nao Reposto em Pedido': f'{query2["contagem"][0]}',
+        '2.3-Qtd de Enderecos OK Reposto nos Pedido': f'{query3["contagem"][0]}, percentual reposto {Percentual}%'
 
     }
     return [data]
