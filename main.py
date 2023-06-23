@@ -689,7 +689,6 @@ def get_AtribuirPedidos():
 
     except Exception as e:
         return jsonify({'message': 'Ocorreu um erro interno.', 'error': str(e)}), 500
-
 @app.route('/api/AtualizaEnderecoPedidoss', methods=['POST'])
 @token_required
 def get_AtualizaEnderecoPedidoss():
