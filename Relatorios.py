@@ -27,10 +27,15 @@ def relatorioTotalFila():
         'FROM "Reposicao".filareposicaoportag t' 
         ' GROUP BY "numeroop" ',conn)
 
+    query2 = pd.read_sql('select *, 1 as contagem from "Reposicao".pedidossku p'
+                        " where endereco = 'Não Reposto'",conn)
+
     query['saldo'] = query['saldo'].sum()
+    query2['contagem'] = query2['contagem'].sum()
     conn.close()
     data = {
-        '1-Saldo na Fila':   f'{query["saldo"][0]}'
+        '1-Saldo na Fila':   f'{query["saldo"][0]}',
+        '2-Qtd de Enderecos Nao Reposto em Pedido': f'{query2["contagem"][0]}'
 
     }
     return [data]
