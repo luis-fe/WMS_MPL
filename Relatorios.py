@@ -41,7 +41,7 @@ def relatorioTotalFila():
     conn.close()
     data = {
         '1-Saldo na Fila':   f'{query["saldo"][0]}',
-        '2-Qtd de Enderecos Nao Reposto em Pedido': f'{query2["contagem"][0]}',
+        'Informacoes de Pedidos\n 2-Qtd de Enderecos Nao Reposto em Pedido': f'{query2["contagem"][0]}',
         '3-Qtd de Enderecos OK Reposto nos Pedido': f'{query3["contagem"][0]}, percentual reposto {Percentual}%'
 
     }
