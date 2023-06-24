@@ -10,16 +10,31 @@ def DataFrameAtualizar():
     return dataframe
 def testeAtualizacao(iteracoes):
     dataframe = DataFrameAtualizar()
+    tamanho = dataframe['codpedido'].size
     conn = ConexaoPostgreRailway.conexao()
-    for i in range(iteracoes):
-        print(f'incremento: {i}')
-        query = '''
-            UPDATE "Reposicao".pedidossku p 
-            SET "endereco" = %s
-            WHERE p.endereco = 'Não Reposto' AND p.codpedido = %s AND p.produto = %s
-        '''
+    if tamanho <= iteracoes:
+        for i in range(iteracoes):
+            print(f'incremento: {i}')
+            query = '''
+                UPDATE "Reposicao".pedidossku p 
+                SET "endereco" = %s
+                WHERE p.endereco = 'Não Reposto' AND p.codpedido = %s AND p.produto = %s
+            '''
 
-        # Execute a consulta usando a conexão e o cursor apropriados
-        cursor = conn.cursor()
-        cursor.execute(query, (dataframe['endereco'][i],dataframe['codpedido'][i], dataframe['produto'][i]))
-        conn.commit()
+            # Execute a consulta usando a conexão e o cursor apropriados
+            cursor = conn.cursor()
+            cursor.execute(query, (dataframe['endereco'][i],dataframe['codpedido'][i], dataframe['produto'][i]))
+            conn.commit()
+    else:
+        for i in range(tamanho):
+            print(f'incremento: {i}')
+            query = '''
+                UPDATE "Reposicao".pedidossku p 
+                SET "endereco" = %s
+                WHERE p.endereco = 'Não Reposto' AND p.codpedido = %s AND p.produto = %s
+            '''
+
+            # Execute a consulta usando a conexão e o cursor apropriados
+            cursor = conn.cursor()
+            cursor.execute(query, (dataframe['endereco'][i], dataframe['codpedido'][i], dataframe['produto'][i]))
+            conn.commit()
