@@ -25,6 +25,7 @@ def testeAtualizacao(iteracoes):
             cursor = conn.cursor()
             cursor.execute(query, (dataframe['endereco'][i],dataframe['codpedido'][i], dataframe['produto'][i]))
             conn.commit()
+
     else:
         for i in range(tamanho):
             print(f'incremento: {i}')
