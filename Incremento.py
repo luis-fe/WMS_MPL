@@ -8,7 +8,6 @@ def DataFrameAtualizar():
                             " where p.endereco = 'Não Reposto'",conn)
     conn.close()
     return dataframe
-
 def testeAtualizacao(iteracoes):
     dataframe = DataFrameAtualizar()
     conn = ConexaoPostgreRailway.conexao()
