@@ -12,6 +12,8 @@ def testeAtualizacao(iteracoes):
     dataframe = DataFrameAtualizar()
     tamanho = dataframe['codpedido'].size
     conn = ConexaoPostgreRailway.conexao()
+    if dataframe.empty:
+        print('sem incrmento' )
     if tamanho <= iteracoes:
         for i in range(iteracoes):
             print(f'incremento: {i}')
