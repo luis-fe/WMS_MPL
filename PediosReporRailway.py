@@ -108,7 +108,7 @@ def DetalhaPedido(codPedido):
     descricaoSku = pd.read_sql(
         'select  f.engenharia as referencia, f."codreduzido" as reduzido, f."descricao" , f."cor" , f.tamanho  from "Reposicao".tagsreposicao f '
         'group by f."codreduzido", f.descricao , f."cor" , f.tamanho , f.engenharia'
-        'union '
+        ' union '
         'select  f.engenharia as referencia, f."codreduzido" as reduzido, f."descricao" , f."cor" , f.tamanho  from "Reposicao".tags_separacao f '
         'group by f."codreduzido", f.descricao , f."cor" , f.tamanho , f.engenharia'
         ' union '
