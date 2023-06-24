@@ -133,7 +133,7 @@ def DetalhaPedido(codPedido):
     return [data]
 
 
-def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco, datahora):
+def ApontamentoTagPedido(codusuario, codpedido, codbarra, datahora):
     validacao, colunaReduzido, colunaNecessidade = VerificacoesApontamento(codbarra, codpedido)
     if validacao == 1:
         if colunaNecessidade <= 0:
@@ -177,6 +177,42 @@ def ApontamentoTagPedido(codusuario, codpedido, codbarra, endereco, datahora):
             return pd.DataFrame({'Mensagem': [f'tag {codbarra} apontada!'], 'status': [True]})
     if validacao == 2:
         return pd.DataFrame({'Mensagem': [f'pedido {codpedido} nao encontrado']})
+    if validacao == 3:
+        conn = ConexaoPostgreRailway.conexao()
+        insert = 'INSERT INTO "Reposicao".tags_separacao ("usuario", "codbarrastag", "codreduzido", "Endereco", ' \
+                 '"engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
+                 '"numeroop", "cor", "tamanho", "totalop", "codpedido","dataseparacao") ' \
+                 'SELECT %s, "codbarrastag", "codreduzido", %s, "engenharia", ' \
+                 '%s, "descricao", "epc", %s, "numeroop", "cor", "tamanho", "totalop", ' \
+                 "%s, %s " \
+                 'FROM "Reposicao".filareposicaoportag t ' \
+                 'WHERE "codbarrastag" = %s;'
+        cursor = conn.cursor()
+        cursor.execute(insert, (codusuario,'Veio Da Fila',datahora, 'tagSeparado', codpedido, datahora, codbarra))
+        conn.commit()
+        cursor.close()
+        delete = 'Delete from "Reposicao"."filareposicaoportag" ' \
+                 'where "codbarrastag" = %s;'
+        cursor = conn.cursor()
+        cursor.execute(delete
+                       , (
+                           codbarra,))
+        conn.commit()
+        cursor.close()
+        uptadePedido = 'UPDATE "Reposicao".pedidossku' \
+                       ' SET necessidade= %s ' \
+                       'where "produto" = %s and codpedido= %s ;'
+        colunaNecessidade = colunaNecessidade - 1
+        cursor = conn.cursor()
+        cursor.execute(uptadePedido
+                       , (
+                           colunaNecessidade, colunaReduzido, codpedido))
+        conn.commit()
+        cursor.close()
+
+        # atualizando a necessidade
+        conn.close()
+        return pd.DataFrame({'Mensagem': [f'tag {codbarra} apontada, veio da FILA!'], 'status': [True]})
     else:
         return pd.DataFrame({'Mensagem': [f'tag nao encontrada no estoque do endereço']})
 
@@ -197,8 +233,19 @@ def VerificacoesApontamento(codbarra, codpedido):
         else:
             return 2, pesquisa['codreduzido'][0], 2
     else:
-        conn.close()
-        return 0, 0, 0
+        pesquisa3 = pd.read_sql(
+            ' select "codbarrastag", "codreduzido" as codreduzido  from "Reposicao".filareposicaoportag f   '
+            'where codbarrastag = ' + "'" + codbarra + "'", conn)
+        if not pesquisa3.empty:
+            pesquisa4 = pd.read_sql(
+                ' select p.codpedido, p.produto , p.necessidade  from "Reposicao".pedidossku p    '
+                'where codpedido = ' + "'" + codpedido + "' and produto = " + "'" + pesquisa['codreduzido'][0] + "'",
+                conn)
+            conn.close()
+            return 3, pesquisa4['codreduzido'][0], pesquisa4['necessidade'][0]
+        else:
+            conn.close()
+            return 0, 0, 0
 
 
 def pesquisarSKUxPedido(codpedido, reduzido):

@@ -548,12 +548,12 @@ def get_ApontamentoTagPedido():
     datas = request.get_json()
     codusuario = datas['codUsuario']
     codpedido = datas['codpedido']
-    endereco = datas['endereço']
+    #endereco = datas['endereço']
     codbarra = datas['codbarras']
     dataSeparacao = datas['dataHoraBipágem']
     Prosseguir = datas.get('Prosseguir', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
 
-    Endereco_det = PediosReporRailway.ApontamentoTagPedido(str(codusuario), codpedido, codbarra, endereco,dataSeparacao)
+    Endereco_det = PediosReporRailway.ApontamentoTagPedido(str(codusuario), codpedido, codbarra,dataSeparacao)
 
     # Obtém os nomes das colunas
     column_names = Endereco_det.columns
