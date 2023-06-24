@@ -213,6 +213,42 @@ def ApontamentoTagPedido(codusuario, codpedido, codbarra, datahora):
         # atualizando a necessidade
         conn.close()
         return pd.DataFrame({'Mensagem': [f'tag {codbarra} apontada, veio da FILA!'], 'status': [True]})
+    if validacao == 4:
+        conn = ConexaoPostgreRailway.conexao()
+        insert = 'INSERT INTO "Reposicao".tags_separacao ("usuario", "codbarrastag", "codreduzido", "Endereco", ' \
+                 '"engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
+                 '"numeroop", "cor", "tamanho", "totalop", "codpedido","dataseparacao") ' \
+                 'SELECT %s, "codbarrastag", "codreduzido", "Endereco", "engenharia", ' \
+                 '"DataReposicao", "descricao", "epc", %s, "numeroop", "cor", "tamanho", "totalop", ' \
+                 "%s, %s " \
+                 'FROM "Reposicao".tagsreposicao_inventario t ' \
+                 'WHERE "codbarrastag" = %s;'
+        cursor = conn.cursor()
+        cursor.execute(insert, (codusuario,'Veio Da Fila',datahora, 'tagSeparado', codpedido, datahora, codbarra))
+        conn.commit()
+        cursor.close()
+        delete = 'Delete from "Reposicao"."filareposicaoportag" ' \
+                 'where "codbarrastag" = %s;'
+        cursor = conn.cursor()
+        cursor.execute(delete
+                       , (
+                           codbarra,))
+        conn.commit()
+        cursor.close()
+        uptadePedido = 'UPDATE "Reposicao".pedidossku' \
+                       ' SET necessidade= %s ' \
+                       'where "produto" = %s and codpedido= %s ;'
+        colunaNecessidade = colunaNecessidade - 1
+        cursor = conn.cursor()
+        cursor.execute(uptadePedido
+                       , (
+                           colunaNecessidade, colunaReduzido, codpedido))
+        conn.commit()
+        cursor.close()
+
+        # atualizando a necessidade
+        conn.close()
+        return pd.DataFrame({'Mensagem': [f'tag {codbarra} apontada, veio do Inventario!'], 'status': [True]})
     else:
         return pd.DataFrame({'Mensagem': [f'tag nao encontrada no estoque do endereço']})
 
@@ -243,9 +279,22 @@ def VerificacoesApontamento(codbarra, codpedido):
                 conn)
             conn.close()
             return 3, pesquisa4['codreduzido'][0], pesquisa4['necessidade'][0]
-        else:
-            conn.close()
-            return 0, 0, 0
+        if pesquisa3.empty:
+            pesquisarInventario = pd.read_sql(
+                ' select "codbarrastag", "codreduzido" as codreduzido  from "Reposicao".tagsreposicao_inventario f   '
+                'where codbarrastag = ' + "'" + codbarra + "'", conn)
+            if not pesquisarInventario.empty:
+                pesquisa4 = pd.read_sql(
+                    ' select p.codpedido, p.produto , p.necessidade  from "Reposicao".pedidossku p    '
+                    'where codpedido = ' + "'" + codpedido + "' and produto = " + "'" + pesquisa['codreduzido'][
+                        0] + "'",
+                    conn)
+                conn.close()
+                return 4, pesquisa4['codreduzido'][0], pesquisa4['necessidade'][0]
+
+            else:
+                conn.close()
+                return 0, 0, 0
 
 
 def pesquisarSKUxPedido(codpedido, reduzido):
