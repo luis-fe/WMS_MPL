@@ -41,9 +41,9 @@ def FilaPedidos():
         ' select f.codigopedido , f.vlrsugestao, f.codcliente , f.desc_cliente, f.cod_usuario, f.cidade, f.estado, '
         'datageracao, f.codrepresentante , f.desc_representante, f.desc_tiponota, condicaopgto, agrupamentopedido  '
         '  from "Reposicao".filaseparacaopedidos f ', conn)
-    pedidosku = pd.read_sql('select codpedido, sum(qtdesugerida) as qtdesugerida  from "Reposicao".pedidossku p  '
+    pedidosku = pd.read_sql('select codpedido, sum(qtdesugerida) as qtdesugerida, sum(necessidade) as necessidade   from "Reposicao".pedidossku p  '
                             'group by codpedido ', conn)
-    pedidosku.rename(columns={'codpedido': '01-CodPedido', 'qtdesugerida': '15-qtdesugerida'}, inplace=True)
+    pedidosku.rename(columns={'codpedido': '01-CodPedido', 'qtdesugerida': '15-qtdesugerida','necessidade': '19-necessidade'}, inplace=True)
 
     usuarios = pd.read_sql(
         'select codigo as cod_usuario , nome as nomeusuario_atribuido  from "Reposicao".cadusuarios c ', conn)
@@ -76,12 +76,15 @@ def FilaPedidos():
     pedido = pd.merge(pedido, pedidoskuReposto2, on='01-CodPedido', how='left')
     pedido['16-Endereco Reposto'] = pedido['16-Endereco Reposto'].fillna(0)
     pedido['17-Endereco NaoReposto'] = pedido['17-Endereco NaoReposto'].fillna(0)
+    pedido['19-necessidade'] = pedido['19-necessidade'].fillna(0)
+
     pedido['18-%Reposto'] = pedido['17-Endereco NaoReposto'] + pedido['16-Endereco Reposto']
     pedido['18-%Reposto'] = pedido['16-Endereco Reposto'] / pedido['18-%Reposto']
-
+    pedido['20-Separado%'] = 1 - (pedido['19-necessidade'] / pedido['15-qtdesugerida'])
     pedido['18-%Reposto'] = (pedido['18-%Reposto'] * 100).round(2)
     pedido['18-%Reposto'] = pedido['18-%Reposto'].fillna(0)
-
+    pedido['20-Separado%'] = (pedido['20-Separado%'] * 100).round(2)
+    pedido['20-Separado%'] = pedido['20-Separado%'].fillna(0)
     return pedido
 
 
