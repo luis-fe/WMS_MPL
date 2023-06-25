@@ -67,7 +67,7 @@ def RelatorioNecessidadeReposicao():
                                     " group by produto ",conn)
     relatorioEndereçoEpc = pd.read_sql('select codreduzido , max(epc) as epc_Referencial from "Reposicao".filareposicaoportag f  '
                                     'group by codreduzido '
-                                    'order by epc asc'  ',conn)
+                                    'order by epc asc'  ,conn)
     relatorioEndereço = pd.merge(relatorioEndereço,relatorioEndereçoEpc,on='codreduzido',how='left')
                                     
     conn.close()
