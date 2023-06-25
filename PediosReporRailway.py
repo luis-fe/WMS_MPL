@@ -133,7 +133,7 @@ def DetalhaPedido(codPedido):
     return [data]
 
 
-def ApontamentoTagPedido(codusuario, codpedido, codbarra, datahora):
+def ApontamentoTagPedido(codusuario, codpedido, codbarra, datahora, padrao= False):
     validacao, colunaReduzido, colunaNecessidade = VerificacoesApontamento(codbarra, codpedido)
     if validacao == 1:
         if colunaNecessidade <= 0:
@@ -249,6 +249,47 @@ def ApontamentoTagPedido(codusuario, codpedido, codbarra, datahora):
         # atualizando a necessidade
         conn.close()
         return pd.DataFrame({'Mensagem': [f'tag {codbarra} apontada, veio do Inventario!'], 'status': [True]})
+    if validacao == 5 :
+        if padrao == False:
+            return pd.DataFrame({'Mensagem': [f'tag  {codbarra} já foi apontada, deseja estornar ?'],'status': [False]} )
+        if padrao == True:
+            conn = ConexaoPostgreRailway.conexao()
+            insert = 'INSERT INTO "Reposicao".tagsreposicao ("usuario", "codbarrastag", "codreduzido", "Endereco", ' \
+                     '"engenharia", "DataReposicao", "descricao", "epc", "StatusEndereco", ' \
+                     '"numeroop", "cor", "tamanho", "totalop") ' \
+                     'SELECT %s, "codbarrastag", "codreduzido", "Endereco", "engenharia", ' \
+                     '"DataReposicao", "descricao", "epc", %s, "numeroop", "cor", "tamanho", "totalop"' \
+                     'FROM "Reposicao".tags_separacao t ' \
+                     'WHERE "codbarrastag" = %s;'
+            cursor = conn.cursor()
+            cursor.execute(insert,
+                           (codusuario, 'Estornado', codbarra))
+            conn.commit()
+            cursor.close()
+            delete = 'Delete from "Reposicao"."tags_separacao" ' \
+                     'where "codbarrastag" = %s;'
+            cursor = conn.cursor()
+            cursor.execute(delete
+                           , (
+                               codbarra,))
+            conn.commit()
+            cursor.close()
+            uptadePedido = 'UPDATE "Reposicao".pedidossku' \
+                           ' SET necessidade= %s ' \
+                           'where "produto" = %s and codpedido= %s ;'
+            colunaNecessidade = colunaNecessidade + 1
+            cursor = conn.cursor()
+            cursor.execute(uptadePedido
+                           , (
+                               colunaNecessidade, colunaReduzido, codpedido))
+            conn.commit()
+            cursor.close()
+
+            # atualizando a necessidade
+            conn.close()
+
+            return pd.DataFrame({'Mensagem': [f'tag  {codbarra} estornado no pedido'],'status': [True]} )
+
     else:
         return pd.DataFrame({'Mensagem': [f'tag nao encontrada no estoque do endereço']})
 
@@ -293,6 +334,19 @@ def VerificacoesApontamento(codbarra, codpedido):
                 return 4, pesquisa4['codreduzido'][0], pesquisa4['necessidade'][0]
 
             else:
+                pesquisarSeparacao = pd.read_sql(
+                    ' select "codbarrastag", "codreduzido" as codreduzido  from "Reposicao".tags_separacao f   '
+                    'where codbarrastag = ' + "'" + codbarra + "'", conn)
+
+                if not pesquisarSeparacao.empty:
+                    pesquisa5 = pd.read_sql(
+                        ' select p.codpedido, p.produto as codreduzido, p.necessidade  from "Reposicao".pedidossku p    '
+                        'where codpedido = ' + "'" + codpedido + "' and produto = " + "'" + pesquisarSeparacao['codreduzido'][
+                            0] + "'",
+                        conn)
+                    conn.close()
+                    return 5,pesquisa5['codreduzido'][0], pesquisa5['necessidade'][0]
+
                 conn.close()
                 return 0, 0, 0
 
@@ -306,3 +360,6 @@ def pesquisarSKUxPedido(codpedido, reduzido):
     return pesquisa2
 
 # print(pesquisarSKUxPedido('290175','591184'))
+
+print(VerificacoesApontamento('01000019999805089149', '304944'))
+print(ApontamentoTagPedido('1', '304944', '01000019999805089149', '12:00',True))
