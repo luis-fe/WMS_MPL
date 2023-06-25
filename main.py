@@ -725,6 +725,7 @@ def get_RelatorioNecessidadeReposicao():
 
 
     Endereco_det = Relatorios.relatorioTotalFila()
+    Endereco_det = pd.DataFrame(Endereco_det)
 
     # Obtém os nomes das colunas
     column_names = Endereco_det.columns
