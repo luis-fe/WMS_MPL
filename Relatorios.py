@@ -71,5 +71,10 @@ def RelatorioNecessidadeReposicao():
     relatorioEndereço = pd.merge(relatorioEndereço,relatorioEndereçoEpc,on='codreduzido',how='left')
                                     
     conn.close()
-    return relatorioEndereço
+    data = {
+                
+                '1- Detalhamento das Necessidades ':relatorioEndereço.to_dict(orient='records')
+            }
+
+    return [data]
     
