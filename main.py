@@ -495,7 +495,7 @@ def get_FinalizarInventario():
 @app.route('/api/FilaPedidos', methods=['GET'])
 @token_required
 def get_FilaPedidos():
-    Incremento.testeAtualizacao(10)
+    Incremento.testeAtualizacao(50)
     Pedidos= PediosReporRailway.FilaPedidos()
     # Obtém os nomes das colunas
     column_names = Pedidos.columns
