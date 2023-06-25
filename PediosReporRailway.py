@@ -224,10 +224,10 @@ def ApontamentoTagPedido(codusuario, codpedido, codbarra, datahora):
                  'FROM "Reposicao".tagsreposicao_inventario t ' \
                  'WHERE "codbarrastag" = %s;'
         cursor = conn.cursor()
-        cursor.execute(insert, (codusuario,'Veio Da Fila',datahora, 'tagSeparado', codpedido, datahora, codbarra))
+        cursor.execute(insert, (codusuario,'Veio Do Inventario',datahora, 'tagSeparado', codpedido, datahora, codbarra))
         conn.commit()
         cursor.close()
-        delete = 'Delete from "Reposicao"."filareposicaoportag" ' \
+        delete = 'Delete from "Reposicao"."tagsreposicao_inventario" ' \
                  'where "codbarrastag" = %s;'
         cursor = conn.cursor()
         cursor.execute(delete
