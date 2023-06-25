@@ -724,7 +724,7 @@ def get_RelatorioNecessidadeReposicao():
     # Obtém os dados do corpo da requisição (JSON)
 
 
-    Endereco_det = Relatorios.relatorioTotalFila()
+    Endereco_det = Relatorios.RelatorioNecessidadeReposicao()
     Endereco_det = pd.DataFrame(Endereco_det)
 
     # Obtém os nomes das colunas
