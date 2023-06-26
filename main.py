@@ -552,7 +552,7 @@ def get_ApontamentoTagPedido():
     #endereco = datas['endereço']
     codbarras = datas['codbarras']
     dataSeparacao = datas['dataHoraBipágem']
-    Estornar = datas.get('Prosseguir', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
+    Estornar = datas.get('estornar', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
 
     Endereco_det = PediosReporRailway.ApontamentoTagPedido(str(codusuario), codpedido, codbarras,dataSeparacao,Estornar)
 
