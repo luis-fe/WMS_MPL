@@ -45,7 +45,7 @@ def relatorioTotalFila():
     Percentual = round(Percentual, 2) * 100
     totalPecas = query["saldo"][0] + Reposto["codreduzido"][0]+Inventario["codreduzido"][0]
     # Aplicando a formatação para exibir como "100.000"
-    query['saldo'] = query['saldo'].apply(lambda x: "{:,.0f}".format(x).replace(',', '.'))
+    query['saldo'] = query['saldo'].apply(lambda x: "{:,.0f}".format(x))
 
     conn.close()
     data = {
