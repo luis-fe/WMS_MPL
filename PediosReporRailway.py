@@ -316,10 +316,10 @@ def VerificacoesApontamento(codbarra, codpedido):
         if not pesquisa3.empty:
             pesquisa4 = pd.read_sql(
                 ' select p.codpedido, p.produto , p.necessidade  from "Reposicao".pedidossku p    '
-                'where codpedido = ' + "'" + codpedido + "' and produto = " + "'" + pesquisa['codreduzido'][0] + "'",
+                'where codpedido = ' + "'" + codpedido + "'"+' and produto = ' + "'" + pesquisa3['codreduzido'][0] + "'",
                 conn)
             conn.close()
-            return 3, pesquisa4['codreduzido'][0], pesquisa4['necessidade'][0]
+            return 3, pesquisa3['codreduzido'][0], pesquisa4['necessidade'][0]
         if pesquisa3.empty:
             pesquisarInventario = pd.read_sql(
                 ' select "codbarrastag", "codreduzido" as codreduzido  from "Reposicao".tagsreposicao_inventario f   '
@@ -340,8 +340,8 @@ def VerificacoesApontamento(codbarra, codpedido):
 
                 if not pesquisarSeparacao.empty:
                     pesquisa5 = pd.read_sql(
-                        ' select p.codpedido, p.produto as codreduzido, p.necessidade  from "Reposicao".pedidossku p    '
-                        'where codpedido = ' + "'" + codpedido + "' and produto = " + "'" + pesquisarSeparacao['codreduzido'][
+                        ' select p.codpedido, p.produto as codreduzido, p.necessidade  from "Reposicao".pedidossku p '
+                        'where codpedido = ' + "'" + codpedido + "'"+' and produto = ' + "'" + pesquisarSeparacao['codreduzido'][
                             0] + "'",
                         conn)
                     conn.close()
@@ -361,5 +361,5 @@ def pesquisarSKUxPedido(codpedido, reduzido):
 
 # print(pesquisarSKUxPedido('290175','591184'))
 
-print(VerificacoesApontamento('01000066792204000165', '304963'))
-print(ApontamentoTagPedido('1', '304963', '01000066792204000165', '12:00',True))
+print(VerificacoesApontamento('01000019999805089149', '304944'))
+print(ApontamentoTagPedido('1', '304944', '01000019999805089149', '12:00',True))
