@@ -554,7 +554,7 @@ def get_ApontamentoTagPedido():
     dataSeparacao = datas['dataHoraBipágem']
     Estornar = datas.get('Prosseguir', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
 
-    Endereco_det = PediosReporRailway.ApontamentoTagPedido(str(codusuario), codpedido, codbarra,dataSeparacao,Prosseguir)
+    Endereco_det = PediosReporRailway.ApontamentoTagPedido(str(codusuario), codpedido, codbarra,dataSeparacao,Estornar)
 
     # Obtém os nomes das colunas
     column_names = Endereco_det.columns
