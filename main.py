@@ -556,7 +556,7 @@ def get_ApontamentoTagPedido():
 
     Endereco_det = PediosReporRailway.ApontamentoTagPedido(str(codusuario), codpedido, codbarras,dataSeparacao,Estornar)
 
-    # Obtém os nomes das colunas
+    # Obtém os nomes das colunasok
     column_names = Endereco_det.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
     end_data = []
