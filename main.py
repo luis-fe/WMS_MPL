@@ -550,7 +550,7 @@ def get_ApontamentoTagPedido():
     codusuario = datas['codUsuario']
     codpedido = datas['codpedido']
     #endereco = datas['endereço']
-    codbarra = datas['codbarras']
+    codbarras = datas['codbarras']
     dataSeparacao = datas['dataHoraBipágem']
     Estornar = datas.get('Prosseguir', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
 

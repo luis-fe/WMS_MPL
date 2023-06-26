@@ -361,5 +361,5 @@ def pesquisarSKUxPedido(codpedido, reduzido):
 
 # print(pesquisarSKUxPedido('290175','591184'))
 
-print(VerificacoesApontamento('01000019999805089149', '304944'))
-print(ApontamentoTagPedido('1', '304944', '01000019999805089149', '12:00',True))
+print(VerificacoesApontamento('01000066792204000165', '304963'))
+print(ApontamentoTagPedido('1', '304963', '01000066792204000165', '12:00',True))
