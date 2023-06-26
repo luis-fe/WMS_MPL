@@ -66,7 +66,7 @@ def RelatorioNecessidadeReposicao():
                                     "where necessidade > 0 and endereco = 'Não Reposto'"
                                     " group by produto ",conn)
     relatorioEndereçoEpc = pd.read_sql('select codreduzido , max(epc) as epc_Referencial, engenharia from "Reposicao".filareposicaoportag f '
-                                       'group by codreduzido',conn)
+                                       'group by codreduzido, engenharia',conn)
 
     relatorioEndereço = pd.merge(relatorioEndereço,relatorioEndereçoEpc,on='codreduzido',how='left')
     # Clasificando o Dataframe para analise
