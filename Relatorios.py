@@ -65,7 +65,7 @@ def RelatorioNecessidadeReposicao():
     relatorioEndereço = pd.read_sql('select produto as codreduzido , sum(necessidade) as necessidade_Pedidos, count(codpedido) as Qtd_Pedidos  from "Reposicao".pedidossku p '
                                     "where necessidade > 0 and endereco = 'Não Reposto'"
                                     " group by produto ",conn)
-    relatorioEndereçoEpc = pd.read_sql('select codreduzido , max(epc) as epc_Referencial from "Reposicao".filareposicaoportag f '
+    relatorioEndereçoEpc = pd.read_sql('select codreduzido , max(epc) as epc_Referencial, engenharia from "Reposicao".filareposicaoportag f '
                                        'group by codreduzido',conn)
 
     relatorioEndereço = pd.merge(relatorioEndereço,relatorioEndereçoEpc,on='codreduzido',how='left')
