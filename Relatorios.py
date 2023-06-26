@@ -83,6 +83,3 @@ def RelatorioNecessidadeReposicao():
             }
 
     return [data]
-
-
-print(relatorioTotalFila())
