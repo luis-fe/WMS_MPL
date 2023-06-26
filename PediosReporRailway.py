@@ -106,7 +106,7 @@ def DetalhaPedido(codPedido):
                         , conn)
     DetalhaSku = pd.read_sql(
         'select  produto as reduzido, qtdesugerida , status as concluido_X_total, endereco as endereco, necessidade as a_concluir , '
-        'qtdesugerida as total'
+        'qtdesugerida as total, (qtdesugerida - necessidade) as qtdrealizado'
         ' from "Reposicao".pedidossku p  where codpedido= ' + "'" + codPedido + "'"
                                                                                 " order by endereco asc", conn)
     descricaoSku = pd.read_sql(
