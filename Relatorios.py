@@ -48,12 +48,16 @@ def relatorioTotalFila():
     query['saldo'] = query['saldo'].apply(lambda x: "{:,.0f}".format(x))
     saldo_str= str(query["saldo"][0])
     saldo_str = saldo_str.replace(',', '.')
+    totalPecas = "{:,.0f}".format(totalPecas)
+    totalPecas = str(totalPecas)
+    totalPecas = totalPecas.replace(',', '.')
+
     conn.close()
     data = {
         '1.0':' Informacoes Gerais do Estoque',
         '1.1-Total de Peças Nat. 5':   f'{totalPecas} pçs',
         '1.2-Saldo na Fila':   f'{saldo_str} pçs',
-        '1.3-Peçs em Inventario':   f'{Reposto["codreduzido"][0]} pçs',
+        '1.3-Peçs Repostas':   f'{Reposto["codreduzido"][0]} pçs',
         '1.4-Peçs em Inventario':   f'{Inventario["codreduzido"][0]} pçs',
         '2.0':' Informacoes dos pedidos',
         '2.1- Total de Skus nos Pedidos em aberto ': f'{total} pçs',
@@ -82,3 +86,4 @@ def RelatorioNecessidadeReposicao():
                 '1- Detalhamento das Necessidades ':relatorioEndereço.to_dict(orient='records')
             }
     return [data]
+print(relatorioTotalFila())
