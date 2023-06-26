@@ -26,16 +26,16 @@ def ProdutividadeRepositores():
     return TagReposicao
 def ProdutividadeSeparadores():
     conn = ConexaoPostgreRailway.conexao()
-    cursor = conn.cursor()
-    cursor.execute('select tr."usuario", '
+    TagReposicao = pd.read_sql('select tr."usuario", '
                    'count(tr."codbarrastag"), '
                    'substring("dataseparacao",1,10) as "dataseparacao", '
                    'min("dataseparacao") as min, '
                    'max("dataseparacao") as max '
                    'from "Reposicao".tags_separacao tr '
                    ' where "dataseparacao" is not null '
-                   'group by "usuario" , substring("dataseparacao",1,10) ')
-    TagReposicao = cursor.fetchall()
+                   'group by "usuario" , substring("dataseparacao",1,10) ',conn)
+
+
     return TagReposicao
 
 def FilaPorOP():
