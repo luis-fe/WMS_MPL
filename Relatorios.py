@@ -51,6 +51,10 @@ def relatorioTotalFila():
     totalPecas = "{:,.0f}".format(totalPecas)
     totalPecas = str(totalPecas)
     totalPecas = totalPecas.replace(',', '.')
+    total = "{:,.0f}".format(total)
+    total = str(total)
+    total2 = total.replace(',', '.')
+
 
     conn.close()
     data = {
@@ -60,7 +64,7 @@ def relatorioTotalFila():
         '1.3-Peçs Repostas':   f'{Reposto["codreduzido"][0]} pçs',
         '1.4-Peçs em Inventario':   f'{Inventario["codreduzido"][0]} pçs',
         '2.0':' Informacoes dos pedidos',
-        '2.1- Total de Skus nos Pedidos em aberto ': f'{total} pçs',
+        '2.1- Total de Skus nos Pedidos em aberto ': f'{total2} pçs',
         '2.2-Qtd de Enderecos Nao Reposto em Pedido': f'{query2["contagem"][0]}',
         '2.3-Qtd de Enderecos OK Reposto nos Pedido': f'{query3["contagem"][0]}',
         '2.4- Percentual Reposto':f'{Percentual}%'
