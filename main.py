@@ -181,7 +181,7 @@ def get_TagsSeparacao():
     for row in TagReposicao:
         try:
             # Converte a coluna 'Qtde' para inteiro
-            row = list(row)  # Convertendo a tupla em uma lista mutável
+            #row = list(row)  # Convertendo a tupla em uma lista mutável
             #row[1] = int(row[1])  # Convertendo o valor da coluna 'Qtde' para inteiro
             TagReposicao_dict = dict(zip(column_names, row))
             TagReposicao_data.append(TagReposicao_dict)
