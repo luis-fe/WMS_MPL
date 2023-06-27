@@ -35,7 +35,6 @@ def ProdutividadeSeparadores():
                    ' where "dataseparacao" is not null '
                    'group by "usuario" , substring("dataseparacao",1,10) ',conn)
 
-
     return TagReposicao
 
 def FilaPorOP():
@@ -146,5 +145,3 @@ def detalhaOPxSKU(numeroop):
         return pd.DataFrame({'Status': [False],'Mensagem':['OP nao Encontrada']})
     else:
         return  df_op
-
-print(ProdutividadeSeparadores())
