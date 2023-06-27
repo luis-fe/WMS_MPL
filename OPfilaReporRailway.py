@@ -27,7 +27,7 @@ def ProdutividadeRepositores():
 def ProdutividadeSeparadores():
     conn = ConexaoPostgreRailway.conexao()
     TagReposicao = pd.read_sql('select tr."usuario", '
-                   'count(tr."codbarrastag"), '
+                   'count(tr."codbarrastag") as Qtde, '
                    'substring("dataseparacao",1,10) as "dataseparacao", '
                    'min("dataseparacao") as min, '
                    'max("dataseparacao") as max '
