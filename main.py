@@ -175,20 +175,17 @@ def get_TagsSeparacao():
     TagReposicao = OPfilaReporRailway.ProdutividadeSeparadores()
 
     # Obtém os nomes das colunas
-    column_names = ['usuario', 'Qtde', 'DataReposicao', 'min', 'max']
+    column_names = TagReposicao.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
-    TagReposicao_data = []
-    for row in TagReposicao:
-        try:
-            # Converte a coluna 'Qtde' para inteiro
-            #row = list(row)  # Convertendo a tupla em uma lista mutável
-            #row[1] = int(row[1])  # Convertendo o valor da coluna 'Qtde' para inteiro
-            TagReposicao_dict = dict(zip(column_names, row))
-            TagReposicao_data.append(TagReposicao_dict)
-        except:
-            print(f'nao convertemos o valor na iteracao {row}')
+    pedidos_data = []
+    for index, row in TagReposicao.iterrows():
+        pedidos_dict = {}
+        for column_name in column_names:
+            pedidos_dict[column_name] = row[column_name]
+        pedidos_data.append(pedidos_dict)
+    return jsonify(pedidos_data)
 
-    return jsonify(TagReposicao_data)
+
 @app.route('/api/FilaReposicaoOP', methods=['GET'])
 @token_required
 def get_FilaReposicaoOP():
