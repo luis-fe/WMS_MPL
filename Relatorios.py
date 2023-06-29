@@ -91,4 +91,11 @@ def RelatorioNecessidadeReposicao():
                 '1- Detalhamento das Necessidades ':relatorioEndereço.to_dict(orient='records')
             }
     return [data]
-print(relatorioTotalFila())
+def InformacaoPedidoViaTag(codbarras):
+    conn = ConexaoPostgreRailway.conexao()
+
+    Informa = pd.read_sql('Select codpedido, usuario, dataseparacao  from "Reposicao".tags_separacao '
+                          'where codbarrastag = '+"'"+codbarras+"'",conn)
+
+    return Informa
+
