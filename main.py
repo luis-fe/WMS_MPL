@@ -240,7 +240,6 @@ def get_AtribuirOPRepositor():
         OPfilaReporRailway.AtribuiRepositorOP(Usuario,OP)
         # Retorna uma resposta de sucesso
         return jsonify({'message': True})
-    
 @app.route('/api/DetalhaOP', methods=['GET'])
 @token_required
 def get_DetalhaOP():
