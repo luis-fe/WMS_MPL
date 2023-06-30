@@ -85,7 +85,20 @@ def FilaPedidos():
     pedido['18-%Reposto'] = pedido['18-%Reposto'].fillna(0)
     pedido['20-Separado%'] = (pedido['20-Separado%'] * 100).round(2)
     pedido['20-Separado%'] = pedido['20-Separado%'].fillna(0)
+    # obtendo a Marca do Pedido
+    marca = pd.read_sql('select codpedido ,  t.engenharia   from "Reposicao".pedidossku p '
+                        'join "Reposicao".tagsreposicao t on t.codreduzido = p.produto '
+                        'group by codpedido, t.engenharia ',conn)
+    marca['21-MARCA'] =numpy.where((marca['engenharia'].str[:3] == '102') | (marca['engenharia'].str[:3] == '202') , 'M.POLLO', 'PACO')
+    marca.drop('engenharia', axis=1, inplace=True)
+    marca.drop_duplicates(subset='codpedido', inplace=True)
+    marca.rename(columns={'codpedido': '01-CodPedido'}, inplace=True)
+    pedido = pd.merge(pedido, marca, on='01-CodPedido', how='left')
+
+
     return pedido
+
+
 
 
 def FilaAtribuidaUsuario(codUsuario):
