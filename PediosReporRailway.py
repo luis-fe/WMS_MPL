@@ -95,6 +95,8 @@ def FilaPedidos():
     marca.drop_duplicates(subset='codpedido', inplace=True)
     marca.rename(columns={'codpedido': '01-CodPedido'}, inplace=True)
     pedido = pd.merge(pedido, marca, on='01-CodPedido', how='left')
+    pedido['21-MARCA'].fillna('-', inplace=True)
+
 
 
     return pedido
