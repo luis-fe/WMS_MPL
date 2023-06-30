@@ -49,19 +49,17 @@ def DetalhaPedido(codPedido):
             print('Pedido Detalhado Pela Tabela da Fila')
 
         else:
-            validador2 = pd.read_sql('SELECT * FROM ( '
-                                 'select p.codpedido , p.produto, '
-                                 '('
-                                 ' select codreduzido from'
-                                 ' (select f.codreduzido  from "Reposicao".filareposicaoportag f '
+            validador2 = pd.read_sql('SELECT p.codpedido, p.produto '
+                                 'FROM "Reposicao".pedidossku p '
+                                 'LEFT JOIN ( '
+                                 '     SELECT f.codreduzido AS codreduzido'
+                                 '     FROM "Reposicao".filareposicaoportag f '
                                  ' union '
-                                 ' select t.codreduzido from "Reposicao".tagsreposicao t)as procurar '
-                                 ' where procurar.codreduzido = p.produto '
-                                 ' group by procurar.codreduzido '
-                                 ') as prod '
-                                 'from "Reposicao".pedidossku p '
+                                 '     SELECT t.codreduzido AS codreduzido'
+                                 '     FROM "Reposicao".tagsreposicao t '
+                                 ' ) AS procurar ON procurar.codreduzido = p.produto'
                                  "where p.codpedido = '"+codPedido+"' "
-                                                                   ") z_q WHERE prod IS NULL", conn)
+                                                                   "AND procurar.codreduzido IS NULL ", conn)
 
             if validador2.empty:
                 descricaoSku = pd.read_sql(
