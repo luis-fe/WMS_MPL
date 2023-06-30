@@ -33,7 +33,23 @@ def DetalhaPedido(codPedido):
             conn)
         print('Pedido Detalhado Pela Tabela de  Reposicao')
     else:
-        validador2 = pd.read_sql('SELECT * FROM ( '
+        validadorFilas = pd.read_sql('select p.codpedido , p.produto , t.codreduzido  from "Reposicao".pedidossku p '
+                                 'left join "Reposicao".filareposicaoportag t on t.codreduzido = p.produto '
+                                 'where t.codreduzido is null and '
+                                 "p.codpedido = '" + codPedido + "'", conn)
+
+        if validadorFilas.empty:
+            descricaoSku = pd.read_sql(
+                'select  f.engenharia as referencia, f."codreduzido" as reduzido, f."descricao" , f."cor" , f.tamanho  from "Reposicao".filareposicaoportag f  '
+                'where f."codreduzido" in '
+                '(select  produto as reduzido '
+                ' from "Reposicao".pedidossku p  where codpedido = ' + "'" + codPedido + "') "
+                                                                                         'group by f."codreduzido", f.descricao , f."cor" , f.tamanho , f.engenharia',
+                conn)
+            print('Pedido Detalhado Pela Tabela da Fila')
+
+        else:
+            validador2 = pd.read_sql('SELECT * FROM ( '
                                  'select p.codpedido , p.produto, '
                                  '('
                                  ' select codreduzido from'
@@ -47,17 +63,19 @@ def DetalhaPedido(codPedido):
                                  "where p.codpedido = '"+codPedido+"' "
                                                                    ") z_q WHERE prod IS NULL", conn)
 
-        if validador2.empty:
-            descricaoSku = pd.read_sql(
+            if validador2.empty:
+                descricaoSku = pd.read_sql(
                 'select  f.engenharia as referencia, f."codreduzido" as reduzido, f."descricao" , f."cor" , f.tamanho  from "Reposicao".tagsreposicao f '
                 'group by f."codreduzido", f.descricao , f."cor" , f.tamanho , f.engenharia'
                 ' union '
                 'select t.engenharia as referencia, t."codreduzido", t."descricao" , t.cor , t.tamanho  from "Reposicao".filareposicaoportag t '
                 ' where t.descricao is not null '
                 'group by  t."codreduzido", t."descricao" , t.cor , t.tamanho, t.engenharia', conn)
-            print('Pedido Detalhado Pela Tabela de  Reposicao + Fila')
-        else:
-            descricaoSku = pd.read_sql(
+
+                print('Pedido Detalhado Pela Tabela de  Reposicao + Fila')
+
+            else:
+                descricaoSku = pd.read_sql(
                 'select  f.engenharia as referencia, f."codreduzido" as reduzido, f."descricao" , f."cor" , f.tamanho  from "Reposicao".tagsreposicao f '
                 'group by f."codreduzido", f.descricao , f."cor" , f.tamanho , f.engenharia'
                 ' union '
@@ -68,7 +86,7 @@ def DetalhaPedido(codPedido):
                 ' select  f.engenharia as referencia, f."codreduzido" as reduzido, f."descricao" , f."cor" , f.tamanho  from "Reposicao".tags_separacao f '
                 'group by f."codreduzido", f.descricao , f."cor" , f.tamanho , f.engenharia'
                 , conn)
-            print('Pedido Detalhado Pela Tabela de  Reposicao + Fila + Separacao')
+                print('Pedido Detalhado Pela Tabela de  Reposicao + Fila + Separacao')
 
     # continuacao do codigo
     descricaoSku.drop_duplicates(subset=('reduzido', 'referencia'), inplace=True)
