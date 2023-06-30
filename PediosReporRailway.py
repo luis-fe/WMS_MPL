@@ -105,7 +105,8 @@ def DetalhaPedido(codPedido):
                         'from "Reposicao".filaseparacaopedidos f  where codigopedido= ' + "'" + codPedido + "'"
                         , conn)
     DetalhaSku = pd.read_sql(
-        'select  produto as reduzido, qtdesugerida , status as concluido_X_total, endereco as endereco'
+        'select  produto as reduzido, qtdesugerida , status as concluido_X_total, endereco as endereco, necessidade as a_concluir , '
+        'qtdesugerida as total, (qtdesugerida - necessidade) as qtdrealizado'
         ' from "Reposicao".pedidossku p  where codpedido= ' + "'" + codPedido + "'"
                                                                                 " order by endereco asc", conn)
     descricaoSku = pd.read_sql(
@@ -118,9 +119,10 @@ def DetalhaPedido(codPedido):
         'select t.engenharia as referencia, t."codreduzido", t."descricao" , t.cor , t.tamanho  from "Reposicao".filareposicaoportag t '
         ' where t.descricao is not null '
         'group by  t."codreduzido", t."descricao" , t.cor , t.tamanho, t.engenharia', conn)
-    descricaoSku.drop_duplicates(subset='reduzido', inplace=True)
+    descricaoSku.drop_duplicates(subset=('reduzido','referencia'), inplace=True)
 
     DetalhaSku = pd.merge(DetalhaSku, descricaoSku, on='reduzido', how='left')
+    DetalhaSku.drop_duplicates(subset=('reduzido', 'referencia'), inplace=True)
 
     data = {
         '1 - codpedido': f'{skus["codigopedido"][0]} ',
@@ -134,7 +136,7 @@ def DetalhaPedido(codPedido):
 
 
 def ApontamentoTagPedido(codusuario, codpedido, codbarra, datahora, padrao= False):
-    validacao, colunaReduzido, colunaNecessidade = VerificacoesApontamento(codbarra, codpedido)
+    validacao, colunaReduzido, colunaNecessidade,colunaValorUnit = VerificacoesApontamento(codbarra, codpedido)
     if validacao == 1:
         if colunaNecessidade <= 0:
             return pd.DataFrame(
@@ -302,13 +304,13 @@ def VerificacoesApontamento(codbarra, codpedido):
 
     if not pesquisa.empty:
         pesquisa2 = pd.read_sql(
-            ' select p.codpedido, p.produto , p.necessidade  from "Reposicao".pedidossku p    '
+            ' select p.codpedido, p.produto , p.necessidade, p.valorunitarioliq  from "Reposicao".pedidossku p    '
             'where codpedido = ' + "'" + codpedido + "' and produto = " + "'" + pesquisa['codreduzido'][0] + "'", conn)
         conn.close()
         if not pesquisa2.empty:
-            return 1, pesquisa['codreduzido'][0], pesquisa2['necessidade'][0]
+            return 1, pesquisa['codreduzido'][0], pesquisa2['necessidade'][0], pesquisa2['valorunitarioliq'][0]
         else:
-            return 2, pesquisa['codreduzido'][0], 2
+            return 2, pesquisa['codreduzido'][0], 2, 2
     else:
         pesquisa3 = pd.read_sql(
             ' select "codbarrastag", "codreduzido" as codreduzido  from "Reposicao".filareposicaoportag f   '
@@ -316,10 +318,10 @@ def VerificacoesApontamento(codbarra, codpedido):
         if not pesquisa3.empty:
             pesquisa4 = pd.read_sql(
                 ' select p.codpedido, p.produto , p.necessidade  from "Reposicao".pedidossku p    '
-                'where codpedido = ' + "'" + codpedido + "' and produto = " + "'" + pesquisa['codreduzido'][0] + "'",
+                'where codpedido = ' + "'" + codpedido + "'"+' and produto = ' + "'" + pesquisa3['codreduzido'][0] + "'",
                 conn)
             conn.close()
-            return 3, pesquisa4['codreduzido'][0], pesquisa4['necessidade'][0]
+            return 3, pesquisa3['codreduzido'][0], pesquisa4['necessidade'][0],3
         if pesquisa3.empty:
             pesquisarInventario = pd.read_sql(
                 ' select "codbarrastag", "codreduzido" as codreduzido  from "Reposicao".tagsreposicao_inventario f   '
@@ -331,7 +333,7 @@ def VerificacoesApontamento(codbarra, codpedido):
                         0] + "'",
                     conn)
                 conn.close()
-                return 4, pesquisa4['codreduzido'][0], pesquisa4['necessidade'][0]
+                return 4, pesquisa4['codreduzido'][0], pesquisa4['necessidade'][0],4
 
             else:
                 pesquisarSeparacao = pd.read_sql(
@@ -340,12 +342,12 @@ def VerificacoesApontamento(codbarra, codpedido):
 
                 if not pesquisarSeparacao.empty:
                     pesquisa5 = pd.read_sql(
-                        ' select p.codpedido, p.produto as codreduzido, p.necessidade  from "Reposicao".pedidossku p    '
-                        'where codpedido = ' + "'" + codpedido + "' and produto = " + "'" + pesquisarSeparacao['codreduzido'][
+                        ' select p.codpedido, p.produto as codreduzido, p.necessidade  from "Reposicao".pedidossku p '
+                        'where codpedido = ' + "'" + codpedido + "'"+' and produto = ' + "'" + pesquisarSeparacao['codreduzido'][
                             0] + "'",
                         conn)
                     conn.close()
-                    return 5,pesquisa5['codreduzido'][0], pesquisa5['necessidade'][0]
+                    return 5,pesquisa5['codreduzido'][0], pesquisa5['necessidade'][0],5
 
                 conn.close()
                 return 0, 0, 0
@@ -358,4 +360,3 @@ def pesquisarSKUxPedido(codpedido, reduzido):
         'where codpedido = ' + "'" + codpedido + "' and produto = " + "'" + reduzido + "'", conn)
     conn.close()
     return pesquisa2
-
