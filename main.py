@@ -733,7 +733,6 @@ def get_AtualizaEnderecoPedidoss():
 
     except Exception as e:
         return jsonify({'message': 'Ocorreu um erro interno.', 'error': str(e)}), 500
-        
 @app.route('/api/NecessidadeReposicao', methods=['GET'])
 @token_required
 def get_RelatorioNecessidadeReposicao():
