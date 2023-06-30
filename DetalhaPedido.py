@@ -19,10 +19,11 @@ def DetalhaPedido(codPedido):
 
     # Validando as descricoes + cor + tamanho dos produtos para nao ser null
 
-    validador1 = pd.read_sql('select p.codpedido , p.produto , t.codreduzido  from "Reposicao".pedidossku p '
-                             'left join "Reposicao".tagsreposicao t on t.codreduzido = p.produto '
-                             'where t.codreduzido is null and '
-                             "p.codpedido = '"+codPedido+"'",conn)
+    validador1 = pd.read_sql('select distinct * from '
+                             '(select p.codpedido , p.produto , t.codreduzido  from "Reposicao".pedidossku p '
+                             'left join "Reposicao".tagsreposicao t on t.codreduzido = p.produto) as var '
+                             'where var.codreduzido is null and '
+                             "var.codpedido = '"+codPedido+"'",conn)
     if validador1.empty:
         descricaoSku = pd.read_sql(
             'select  f.engenharia as referencia, f."codreduzido" as reduzido, f."descricao" , f."cor" , f.tamanho  from "Reposicao".tagsreposicao f  '
@@ -104,4 +105,3 @@ def DetalhaPedido(codPedido):
 
 
 
-#DetalhaPedido('304669')
