@@ -89,6 +89,7 @@ def FilaPedidos():
     marca = pd.read_sql('select codpedido ,  t.engenharia   from "Reposicao".pedidossku p '
                         'join "Reposicao".tagsreposicao t on t.codreduzido = p.produto '
                         'group by codpedido, t.engenharia ',conn)
+    marca['engenharia'] = marca['engenharia'].str.slice(1)
     marca['21-MARCA'] =numpy.where((marca['engenharia'].str[:3] == '102') | (marca['engenharia'].str[:3] == '202') , 'M.POLLO', 'PACO')
     marca.drop('engenharia', axis=1, inplace=True)
     marca.drop_duplicates(subset='codpedido', inplace=True)
