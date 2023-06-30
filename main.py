@@ -546,9 +546,10 @@ def get_FilaPedidosUsuario():
 def get_DetalharPedido():
     # Obtém os dados do corpo da requisição (JSON)
     codPedido = request.args.get('codPedido')
-
+    DetalhaPedido.AtualizadoEnderecoPedido(codPedido)
     Endereco_det = DetalhaPedido.DetalhaPedido(codPedido)
     Endereco_det = pd.DataFrame(Endereco_det)
+
     # Obtém os nomes das colunas
     column_names = Endereco_det.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes

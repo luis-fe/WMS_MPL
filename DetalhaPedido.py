@@ -103,5 +103,34 @@ def DetalhaPedido(codPedido):
     }
     return [data]
 
+def AtualizadoEnderecoPedido(codpedido):
+    conn = ConexaoPostgreRailway.conexao()
+    Pedido = pd.read_sql('Select * From "Reposicao".pedidossku p '
+                         'where p.codpedido = '+"'"+codpedido+"'"+" and p.necessidade > 0",conn)
+    testeAtualizacao(Pedido)
+    return print(f'pedido {codpedido} atualizado')
+
+
+def testeAtualizacao(dataframe):
+    dataframe = dataframe
+    tamanho = dataframe['codpedido'].size
+    conn = ConexaoPostgreRailway.conexao()
+    if dataframe.empty:
+        print('sem incrmento' )
+        return pd.DataFrame(
+                {'Mensagem': [f'{tamanho} atualizacoes para realizar! ']})
+    else:
+        for i in range(tamanho):
+
+            query = '''
+                UPDATE "Reposicao".pedidossku p 
+                SET "endereco" = %s
+                WHERE p.codpedido = %s AND p.produto = %s
+            '''
+
+            # Execute a consulta usando a conexão e o cursor apropriados
+            cursor = conn.cursor()
+            cursor.execute(query, (dataframe['endereco'][i], dataframe['codpedido'][i], dataframe['produto'][i]))
+            conn.commit()
 
 
