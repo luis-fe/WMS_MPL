@@ -58,7 +58,7 @@ def DetalhaPedido(codPedido):
                                  '     SELECT t.codreduzido AS codreduzido'
                                  '     FROM "Reposicao".tagsreposicao t '
                                  ' ) AS procurar ON procurar.codreduzido = p.produto'
-                                 "where p.codpedido = '"+codPedido+"' "
+                                 " where p.codpedido = '"+codPedido+"' "
                                                                    "AND procurar.codreduzido IS NULL ", conn)
 
             if validador2.empty:
@@ -104,3 +104,4 @@ def DetalhaPedido(codPedido):
 
 
 
+DetalhaPedido('304669')
