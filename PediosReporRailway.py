@@ -359,7 +359,3 @@ def pesquisarSKUxPedido(codpedido, reduzido):
     conn.close()
     return pesquisa2
 
-# print(pesquisarSKUxPedido('290175','591184'))
-
-print(VerificacoesApontamento('01000019999805089149', '304944'))
-print(ApontamentoTagPedido('1', '304944', '01000019999805089149', '12:00',True))
