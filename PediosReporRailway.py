@@ -95,46 +95,6 @@ def FilaAtribuidaUsuario(codUsuario):
     return x
 
 
-def DetalhaPedido(codPedido):
-    conn = ConexaoPostgreRailway.conexao()
-    skus = pd.read_sql('select codigopedido, desc_tiponota  , codcliente ||' + "'-'" + '|| desc_cliente as cliente  '
-                                                                                       ',codrepresentante  ||' + "'-'" + '|| desc_representante  as repres, agrupamentopedido '
-                                                                                                                         'from "Reposicao".filaseparacaopedidos f  where codigopedido= ' + "'" + codPedido + "'"
-                       , conn)
-    grupo = pd.read_sql('select agrupamentopedido '
-                        'from "Reposicao".filaseparacaopedidos f  where codigopedido= ' + "'" + codPedido + "'"
-                        , conn)
-    DetalhaSku = pd.read_sql(
-        'select  produto as reduzido, qtdesugerida , status as concluido_X_total, endereco as endereco, necessidade as a_concluir , '
-        'qtdesugerida as total, (qtdesugerida - necessidade) as qtdrealizado'
-        ' from "Reposicao".pedidossku p  where codpedido= ' + "'" + codPedido + "'"
-                                                                                " order by endereco asc", conn)
-    descricaoSku = pd.read_sql(
-        'select  f.engenharia as referencia, f."codreduzido" as reduzido, f."descricao" , f."cor" , f.tamanho  from "Reposicao".tagsreposicao f '
-        'group by f."codreduzido", f.descricao , f."cor" , f.tamanho , f.engenharia'
-        ' union '
-        'select  f.engenharia as referencia, f."codreduzido" as reduzido, f."descricao" , f."cor" , f.tamanho  from "Reposicao".tags_separacao f '
-        'group by f."codreduzido", f.descricao , f."cor" , f.tamanho , f.engenharia'
-        ' union '
-        'select t.engenharia as referencia, t."codreduzido", t."descricao" , t.cor , t.tamanho  from "Reposicao".filareposicaoportag t '
-        ' where t.descricao is not null '
-        'group by  t."codreduzido", t."descricao" , t.cor , t.tamanho, t.engenharia', conn)
-    descricaoSku.drop_duplicates(subset=('reduzido','referencia'), inplace=True)
-
-    DetalhaSku = pd.merge(DetalhaSku, descricaoSku, on='reduzido', how='left')
-    DetalhaSku.drop_duplicates(subset=('reduzido', 'referencia'), inplace=True)
-
-    data = {
-        '1 - codpedido': f'{skus["codigopedido"][0]} ',
-        '2 - Tiponota': f'{skus["desc_tiponota"][0]} ',
-        '3 - Cliente': f'{skus["cliente"][0]} ',
-        '4- Repres.': f'{skus["repres"][0]} ',
-        # '4.1- Grupo.': f'{skus["grupo"][0]} ',
-        '5- Detalhamento dos Sku:': DetalhaSku.to_dict(orient='records')
-    }
-    return [data]
-
-
 def ApontamentoTagPedido(codusuario, codpedido, codbarra, datahora, padrao= False):
     validacao, colunaReduzido, colunaNecessidade,colunaValorUnit = VerificacoesApontamento(codbarra, codpedido)
     if validacao == 1:
@@ -360,3 +320,4 @@ def pesquisarSKUxPedido(codpedido, reduzido):
         'where codpedido = ' + "'" + codpedido + "' and produto = " + "'" + reduzido + "'", conn)
     conn.close()
     return pesquisa2
+

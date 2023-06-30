@@ -3,6 +3,7 @@ import pandas as pd
 import os
 from functools import wraps
 import ConecaoAWSRS
+import DetalhaPedido
 import DistribuicaoPedidosRailway
 import Incremento
 import InventarioPrateleira
@@ -546,7 +547,7 @@ def get_DetalharPedido():
     # Obtém os dados do corpo da requisição (JSON)
     codPedido = request.args.get('codPedido')
 
-    Endereco_det = PediosReporRailway.DetalhaPedido(codPedido)
+    Endereco_det = DetalhaPedido.DetalhaPedido(codPedido)
     Endereco_det = pd.DataFrame(Endereco_det)
     # Obtém os nomes das colunas
     column_names = Endereco_det.columns
