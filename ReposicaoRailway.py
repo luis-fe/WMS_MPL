@@ -268,7 +268,7 @@ def EstornoApontamento(codbarrastag):
     return True
 
 
-def RetornoLocalCodBarras(codbarras,endereco, dataHora):
+def RetornoLocalCodBarras(usuario,codbarras,endereco, dataHora):
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
 
@@ -280,6 +280,15 @@ def RetornoLocalCodBarras(codbarras,endereco, dataHora):
     fila_reposicao = pd.DataFrame(cursor.fetchall(), columns=['codbarrastag'])
 
     if not fila_reposicao.empty:
+        update = 'uptade "Reposicao"."filareposicaoportag" ce ' \
+                 'set = usuario = s% ' \
+                 'where "codbarrastag" = %s; '
+        cursor.execute(
+           update, (usuario, codbarras,)
+        )
+        conn.commit()
+        cursor.close()
+
 
 
         insert = 'insert into "Reposicao"."tagsreposicao" ("codbarrastag", "DataReposicao" , "Endereco" ) values (%s, %s, %s )'
@@ -307,16 +316,6 @@ def RetornoLocalCodBarras(codbarras,endereco, dataHora):
     conn.close()
 
     return retorno
-# Iniciar o temporizador
-inicio = time.time()
 
-# Chamar a função que você deseja medir
-RetornoLocalCodBarras('01000067443603000512','teste','test')
 
-# Parar o temporizador
-fim = time.time()
 
-# Calcular o tempo decorrido
-tempo_decorrido = fim - inicio
-
-print("Tempo decorrido:", tempo_decorrido, "segundos")

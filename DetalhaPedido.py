@@ -146,6 +146,3 @@ def testeAtualizacao(dataframe):
             cursor = conn.cursor()
             cursor.execute(query, (dataframe['endereco'][i], dataframe['codpedido'][i], dataframe['produto'][i]))
             conn.commit()
-
-
-#DetalhaPedido('305243')
