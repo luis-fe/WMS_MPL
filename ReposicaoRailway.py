@@ -268,7 +268,7 @@ def EstornoApontamento(codbarrastag):
     return True
 
 
-def RetornoLocalCodBarras(usuario,codbarras,endereco, dataHora):
+def RetornoLocalCodBarras(usuario, codbarras, endereco, dataHora):
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
 
@@ -280,27 +280,23 @@ def RetornoLocalCodBarras(usuario,codbarras,endereco, dataHora):
     fila_reposicao = pd.DataFrame(cursor.fetchall(), columns=['codbarrastag'])
 
     if not fila_reposicao.empty:
-        update = 'uptade "Reposicao"."filareposicaoportag" ce ' \
-                 'set = usuario = s% ' \
-                 'where "codbarrastag" = %s; '
-        cursor.execute(
-           update, (usuario, codbarras,)
-        )
+        update = 'UPDATE "Reposicao"."filareposicaoportag" ce ' \
+                 'SET usuario = %s ' \
+                 'WHERE "codbarrastag" = %s;'
+        cursor.execute(update, (usuario, codbarras,))
         conn.commit()
         cursor.close()
 
+        cursor = conn.cursor()
 
-
-        insert = 'insert into "Reposicao"."tagsreposicao" ("codbarrastag", "DataReposicao" , "Endereco" ) values (%s, %s, %s )'
-        cursor.execute(
-           insert, (codbarras,dataHora,endereco,)
-        )
+        insert = 'INSERT INTO "Reposicao"."tagsreposicao" ("codbarrastag", "DataReposicao", "Endereco") ' \
+                 'VALUES (%s, %s, %s)'
+        cursor.execute(insert, (codbarras, dataHora, endereco,))
         conn.commit()
         cursor.close()
         retorno = 'A Repor'
     else:
         # Verificando se está na Prateleira
-
         cursor.execute(
             'SELECT "codbarrastag" FROM "Reposicao"."tagsreposicao" ce '
             'WHERE "codbarrastag" = %s', (codbarras,)
