@@ -290,7 +290,7 @@ def RetornoLocalCodBarras(usuario, codbarras, endereco, dataHora):
         cursor = conn.cursor()
 
         insert = 'INSERT INTO "Reposicao"."tagsreposicao" ("usuario","codbarrastag", "DataReposicao", "Endereco") ' \
-                 'VALUES (%s, %s, %s)'
+                 'VALUES (%s, %s, %s, %s)'
         cursor.execute(insert, (usuario,codbarras, dataHora, endereco,))
         conn.commit()
         cursor.close()
