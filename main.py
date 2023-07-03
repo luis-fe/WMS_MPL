@@ -66,18 +66,39 @@ def get_usuariosRestricao():
 
 @app.route('/api/UsuarioSenhaRestricaoSEMTOKEN', methods=['GET'])
 def get_usuariosRestricaoSEMTOKEN():
-    usuarios = UsuariosRailway.PesquisarSenha()
+    # Obtém o código do usuário e a senha dos parâmetros da URL
+    codigo = request.args.get('codigo')
+    senha = request.args.get('senha')
 
-    # Obtém os nomes das colunas
-    column_names = ['codigo', 'nome ','senha']
+    # Verifica se o código do usuário e a senha foram fornecidos
+    if codigo is None or senha is None:
+        return jsonify({'message': 'Código do usuário e senha devem ser fornecidos.'}), 400
 
-    # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
-    usuarios_data = []
-    for row in usuarios:
-        usuario_dict = dict(zip(column_names, row))
-        usuarios_data.append(usuario_dict)
+    # Consulta no banco de dados para verificar se o usuário e senha correspondem
+    result = UsuariosRailway.ConsultaUsuarioSenha(codigo, senha)
 
-    return jsonify(usuarios_data)
+    # Verifica se o usuário existe
+    if result == 1:
+        # Consulta no banco de dados para obter informações adicionais do usuário
+
+        nome, funcao, situacao = UsuariosRailway.PesquisarUsuariosCodigo(codigo)
+
+        # Verifica se foram encontradas informações adicionais do usuário
+        if nome != 0:
+            UsuariosRailway.RegistroLog(codigo)
+            # Retorna as informações adicionais do usuário
+            return jsonify({
+                "status": True,
+                "message": "Usuário e senha VALIDADOS!",
+                "nome": nome,
+                "funcao": funcao,
+                "situacao": situacao
+            })
+        else:
+            return jsonify({'message': 'Não foi possível obter informações adicionais do usuário.'}), 500
+    else:
+        return jsonify({"status": False,
+                        "message": 'Usuário ou senha não existe'}), 401
 
 
 # Rota para atualizar um usuário pelo código
