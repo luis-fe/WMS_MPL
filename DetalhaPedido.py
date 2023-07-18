@@ -68,7 +68,7 @@ def DetalhaPedido(codPedido):
     return [data]
 
 def AtualizadoEnderecoPedido(codpedido):
-    conn = ConexaoPostgreMPL.conexao()
+    conn = ConexaoPostgreRailway.conexao()
     Pedido = pd.read_sql('Select * From "Reposicao".pedidossku p '
                          'where p.codpedido = '+"'"+codpedido+"'"+" and p.necessidade > 0",conn)
     testeAtualizacao(Pedido)
@@ -78,7 +78,7 @@ def AtualizadoEnderecoPedido(codpedido):
 def testeAtualizacao(dataframe):
     dataframe = dataframe
     tamanho = dataframe['codpedido'].size
-    conn = ConexaoPostgreMPL.conexao()
+    conn = ConexaoPostgreRailway.conexao()
     if dataframe.empty:
         print('sem incrmento' )
         return pd.DataFrame(
