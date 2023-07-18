@@ -594,6 +594,7 @@ def get_DetalharPedido():
         end_data.append(end_dict)
     return jsonify(end_data)
 
+
 @app.route('/api/ApontamentoTagPedido', methods=['POST'])
 @token_required
 def get_ApontamentoTagPedido():
@@ -601,12 +602,13 @@ def get_ApontamentoTagPedido():
     datas = request.get_json()
     codusuario = datas['codUsuario']
     codpedido = datas['codpedido']
-    #endereco = datas['endereço']
+    enderecoApi = datas['endereço']
     codbarras = datas['codbarras']
     dataSeparacao = datas['dataHoraBipágem']
     Estornar = datas.get('estornar', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
 
-    Endereco_det = PediosReporRailway.ApontamentoTagPedido(str(codusuario), codpedido, codbarras,dataSeparacao,Estornar)
+    Endereco_det = PediosReporRailway.ApontamentoTagPedido(str(codusuario), codpedido, codbarras, dataSeparacao,enderecoApi,
+                                                          Estornar)
 
     # Obtém os nomes das colunasok
     column_names = Endereco_det.columns
@@ -618,6 +620,8 @@ def get_ApontamentoTagPedido():
             end_dict[column_name] = row[column_name]
         end_data.append(end_dict)
     return jsonify(end_data)
+
+
 @app.route('/api/ApontarTagReduzido', methods=['POST'])
 @token_required
 def get_ApontarTagReduzido():
