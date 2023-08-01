@@ -150,3 +150,10 @@ def detalhaOPxSKU(numeroop):
         return pd.DataFrame({'Status': [False],'Mensagem':['OP nao Encontrada']})
     else:
         return  df_op
+
+
+def ObterNaturezas():
+    conn = ConexaoPostgreRailway
+    qurey = pd.read_sql('selecte * from "Reposicao".configuracoes ', conn)
+
+    return qurey
