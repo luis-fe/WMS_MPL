@@ -74,12 +74,12 @@ def FilaPorOP(natureza, codempresa):
     df_OP1 = df_OP1.head(50)  # Retorna as 3 primeiras linhas
     return df_OP1
 
-def detalhaOP(numeroop):
+def detalhaOP(numeroop, empresa, natureza):
     conn = ConexaoPostgreRailway.conexao()
-    df_op = pd.read_sql('select "numeroop" , "codbarrastag", "epc", "usuario" as codusuario_atribuido, "Situacao", "codreduzido" '
-                   'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' +"'"+  numeroop +"'", conn)
-
-
+    df_op = pd.read_sql(
+        'select "numeroop" , "codbarrastag", "epc", "usuario" as codusuario_atribuido, "Situacao", "codreduzido" '
+        'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' + "'" + numeroop + "' and "
+                                                                                            " codnaturezaatual = '" + natureza + "' ",conn)
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     df_op2 = pd.read_sql(
         'select "numeroop" , "codbarrastag" AS codbarrastag, "epc" as epc, "usuario" as codusuario_atribuido,' +"'reposto'"+ 'as situacao, "codreduzido" '
