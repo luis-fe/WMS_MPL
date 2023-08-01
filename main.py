@@ -430,13 +430,15 @@ def get_ApontaReposicao():
         endereco = data['endereco']
         dataHora = data['dataHora']
         estornar = data.get('estornar', False)  # Valor padrão: False, se 'estornar' não estiver presente no corpo
+        natureza = data.get('natureza', '5')  # Valor padrão: False, se 'estornar' não estiver presente no corpo
+        empresa = data.get('empresa', '1')  # Valor padrão: False, se 'estornar' não estiver presente no corpo
 
         # Verifica se existe atribuição
-        Apontamento = ReposicaoRailway.RetornoLocalCodBarras(codUsuario,codbarra,endereco,dataHora)
+        Apontamento = ReposicaoRailway.RetornoLocalCodBarras(codUsuario, codbarra, endereco, dataHora, empresa, natureza)
 
         if Apontamento == 'Reposto':
             if estornar:
-                ReposicaoRailway.EstornoApontamento(codbarra)
+                ReposicaoRailway.EstornoApontamento(codbarra,empresa,natureza)
                 return jsonify({'message': f'codigoBarras {codbarra} estornado!'})
 
             ender, ender2 = PediosReporRailway.EndereçoTag(codbarra)

@@ -243,14 +243,17 @@ def ApontarReposicao(codUsuario, codbarras, endereco, dataHora):
        # print(f'Apontado a {numeroop} , endereco {endereco}, as {dataHora}')
 
         return  True
-def EstornoApontamento(codbarrastag):
+def EstornoApontamento(codbarrastag,empresa, natureza):
     conn = ConexaoPostgreRailway.conexao()
-    situacao, reduzido, engenharia, numeroop, descricao, cor, epc, tam, totalop, usuario = Devolver_Inf_Tag(codbarrastag, 1)
-    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codreduzido", "engenharia","codbarrastag","numeroop", "descricao", "cor", "epc", "tamanho", "totalop", "Situacao", "usuario") ' \
-             'VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'+"'Reposição não Iniciada'"+',%s);'
+    situacao, reduzido, engenharia, numeroop, descricao, cor, epc, tam, totalop, usuario = Devolver_Inf_Tag(
+        codbarrastag, 1)
+    Insert = 'INSERT INTO  "Reposicao"."filareposicaoportag" ("codreduzido", "engenharia","codbarrastag","numeroop", "descricao", "cor", "epc", "tamanho", "totalop", "Situacao",' \
+             ' "usuario", codnaturezaatual) ' \
+             'VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,' + "'Reposição não Iniciada'" + ',%s, %s);'
     cursor = conn.cursor()
     cursor.execute(Insert
-                   , (reduzido, engenharia, codbarrastag, numeroop, descricao, cor, epc, tam, totalop, usuario))
+                   ,
+                   (reduzido, engenharia, codbarrastag, numeroop, descricao, cor, epc, tam, totalop, usuario, natureza))
     # Obter o número de linhas afetadas
     numero_linhas_afetadas = cursor.rowcount
     conn.commit()
@@ -268,14 +271,14 @@ def EstornoApontamento(codbarrastag):
     return True
 
 
-def RetornoLocalCodBarras(usuario, codbarras, endereco, dataHora):
+def RetornoLocalCodBarras(usuario, codbarras, endereco, dataHora, empresa, natureza):
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
 
     # Verificando se está na Fila de Reposição
     cursor.execute(
         'SELECT "codbarrastag" FROM "Reposicao"."filareposicaoportag" ce '
-        'WHERE "codbarrastag" = %s', (codbarras,)
+        'WHERE "codbarrastag" = %s and codnaturezaatual = %s', (codbarras, natureza,)
     )
     fila_reposicao = pd.DataFrame(cursor.fetchall(), columns=['codbarrastag'])
 
@@ -289,9 +292,9 @@ def RetornoLocalCodBarras(usuario, codbarras, endereco, dataHora):
 
         cursor = conn.cursor()
 
-        insert = 'INSERT INTO "Reposicao"."tagsreposicao" ("usuario","codbarrastag", "DataReposicao", "Endereco") ' \
-                 'VALUES (%s, %s, %s, %s)'
-        cursor.execute(insert, (usuario,codbarras, dataHora, endereco,))
+        insert = 'INSERT INTO "Reposicao"."tagsreposicao" ("usuario","codbarrastag", "DataReposicao", "Endereco", natureza) ' \
+                 'VALUES (%s, %s, %s, %s, %s)'
+        cursor.execute(insert, (usuario,codbarras, dataHora, endereco,natureza))
         conn.commit()
         cursor.close()
         retorno = 'A Repor'
@@ -299,10 +302,9 @@ def RetornoLocalCodBarras(usuario, codbarras, endereco, dataHora):
         # Verificando se está na Prateleira
         cursor.execute(
             'SELECT "codbarrastag" FROM "Reposicao"."tagsreposicao" ce '
-            'WHERE "codbarrastag" = %s', (codbarras,)
+            'WHERE "codbarrastag" = %s and natureza = %s', (codbarras,natureza,)
         )
         prateleira = pd.DataFrame(cursor.fetchall(), columns=['codbarrastag'])
-
         if not prateleira.empty:
             retorno = 'Reposto'
         else:
