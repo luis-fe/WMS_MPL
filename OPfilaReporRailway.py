@@ -82,8 +82,8 @@ def detalhaOP(numeroop, empresa, natureza):
                                                                                             " codnaturezaatual = '" + natureza + "' ",conn)
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
     df_op2 = pd.read_sql(
-        'select "numeroop" , "codbarrastag" AS codbarrastag, "epc" as epc, "usuario" as codusuario_atribuido,' +"'reposto'"+ 'as situacao, "codreduzido" '
-      'from "Reposicao"."tagsreposicao" frt where "numeroop" = ' + "'" + numeroop + "'", conn)
+        'select "numeroop" , "codbarrastag" AS codbarrastag, "epc" as epc, "usuario" as codusuario_atribuido,' +"'reposto'"+ 'as situacao, "codreduzido", natureza '
+      'from "Reposicao"."tagsreposicao" frt where "numeroop" = ' + "'" + numeroop + "' and natureza = '"+natureza+"'", conn)
     df_op2.rename(columns={'codreduzido': 'codreduzido', "situacao":'Situacao'}, inplace=True)
 
     df_op = pd.concat([df_op, df_op2])
