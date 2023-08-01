@@ -153,7 +153,7 @@ def detalhaOPxSKU(numeroop):
 
 
 def ObterNaturezas():
-    conn = ConexaoPostgreRailway
+    conn = ConexaoPostgreRailway.conexao()
     qurey = pd.read_sql('selecte * from "Reposicao".configuracoes ', conn)
 
     return qurey
