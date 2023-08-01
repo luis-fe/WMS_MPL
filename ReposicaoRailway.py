@@ -58,17 +58,17 @@ def PesquisaEndereco(endereco):
 
         return pd.DataFrame({'Status': [True], 'Mensagem': [f'endereco {endereco} encontrado!']})
     
-def SituacaoEndereco(endereco):
+def SituacaoEndereco(endereco, empresa, natureza):
     conn = ConexaoPostgreRailway.conexao()
     select = 'select * from "Reposicao"."cadendereco" ce ' \
-             'where codendereco = %s'
+             'where codendereco = %s and natureza = %s'
     cursor = conn.cursor()
-    cursor.execute(select, (endereco, ))
+    cursor.execute(select, (endereco, natureza, ))
     resultado = cursor.fetchall()
     cursor.close()
     if not resultado:
         conn.close()
-        return pd.DataFrame({'Status Endereco': [False], 'Mensagem': [f'endereco {endereco} nao existe!']})
+        return pd.DataFrame({'Status Endereco': [False], 'Mensagem': [f'endereco {endereco} nao existe na natureza {natureza}!']})
     else:
         saldo = Estoque_endereco(endereco)
         if saldo == 0:
@@ -77,10 +77,10 @@ def SituacaoEndereco(endereco):
                                  'Status do Saldo': ['Vazio']})
         else:
             skus = pd.read_sql('select  count(codbarrastag) as "Saldo Geral"  from "Reposicao".tagsreposicao e '
-                                    'where "Endereco"='+" '"+endereco+"'",conn)
+                                    'where "Endereco"= %s and natureza = %s ',conn,params=(endereco,natureza,))
             SaldoSku_Usuario = pd.read_sql('select  "Endereco", "codreduzido" as codreduzido , "usuario", count(codbarrastag) as "Saldo Sku"  from "Reposicao".tagsreposicao e '
-                                    'where "Endereco"='+" '"+endereco+"'"
-                                    'group by "Endereco", "codreduzido" , "usuario" ', conn)
+                                    'where "Endereco"= %s and natureza = %s'
+                                    'group by "Endereco", "codreduzido" , "usuario", natureza ', conn, params=(endereco,natureza,))
             usuarios = pd.read_sql(
                 'select codigo as "usuario" , nome  from "Reposicao".cadusuarios c ',
                 conn)
@@ -98,7 +98,7 @@ def SituacaoEndereco(endereco):
 
             detalhatag = pd.read_sql(
                 'select codbarrastag, "usuario", "codreduzido" as codreduzido, "DataReposicao"  from "Reposicao".tagsreposicao t '
-                'where "Endereco"='+" '"+endereco+"'"'',conn)
+                'where "Endereco"= %s and natureza = %s' ,conn, params=(endereco, natureza,))
             detalhatag = pd.merge(detalhatag, usuarios, on='usuario', how='left')
             conn.close()
 
