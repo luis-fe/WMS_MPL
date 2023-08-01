@@ -2,16 +2,17 @@ import ConexaoPostgreRailway
 import pandas as pd
 import numpy
 
-def EndereçoTag(codbarra):
+def EndereçoTag(codbarra, empresa, natureza):
     conn = ConexaoPostgreRailway.conexao()
     pesquisa = pd.read_sql(
         ' select t."Endereco"  from "Reposicao".tagsreposicao t  '
-        'where codbarrastag = ' + "'" + codbarra + "'", conn)
+        'where codbarrastag = ' + "'" + codbarra + "' and natureza = '" + natureza + "'", conn)
 
     pesquisa['Situacao'] = 'Reposto'
     pesquisa2 = pd.read_sql(
         " select '-' as Endereco  from " + '"Reposicao".filareposicaoportag f   '
-                                           'where codbarrastag = ' + "'" + codbarra + "'", conn)
+                                           'where codbarrastag = ' + "'" + codbarra + "' and codnaturezaatual = '" + natureza + "'",
+        conn)
 
     pesquisa2['Situacao'] = 'na fila'
     pesquisa3 = pd.read_sql(

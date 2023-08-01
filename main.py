@@ -401,7 +401,10 @@ def get_DetalhaEndereco():
 def get_DetalhaTag():
     # Obtém o código do usuário e a senha dos parâmetros da URL
     codbarra = request.args.get('codbarra')
-    codbarra, codbarra1 = PediosReporRailway.EndereçoTag(codbarra)
+    empresa = request.args.get('empresa','1')
+    natureza = request.args.get('natureza','5')
+
+    codbarra, codbarra1 = PediosReporRailway.EndereçoTag(codbarra, empresa, natureza)
     # Obtém os nomes das colunas
     column_names = codbarra1.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes
