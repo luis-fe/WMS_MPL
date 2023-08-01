@@ -335,7 +335,9 @@ def get_DetalhaOPxSKU():
 def get_DetalhaSKU():
     # Obtém o código do usuário e a senha dos parâmetros da URL
     codreduzido = request.args.get('codreduzido')
-    op = OPfilaReporRailway.detalhaSku(codreduzido)
+    empresa = request.args.get('empresa','1')
+    natureza = request.args.get('natureza','5')
+    op = OPfilaReporRailway.detalhaSku(codreduzido, empresa, natureza)
     # Obtém os nomes das colunas
     column_names = op.columns
     # Monta o dicionário com os cabeçalhos das colunas e os valores correspondentes

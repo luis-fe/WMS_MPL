@@ -121,11 +121,11 @@ def AtribuiRepositorOP(codigo, numeroop):
     numero_linhas_afetadas = cursor.rowcount
     conn.commit()
     cursor.close()
-def detalhaSku(codreduzido):
+def detalhaSku(codreduzido, empresa, natureza):
     conn = ConexaoPostgreRailway.conexao()
-    df_op2 = pd.read_sql('select "Endereco", "codreduzido", "descricao", count("codreduzido") as saldo '
-                   'from "Reposicao"."tagsreposicao" frt where "codreduzido" = ' +"'"+  codreduzido +"'"+
-                   ' group by "Endereco", "codreduzido", "descricao" ', conn)
+    df_op2 = pd.read_sql('select "Endereco", "codreduzido", "descricao", count("codreduzido") as saldo, natureza '
+                   'from "Reposicao"."tagsreposicao" frt where "codreduzido" = ' +"'"+  codreduzido +"' and natureza = '"+natureza+"'"
+                   ' group by "Endereco", "codreduzido", "descricao", natureza ', conn)
     if df_op2.empty:
         return pd.DataFrame({'Mensagem':[f'O reduzido {codreduzido} ainda nao foi reposto ou esta com as prateleiras vazias ']})
     else:
