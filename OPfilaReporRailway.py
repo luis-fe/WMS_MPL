@@ -42,7 +42,7 @@ def FilaPorOP(natureza, codempresa):
     conn = ConexaoPostgreRailway.conexao()
     df_OP1 = pd.read_sql(
         ' select "numeroop", "totalop" as qtdpeçs_total, "usuario" as codusuario_atribuido, count("numeroop") as qtdpeçs_arepor  from "Reposicao"."filareposicaoportag" frt '
-        ' where "codNaturezaAtual" = %s '
+        ' where "codnaturezaatual" = %s '
         ' group by "numeroop", "usuario", "totalop"  ', conn, params=(natureza,))
 
     df_OP_Iniciada = pd.read_sql(
