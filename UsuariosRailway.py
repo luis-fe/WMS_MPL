@@ -28,7 +28,7 @@ def PesquisarSenha():
 def PesquisarUsuariosCodigo(codigo):
     conn = ConexaoPostgreRailway.conexao()
     cursor = conn.cursor()
-    cursor.execute('select codigo, nome, funcao, situacao from "Reposicao"."cadusuarios" c'
+    cursor.execute('select codigo, nome, funcao, situacao, empresa from "Reposicao"."cadusuarios" c'
                    ' where codigo = %s',(codigo,))
     usuarios = cursor.fetchall()
     cursor.close()
@@ -36,7 +36,7 @@ def PesquisarUsuariosCodigo(codigo):
     if not usuarios:
         return 0, 0, 0
     else:
-        return usuarios[0][1],usuarios[0][2],usuarios[0][3]
+        return usuarios[0][1],usuarios[0][2],usuarios[0][3],usuarios[0][4]
 
 
 

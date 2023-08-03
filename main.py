@@ -165,7 +165,7 @@ def check_user_password():
     if result == 1:
         # Consulta no banco de dados para obter informações adicionais do usuário
 
-        nome, funcao, situacao = UsuariosRailway.PesquisarUsuariosCodigo(codigo)
+        nome, funcao, situacao, empresa1 = UsuariosRailway.PesquisarUsuariosCodigo(codigo)
 
         # Verifica se foram encontradas informações adicionais do usuário
         if nome != 0:
@@ -176,7 +176,8 @@ def check_user_password():
                 "message": "Usuário e senha VALIDADOS!",
                 "nome": nome,
                 "funcao": funcao,
-                "situacao": situacao
+                "situacao": situacao,
+                "empresa": empresa1
             })
         else:
             return jsonify({'message': 'Não foi possível obter informações adicionais do usuário.'}), 500
