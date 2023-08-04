@@ -70,7 +70,7 @@ def SituacaoEndereco(endereco, empresa, natureza):
         conn.close()
         return pd.DataFrame({'Status Endereco': [False], 'Mensagem': [f'endereco {endereco} nao existe na natureza {natureza}!']})
     else:
-        saldo = Estoque_endereco(endereco)
+        saldo = Estoque_endereco(endereco, empresa, natureza)
         if saldo == 0:
             conn.close()
             return pd.DataFrame({'Status Endereco': [True], 'Mensagem': [f'endereco {endereco} existe!'],
@@ -117,13 +117,13 @@ def SituacaoEndereco(endereco, empresa, natureza):
 
 
 
-def Estoque_endereco(endereco):
+def Estoque_endereco(endereco, empresa, natureza):
     conn = ConexaoPostgreRailway.conexao()
     consultaSql = 'select count(codbarrastag) as "Saldo" from "Reposicao"."tagsreposicao" e ' \
-                  'where "Endereco" = %s ' \
+                  'where "Endereco" = %s and natureza = %s ' \
                   'group by "Endereco"'
     cursor = conn.cursor()
-    cursor.execute(consultaSql, (endereco,))
+    cursor.execute(consultaSql, (endereco,natureza,))
     resultado = cursor.fetchall()
     cursor.close()
     if not resultado:
