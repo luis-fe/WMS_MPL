@@ -77,7 +77,7 @@ def FilaPorOP(natureza, codempresa):
 def detalhaOP(numeroop, empresa, natureza):
     conn = ConexaoPostgreRailway.conexao()
     df_op = pd.read_sql(
-        'select "numeroop" , "codbarrastag", "epc", "usuario" as codusuario_atribuido, "Situacao", "codreduzido" '
+        'select "numeroop" , "codbarrastag", "epc", "usuario" as codusuario_atribuido, "Situacao", "codreduzido", codnaturezaatual as natureza '
         'from "Reposicao"."filareposicaoportag" frt where "numeroop" = ' + "'" + numeroop + "' and "
                                                                                             " codnaturezaatual = '" + natureza + "' ",conn)
     df_op['codusuario_atribuido'] = df_op['codusuario_atribuido'].replace('', numpy.nan).fillna('-')
